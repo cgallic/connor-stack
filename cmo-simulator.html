@@ -799,9 +799,9 @@
 
     function logToTerminal(message, type = '') {
       const line = document.createElement('div');
-      line.className = `term-line \${type}`;
+      line.className = `term-line ${type}`;
       if (type === 'term-prompt') {
-        line.innerHTML = `<span class="term-prompt">$ </span>\${message}`;
+        line.innerHTML = `<span class="term-prompt">$ </span>${message}`;
       } else {
         line.textContent = message;
       }
@@ -847,7 +847,7 @@
       workspaceView.innerHTML = `
         <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px;">
           <h4 style="font-family: var(--font-display); margin-bottom: 0.5rem;">Raw Brief Payload</h4>
-          <p style="font-family: monospace; font-size: 0.8rem; white-space: pre-wrap; color: var(--text-secondary);">\${briefTemplates[selectedCampaign].brief}</p>
+          <p style="font-family: monospace; font-size: 0.8rem; white-space: pre-wrap; color: var(--text-secondary);">${briefTemplates[selectedCampaign].brief}</p>
         </div>
       `;
     }
@@ -870,7 +870,7 @@
           <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px;">
             <h4 style="font-family: var(--font-display); margin-bottom: 0.5rem; color: var(--accent-pink);">Ralph Wiggum Draft</h4>
             <p style="font-size: 0.9rem; font-style: italic; color: var(--text-primary); border-left: 2px solid var(--accent-pink); padding-left: 1rem; margin: 1rem 0;">
-              "\${campaign.copywriter}"
+              "${campaign.copywriter}"
             </p>
           </div>
         `;
@@ -884,7 +884,7 @@
         logToTerminal('[QA Guard] Criterion 2: Urgent? Scored.');
         logToTerminal('[QA Guard] Criterion 3: Unique? Evaluated.');
         logToTerminal('[QA Guard] Criterion 4: Ultra-specific? Scored.');
-        logToTerminal(`[QA Guard] Feedback: \${campaign.qa.feedback}`);
+        logToTerminal(`[QA Guard] Feedback: ${campaign.qa.feedback}`);
         logToTerminal('[QA Guard] Audit complete. Scorecard output written to events.db.', 'term-success');
 
         const metrics = campaign.qa.scorecard;
@@ -892,27 +892,27 @@
           <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px;">
             <h4 style="font-family: var(--font-display); margin-bottom: 0.5rem; color: var(--accent-cyan);">QA Guard Scorecard</h4>
             <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
-              Feedback: "\${campaign.qa.feedback}"
+              Feedback: "${campaign.qa.feedback}"
             </p>
             <div class="rating-metrics">
               <div class="metric-card">
                 <div class="metric-name">Useful</div>
-                <div class="metric-value">\${metrics.useful.toFixed(1)}/10</div>
+                <div class="metric-value">${metrics.useful.toFixed(1)}/10</div>
                 <div class="metric-bar-container"><div class="metric-bar" id="bar-useful"></div></div>
               </div>
               <div class="metric-card">
                 <div class="metric-name">Urgent</div>
-                <div class="metric-value">\${metrics.urgent.toFixed(1)}/10</div>
+                <div class="metric-value">${metrics.urgent.toFixed(1)}/10</div>
                 <div class="metric-bar-container"><div class="metric-bar" id="bar-urgent"></div></div>
               </div>
               <div class="metric-card">
                 <div class="metric-name">Unique</div>
-                <div class="metric-value">\${metrics.unique.toFixed(1)}/10</div>
+                <div class="metric-value">${metrics.unique.toFixed(1)}/10</div>
                 <div class="metric-bar-container"><div class="metric-bar" id="bar-unique"></div></div>
               </div>
               <div class="metric-card">
                 <div class="metric-name">Ultra-specific</div>
-                <div class="metric-value">\${metrics.specific.toFixed(1)}/10</div>
+                <div class="metric-value">${metrics.specific.toFixed(1)}/10</div>
                 <div class="metric-bar-container"><div class="metric-bar" id="bar-specific"></div></div>
               </div>
             </div>
@@ -921,10 +921,10 @@
 
         // Trigger animations
         setTimeout(() => {
-          document.getElementById('bar-useful').style.width = `\${metrics.useful * 10}%`;
-          document.getElementById('bar-urgent').style.width = `\${metrics.urgent * 10}%`;
-          document.getElementById('bar-unique').style.width = `\${metrics.unique * 10}%`;
-          document.getElementById('bar-specific').style.width = `\${metrics.specific * 10}%`;
+          document.getElementById('bar-useful').style.width = `${metrics.useful * 10}%`;
+          document.getElementById('bar-urgent').style.width = `${metrics.urgent * 10}%`;
+          document.getElementById('bar-unique').style.width = `${metrics.unique * 10}%`;
+          document.getElementById('bar-specific').style.width = `${metrics.specific * 10}%`;
         }, 50);
       } 
       else if (step === 3) {
@@ -939,7 +939,7 @@
           <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px;">
             <h4 style="font-family: var(--font-display); margin-bottom: 0.5rem; color: var(--accent-purple);">SEO Optimized Text</h4>
             <p style="font-size: 0.9rem; color: var(--text-primary); line-height: 1.5; margin: 1rem 0;">
-              \${campaign.seo}
+              ${campaign.seo}
             </p>
           </div>
         `;
