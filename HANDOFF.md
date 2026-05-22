@@ -106,6 +106,7 @@ Read these when you need source material or to verify decisions:
 
 | Source | What's there |
 |---|---|
+| `E:\Dev2\connor-stack\INVENTORY.md` | **COMPREHENSIVE MAP** of every system, repo, service, concept in the stack — read this second after HANDOFF. Includes OpenClaw collective, Hermes architecture, brain stack, pendant layer, A2A peers, frameworks. |
 | `E:\Dev2\CMO_Agent_System\docs\superpowers\specs\2026-05-22-connor-stack-design.md` | The locked spec — purpose, audience, architecture, success criteria |
 | `E:\Dev2\CMO_Agent_System\CLAUDE.md` | Frameworks, personas, channels, checklists, knowledge-base structure (source material for "marketer door" concept pages) |
 | `C:\Users\cgall\.claude\projects\E--Dev2-CMO-Agent-System\memory\` | Connor's persistent memory — preferences, project state, infra map, voice rules |
@@ -146,15 +147,16 @@ When you have a coherent design proposal, raise these with him before building f
 
 ## Suggested next steps (in order)
 
-1. **Read the voice anchor** — open `README.md`, `docs/philosophy.md`, `docs/tour.md`. Get the voice in your head.
-2. **Get Connor's call on the open questions above** — at minimum hosting + aesthetic, since they shape the build.
-3. **Sketch the CYO map** — list every HTML page that needs to exist, the branching structure, what each page demonstrates. One markdown table is enough.
-4. **Build the entry page (`index.html`)** as a single-page proof of concept first. Get Connor's reaction before generating the rest.
-5. **Fan out concept pages in parallel** once entry page is approved — subagent per page, each agent reads this HANDOFF + the spec + the approved entry page as voice/structure anchor.
-6. **Extract `agent-webhook-gateway`** into `E:\Dev2\agent-webhook-gateway\` as a side task while content is being built.
-7. **Write `setup-prompts/`** — the markdown prompts visitors paste into their own Claude. These are the "wrap them in a giant hug" pieces.
-8. **Write `links.md`** last, once every spoke has been confirmed real and reachable.
-9. **`gh repo create cgallic/connor-stack --public`** + push when content is solid.
+1. **Read `INVENTORY.md`** — comprehensive system map. Without this you'll under-scope.
+2. **Read the voice anchor** — open `README.md`, `docs/philosophy.md`, `docs/tour.md`. Get the voice in your head.
+3. **Get Connor's call on the open questions above** — at minimum hosting + aesthetic, since they shape the build.
+4. **Sketch the CYO map** — using INVENTORY as input, list every HTML page that needs to exist, branching structure, what each demonstrates. One markdown table is enough. Must cover the OpenClaw collective and the Hermes architecture, not just brain + marketing.
+5. **Build the entry page (`index.html`)** as a single-page proof of concept first. Get Connor's reaction before generating the rest.
+6. **Fan out concept pages in parallel** once entry page is approved — subagent per page, each agent reads HANDOFF + INVENTORY + the spec + the approved entry page as voice/structure anchor.
+7. **Extract `agent-webhook-gateway`** into `E:\Dev2\agent-webhook-gateway\` as a side task while content is being built.
+8. **Write `setup-prompts/`** — the markdown prompts visitors paste into their own Claude. These are the "wrap them in a giant hug" pieces.
+9. **Write `links.md`** last, once every spoke has been confirmed real and reachable.
+10. **`gh repo create cgallic/connor-stack --public`** + push when content is solid.
 
 ---
 
