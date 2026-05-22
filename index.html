@@ -6,8 +6,268 @@
   <title>connor-stack — Choose Your Own Adventure AI Portal</title>
   <meta name="description" content="An interactive portal showcasing Connor Gallic's personal AI stack. Explore composable agents, content quality loops, and custom setup prompts.">
   <link rel="stylesheet" href="index.css">
+  <style>
+    /* Homepage-specific styles for the interactive terminal */
+    .dashboard-section {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 2rem;
+      margin-bottom: 5rem;
+      animation: fadeIn 1s ease-out;
+    }
+
+    @media (max-width: 900px) {
+      .dashboard-section {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .home-terminal {
+      display: flex;
+      flex-direction: column;
+      height: 420px;
+    }
+
+    .home-terminal .terminal-body {
+      flex-grow: 1;
+      height: 340px;
+      overflow-y: auto;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      background: #060508;
+      padding: 1.25rem;
+      border-radius: 0 0 12px 12px;
+      line-height: 1.5;
+    }
+
+    .term-log-line {
+      margin-bottom: 0.5rem;
+      white-space: pre-wrap;
+    }
+
+    .term-prompt-line {
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
+
+    .term-success-line {
+      color: #22c55e;
+    }
+
+    .term-system-line {
+      color: var(--text-muted);
+    }
+
+    .term-selection-line {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .term-btn-row {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+
+    .term-interactive-btn {
+      background: #11101a;
+      border: 1px solid var(--card-border);
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all var(--transition-speed);
+    }
+
+    .term-interactive-btn:hover {
+      border-color: var(--accent-cyan);
+      color: var(--text-primary);
+      background: rgba(6, 182, 212, 0.05);
+    }
+
+    .cursor-blink {
+      display: inline-block;
+      width: 8px;
+      height: 14px;
+      background: var(--text-primary);
+      margin-left: 2px;
+      animation: cursorBlink 1s step-end infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes cursorBlink {
+      from, to { background-color: transparent }
+      50% { background-color: var(--text-primary) }
+    }
+
+    /* Live Stack Pings panel */
+    .status-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+    }
+
+    .status-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .status-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .status-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .status-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .status-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+    }
+
+    .status-name {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .status-indicator-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .status-text {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .status-text.online {
+      color: #22c55e;
+    }
+
+    .status-text.synced {
+      color: var(--accent-cyan);
+    }
+
+    /* Video section styling */
+    .video-showcase-inline {
+      border-top: 1px solid var(--card-border);
+      padding-top: 2rem;
+      margin-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .video-info-block {
+      flex-grow: 1;
+      min-width: 250px;
+    }
+
+    .video-title-mini {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .video-desc-mini {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      max-width: 450px;
+    }
+
+    .video-btn-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .play-btn-mini {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      border: none;
+      border-radius: 8px;
+      padding: 0.6rem 1.25rem;
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all var(--transition-speed);
+    }
+
+    .play-btn-mini:hover {
+      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .play-icon-mini {
+      width: 0;
+      height: 0;
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      border-left: 7px solid #ffffff;
+    }
+
+    /* Pathway link unlock overlay */
+    .glow-unlock-btn {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      color: #ffffff !important;
+      border: none;
+      box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+      animation: pulseGlowBtn 2s infinite;
+    }
+
+    @keyframes pulseGlowBtn {
+      0% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.5); }
+      70% { box-shadow: 0 0 0 10px rgba(168, 85, 247, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); }
+    }
+  </style>
 </head>
 <body>
+
+  <!-- Matrix Digital Rain Background Overlay -->
+  <div class="matrix-canvas-container" id="matrix-canvas-container">
+    <canvas id="matrix-rain-canvas"></canvas>
+  </div>
 
   <div class="layout-container">
     <!-- Navigation bar -->
@@ -18,6 +278,7 @@
       <nav class="nav-actions" role="navigation" aria-label="Main Navigation">
         <a href="philosophy.html" class="nav-link" id="nav-philosophy-link">Manifesto</a>
         <a href="tour.html" class="nav-link" id="nav-tour-link">Tour</a>
+        <a href="cmo-simulator.html" class="nav-link" id="nav-simulator-link">Simulator</a>
         <a href="spokes.html" class="nav-link" id="nav-spokes-link">Spokes</a>
         <button class="theme-toggle-btn" id="theme-toggle-button" aria-label="Toggle color theme" title="Toggle dark/light mode">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon">
@@ -43,16 +304,70 @@
         <p class="hero-subtitle">Not a framework. An opinionated stack of small, composable scripts I use every day — and the prompts you paste into your own Claude Code to finish the assembly.</p>
       </section>
 
-      <!-- Video walkthrough player placeholder -->
-      <section class="video-showcase" aria-label="Video Introduction">
-        <div class="video-wrapper">
-          <div class="video-placeholder" id="intro-video-container">
-            <h2 class="video-placeholder-title">A 3-minute tour of the stack</h2>
-            <p class="video-placeholder-desc">Connor walks through the core architecture, shows the tools in action, and explains how to drive the setup prompts locally.</p>
-            <button class="play-trigger" id="video-play-trigger" aria-label="Play introduction video">
-              <span class="play-icon"></span>
-              <span>Watch Video Walkthrough</span>
-            </button>
+      <!-- Active Dashboard: Onboarding Terminal + Stack Status -->
+      <section class="dashboard-section" aria-label="Interactive Command Dashboard">
+        <!-- Interactive Terminal -->
+        <div class="terminal-window home-terminal">
+          <div class="terminal-header">
+            <div class="terminal-dots">
+              <div class="terminal-dot red"></div>
+              <div class="terminal-dot yellow"></div>
+              <div class="terminal-dot green"></div>
+            </div>
+            <div class="terminal-title">connor-stack-cli (onboarding)</div>
+          </div>
+          <div class="terminal-body" id="term-onboarding-logs">
+            <div id="terminal-logs-content"></div>
+            <div class="terminal-input-container" id="terminal-input-row" style="display: none;">
+              <span class="term-prompt-line">$ </span>
+              <input type="text" class="terminal-text-input" id="terminal-text-input" autocomplete="off" placeholder="Type a command (e.g. help)...">
+            </div>
+          </div>
+        </div>
+
+        <!-- Stack Status & Video Link -->
+        <div class="status-panel">
+          <div class="status-header">
+            <h2 class="status-title">System Stack Status</h2>
+            <p class="status-desc">Active diagnostic pings representing Connor's always-on agent services.</p>
+          </div>
+
+          <div class="status-list">
+            <div class="status-item">
+              <span class="status-name">Hermes V Orchestrator</span>
+              <div class="status-indicator-group">
+                <span class="pulse-indicator"></span>
+                <span class="status-text online">Online</span>
+              </div>
+            </div>
+            <div class="status-item">
+              <span class="status-name">Beast Core Agent</span>
+              <div class="status-indicator-group">
+                <span class="pulse-indicator"></span>
+                <span class="status-text online">Online</span>
+              </div>
+            </div>
+            <div class="status-item">
+              <span class="status-name">Open-Brane events.db</span>
+              <div class="status-indicator-group">
+                <span class="pulse-indicator" style="background-color: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-cyan);"></span>
+                <span class="status-text synced">Synced</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Video introduction inline trigger -->
+          <div class="video-showcase-inline">
+            <div class="video-info-block">
+              <h3 class="video-title-mini">Video Walkthrough</h3>
+              <p class="video-desc-mini">Connor walks through the core architecture and shows the tools in action.</p>
+            </div>
+            <div class="video-btn-container" id="video-btn-wrapper">
+              <button class="play-btn-mini" id="video-play-trigger" aria-label="Watch video walkthrough">
+                <span class="play-icon-mini"></span>
+                <span>Watch Tour</span>
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -77,7 +392,7 @@
           <span class="door-meta">Marketers / Agency Owners</span>
           <h3 class="door-title">Copy the workflow</h3>
           <p class="door-desc">Get client folder structures, perception copywriting guides, content quality checking rules, and the actual .claude config templates I run on client projects.</p>
-          <span class="door-action">
+          <span class="door-action" id="marketer-action-span">
             <span>Explore Marketer Path</span>
             <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -97,7 +412,7 @@
           <span class="door-meta">Claude Code / Agent Builders</span>
           <h3 class="door-title">Build the machine</h3>
           <p class="door-desc">Master terminal slash commands, configure preflight hooks, orchestrate parallel subagents, and wire open-brane to paperboy's SQLite log database.</p>
-          <span class="door-action">
+          <span class="door-action" id="builder-action-span">
             <span>Explore Builder Path</span>
             <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -165,23 +480,509 @@
 
     function updateThemeIcon(theme) {
       const isDark = theme === 'dark';
-      // Change SVGs or icon states natively
       themeBtn.querySelector('.theme-icon').innerHTML = isDark 
         ? `<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M5 5l1.5 1.5"></path><path d="M17.5 17.5L19 19"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M5 19l1.5-1.5"></path><path d="M17.5 6.5L19 5"></path>`
         : `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
     }
 
-    // Video play trigger demo feedback (avoids broken page loads while video is empty)
+    // Web Audio Synthesizer Logic
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      return audioCtx;
+    }
+
+    function playTone(freqStart, freqEnd, duration, type = 'sine', volume = 0.05) {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        if (ctx.state === 'suspended') {
+          ctx.resume();
+        }
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.type = type;
+        osc.frequency.setValueAtTime(freqStart, ctx.currentTime);
+        if (freqEnd && freqEnd !== freqStart) {
+          osc.frequency.exponentialRampToValueAtTime(freqEnd, ctx.currentTime + duration);
+        }
+        
+        gain.gain.setValueAtTime(volume, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {
+        console.warn("Web Audio API not supported/blocked", e);
+      }
+    }
+
+    const playTick = () => playTone(1200, 1000, 0.015, 'triangle', 0.01);
+    const playSuccess = () => {
+      playTone(523.25, 523.25, 0.08, 'sine', 0.03);
+      setTimeout(() => playTone(659.25, 659.25, 0.08, 'sine', 0.03), 80);
+      setTimeout(() => playTone(783.99, 783.99, 0.15, 'sine', 0.03), 160);
+    };
+    const playChirp = () => playTone(800, 1600, 0.05, 'sine', 0.02);
+    const playLaser = () => playTone(2000, 150, 0.25, 'sawtooth', 0.015);
+    const playError = () => playTone(150, 120, 0.15, 'sawtooth', 0.03);
+    const playBoot = () => {
+      playTone(110, 220, 0.4, 'sine', 0.04);
+      setTimeout(() => playTone(165, 330, 0.4, 'sine', 0.03), 150);
+    };
+
+    function attachAudioFeedback() {
+      const elements = document.querySelectorAll('a, button, .term-interactive-btn');
+      elements.forEach(el => {
+        if (el.dataset.soundAttached) return;
+        el.dataset.soundAttached = "true";
+        
+        el.addEventListener('mouseenter', () => {
+          playTick();
+        });
+        el.addEventListener('click', () => {
+          if (el.classList.contains('glow-unlock-btn')) {
+            playSuccess();
+          } else if (el.id === 'theme-toggle-button') {
+            playChirp();
+          } else {
+            playTick();
+          }
+        });
+      });
+    }
+
+    // Video play trigger feedback
     const playTrigger = document.getElementById('video-play-trigger');
     playTrigger.addEventListener('click', () => {
-      const container = document.getElementById('intro-video-container');
-      container.innerHTML = `
-        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #000;">
-          <p style="color: var(--text-dark); font-family: var(--font-display); font-size: 1.1rem; font-weight: 500;">
-            Video walkthrough will be recorded and linked before final launch.
-          </p>
+      const wrapper = document.getElementById('video-btn-wrapper');
+      wrapper.innerHTML = `
+        <span style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 500;">
+          Video coming soon
+        </span>
+      `;
+    });
+
+    // Matrix Digital Rain Canvas Logic
+    let matrixInterval = null;
+    const canvas = document.getElementById('matrix-rain-canvas');
+    const ctx = canvas.getContext('2d');
+    const matrixContainer = document.getElementById('matrix-canvas-container');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    const alphabet = "0101010101ABCDEFXYZ";
+    const fontSize = 16;
+    let columns = Math.floor(canvas.width / fontSize);
+    let rainDrops = [];
+
+    function initRainDrops() {
+      columns = Math.floor(canvas.width / fontSize);
+      rainDrops = [];
+      for (let x = 0; x < columns; x++) {
+        rainDrops[x] = Math.random() * -100;
+      }
+    }
+
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(7, 6, 10, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = document.documentElement.style.colorScheme === 'light' ? 'rgba(6, 182, 212, 0.7)' : '#06b6d4';
+      ctx.font = fontSize + 'px monospace';
+
+      for (let i = 0; i < rainDrops.length; i++) {
+        const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+        ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+
+        if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          rainDrops[i] = 0;
+        }
+        rainDrops[i]++;
+      }
+    }
+
+    function toggleMatrix(forceState = null) {
+      const isActive = forceState !== null ? forceState : !matrixContainer.classList.contains('active');
+      if (isActive) {
+        matrixContainer.classList.add('active');
+        initRainDrops();
+        if (!matrixInterval) {
+          matrixInterval = setInterval(drawMatrix, 30);
+        }
+      } else {
+        matrixContainer.classList.remove('active');
+        if (matrixInterval) {
+          clearInterval(matrixInterval);
+          matrixInterval = null;
+        }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      return isActive;
+    }
+
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+      initRainDrops();
+    });
+    resizeCanvas();
+
+    // Onboarding Terminal Simulator Logic
+    const termBody = document.getElementById('term-onboarding-logs');
+    const termLogs = document.getElementById('terminal-logs-content');
+    const inputRow = document.getElementById('terminal-input-row');
+    const textInput = document.getElementById('terminal-text-input');
+    
+    const bootSequence = [
+      { text: "Initializing connor-stack-cli interactive shell...", type: "system", delay: 100 },
+      { text: "Scanning project directory structure...", type: "system", delay: 200 },
+      { text: "Checking repository linkages: 21 public spokes resolved.", type: "success", delay: 150 },
+      { text: "SQLite system events database (open-brane.db) active.", type: "success", delay: 100 },
+      { text: "Always-on peer orchestration loops synchronized.", type: "success", delay: 150 },
+      { text: "System diagnostic complete. Welcome explorer.", type: "system", delay: 100 },
+      { text: "Choose your path to prepare files and configuration rules:", type: "prompt", delay: 100 }
+    ];
+
+    function writeTermLine(text, type = "") {
+      const line = document.createElement('div');
+      line.className = 'term-log-line';
+      if (type === 'prompt') {
+        line.innerHTML = `<span class="term-prompt-line">$ </span>${text}`;
+      } else if (type === 'success') {
+        line.innerHTML = `<span style="color:#22c55e;">[OK]</span> ${text}`;
+      } else if (type === 'system') {
+        line.innerHTML = `<span style="color:#64748b;">[SYS]</span> ${text}`;
+      } else if (type === 'error') {
+        line.innerHTML = `<span style="color:#ef4444;">[ERR]</span> ${text}`;
+      } else {
+        line.textContent = text;
+      }
+      termLogs.appendChild(line);
+      termBody.scrollTop = termBody.scrollHeight;
+    }
+
+    let seqIndex = 0;
+    function runBootSequence() {
+      if (seqIndex === 0) {
+        playBoot();
+      }
+      if (seqIndex < bootSequence.length) {
+        const item = bootSequence[seqIndex];
+        writeTermLine(item.text, item.type);
+        seqIndex++;
+        setTimeout(runBootSequence, item.delay);
+      } else {
+        showSelectionButtons();
+      }
+    }
+
+    function showSelectionButtons() {
+      const actionRow = document.createElement('div');
+      actionRow.className = 'term-selection-line';
+      actionRow.innerHTML = `
+        <div style="font-family: var(--font-mono); font-size: 0.8rem; margin-bottom: 0.25rem;">Select archetype pathway:</div>
+        <div class="term-btn-row">
+          <button class="term-interactive-btn" onclick="selectPath('marketer')">[1] MARKETER</button>
+          <button class="term-interactive-btn" onclick="selectPath('builder')">[2] BUILDER</button>
+          <button class="term-interactive-btn" onclick="selectPath('manifesto')">[3] MANIFESTO</button>
         </div>
       `;
+      termLogs.appendChild(actionRow);
+      
+      // Reveal input prompt
+      inputRow.style.display = 'flex';
+      textInput.focus();
+      
+      termBody.scrollTop = termBody.scrollHeight;
+      attachAudioFeedback();
+      
+      // Listen to keyboard inputs for quick selection
+      window.addEventListener('keydown', handleKeySelection);
+    }
+
+    function handleKeySelection(e) {
+      // Ignore if user is typing in the command input box
+      if (document.activeElement === textInput) return;
+      
+      if (e.key === '1') {
+        window.removeEventListener('keydown', handleKeySelection);
+        selectPath('marketer');
+      } else if (e.key === '2') {
+        window.removeEventListener('keydown', handleKeySelection);
+        selectPath('builder');
+      } else if (e.key === '3') {
+        window.removeEventListener('keydown', handleKeySelection);
+        selectPath('manifesto');
+      }
+    }
+
+    window.selectPath = function(pathType) {
+      window.removeEventListener('keydown', handleKeySelection);
+
+      // Clean buttons row from view if present
+      const btnRow = termLogs.querySelector('.term-selection-line');
+      if (btnRow) {
+        btnRow.remove();
+      }
+
+      if (pathType === 'marketer') {
+        writeTermLine("boot-pathway --role marketer", "prompt");
+        writeTermLine("Pulling client directories templates from workspace...", "system");
+        setTimeout(() => {
+          writeTermLine("Loading content copy checkers & sliding audit scorecard...", "system");
+          setTimeout(() => {
+            writeTermLine("Ingesting Four U's rules guidelines...", "system");
+            setTimeout(() => {
+              writeTermLine("Pathway compiled successfully. Marketer link unlocked below.", "success");
+              playSuccess();
+              
+              // Highlight Marketer door card
+              const doorCard = document.getElementById('door-marketer-link');
+              const span = document.getElementById('marketer-action-span');
+              doorCard.style.borderColor = 'var(--accent-pink)';
+              doorCard.style.boxShadow = '0 0 25px rgba(236, 72, 153, 0.2)';
+              span.classList.add('glow-unlock-btn');
+              span.innerHTML = `<span>GO TO MARKETER PORTAL -></span>`;
+              
+              // Smooth scroll to card
+              doorCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 300);
+          }, 350);
+        }, 200);
+      } 
+      else if (pathType === 'builder') {
+        writeTermLine("boot-pathway --role builder", "prompt");
+        writeTermLine("Loading Claude Code configuration skills...", "system");
+        setTimeout(() => {
+          writeTermLine("Syncing open-brane event database logs loop...", "system");
+          setTimeout(() => {
+            writeTermLine("Importing AVP peer keys and preflight gates verification...", "system");
+            setTimeout(() => {
+              writeTermLine("Pathway compiled successfully. Builder link unlocked below.", "success");
+              playSuccess();
+              
+              // Highlight Builder door card
+              const doorCard = document.getElementById('door-builder-link');
+              const span = document.getElementById('builder-action-span');
+              doorCard.style.borderColor = 'var(--accent-cyan)';
+              doorCard.style.boxShadow = '0 0 25px rgba(6, 182, 212, 0.2)';
+              span.classList.add('glow-unlock-btn');
+              span.innerHTML = `<span>GO TO BUILDER PORTAL -></span>`;
+              
+              // Smooth scroll to card
+              doorCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 300);
+          }, 350);
+        }, 200);
+      } 
+      else if (pathType === 'manifesto') {
+        writeTermLine("read-docs --target manifesto", "prompt");
+        writeTermLine("Parsing hub and spoke design philosophies...", "system");
+        setTimeout(() => {
+          writeTermLine("Accessing pain-point thesis lists...", "system");
+          setTimeout(() => {
+            writeTermLine("Document read success. Redirecting to Manifesto...", "success");
+            playSuccess();
+            setTimeout(() => {
+              window.location.href = "philosophy.html";
+            }, 500);
+          }, 300);
+        }, 250);
+      }
+    };
+
+    // Command parser logic
+    let commandHistory = [];
+    let historyIndex = -1;
+
+    textInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const cmd = textInput.value.trim();
+        if (cmd) {
+          commandHistory.push(cmd);
+          historyIndex = commandHistory.length;
+          handleCommand(cmd);
+        }
+        textInput.value = '';
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (historyIndex > 0) {
+          historyIndex--;
+          textInput.value = commandHistory[historyIndex];
+        }
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (historyIndex < commandHistory.length - 1) {
+          historyIndex++;
+          textInput.value = commandHistory[historyIndex];
+        } else {
+          historyIndex = commandHistory.length;
+          textInput.value = '';
+        }
+      }
+    });
+
+    function handleCommand(cmdLine) {
+      writeTermLine(cmdLine, "prompt");
+      playChirp();
+
+      const parts = cmdLine.toLowerCase().split(' ');
+      const cmd = parts[0];
+      const arg = parts.slice(1).join(' ');
+
+      setTimeout(() => {
+        switch (cmd) {
+          case 'help':
+            writeTermLine("Available commands:", "system");
+            writeTermLine("  help            - Show this command reference list", "system");
+            writeTermLine("  ls              - List available directories and pages", "system");
+            writeTermLine("  cat [file]      - Print contents of specific static documents", "system");
+            writeTermLine("  ping            - Check status lag times of network nodes", "system");
+            writeTermLine("  beast           - Query the active Beast Core Agent state", "system");
+            writeTermLine("  matrix          - Toggle the digital code rain overlay", "system");
+            writeTermLine("  clear           - Wipe the terminal log lines from view", "system");
+            writeTermLine("  sound           - Toggle sound synthesizer feedback", "system");
+            writeTermLine("  1, 2, 3         - Load archetype pathways (marketer/builder/manifesto)", "system");
+            break;
+          case 'ls':
+            writeTermLine("Directory listing: cgallic/connor-stack", "system");
+            writeTermLine("  drwxr-xr-x   builder/        - Setup configurations and A2A scripts", "system");
+            writeTermLine("  drwxr-xr-x   marketer/       - Folder maps, briefs, and copywriting tools", "system");
+            writeTermLine("  -rw-r--r--   cmo-simulator.html", "system");
+            writeTermLine("  -rw-r--r--   philosophy.html", "system");
+            writeTermLine("  -rw-r--r--   spokes.html", "system");
+            writeTermLine("  -rw-r--r--   tour.html", "system");
+            break;
+          case 'cat':
+            if (!arg) {
+              writeTermLine("Error: cat command requires a file target argument.", "error");
+              playError();
+              break;
+            }
+            if (arg.includes('philosophy.html') || arg.includes('philosophy') || arg.includes('manifesto')) {
+              writeTermLine("Reading philosophy.html...", "system");
+              writeTermLine("connor-stack Manifesto:", "system");
+              writeTermLine("  AI should not be wrapped in bloated frameworks that break.", "system");
+              writeTermLine("  Instead, write small, composable scripts that do one thing", "system");
+              writeTermLine("  well, and configure them with user-driven setup prompts.", "system");
+              writeTermLine("  Keep raw files locally on disk, and verify outputs.", "system");
+            } else if (arg.includes('spokes.html') || arg.includes('spokes') || arg.includes('registry')) {
+              writeTermLine("Reading spokes.html...", "system");
+              writeTermLine("Spoke registry tracks 21 active modules covering memory,", "system");
+              writeTermLine("news discovery, video pipelines, pendants, and security.", "system");
+            } else if (arg.includes('cmo-simulator.html') || arg.includes('cmo') || arg.includes('simulator')) {
+              writeTermLine("Reading cmo-simulator.html...", "system");
+              writeTermLine("Interactive copywriter and QA auditor playground simulating", "system");
+              writeTermLine("Connor's multi-agent content generation and scoring loop.", "system");
+            } else if (arg.includes('tour.html') || arg.includes('tour')) {
+              writeTermLine("Reading tour.html...", "system");
+              writeTermLine("Walkthrough detailing local workspace directories, custom", "system");
+              writeTermLine("Claude Code skills, and decentralized dead-internet sandboxes.", "system");
+            } else {
+              writeTermLine(`Error: file '${arg}' not found or permission denied.`, "error");
+              playError();
+            }
+            break;
+          case 'ping':
+            writeTermLine("Resolving connection health metrics...", "system");
+            setTimeout(() => {
+              writeTermLine("Beast Core Agent (OpenClaw) -> [OK] 42ms", "success");
+              writeTermLine("Hermes V Orchestrator (Nous Search) -> [OK] 68ms", "success");
+              writeTermLine("events.db (open-brane) -> [OK] 12ms", "success");
+              playSuccess();
+            }, 200);
+            break;
+          case 'beast':
+            playLaser();
+            writeTermLine("  ____  _____    _    ____ _____ ", "success");
+            writeTermLine(" | __ )| ____|  / \\  / ___|_   _|", "success");
+            writeTermLine(" |  _ \\|  _|   / _ \\ \\___ \\ | |  ", "success");
+            writeTermLine(" | |_) | |___ / ___ \\ ___) || |  ", "success");
+            writeTermLine(" |____/|_____/_/   \\_\\____/ |_|  ", "success");
+            writeTermLine("Initializing Beast Core diagnostic shell...", "system");
+            setTimeout(() => {
+              writeTermLine("Checking environment: OpenClaw running as core harness.", "system");
+              writeTermLine("Neural links active: kai (CMO), hale (Editor), clive (Auditor), kodi (Publisher).", "system");
+              writeTermLine("Events logs parsed: 1,482 entries synchronized in open-brane.", "success");
+              writeTermLine("Beast Mode: STANDBY. Code modification permission granted.", "success");
+            }, 200);
+            break;
+          case 'matrix':
+            const active = toggleMatrix();
+            writeTermLine(`Matrix digital rain overlay: ${active ? 'ENABLED' : 'DISABLED'}`, "success");
+            break;
+          case 'clear':
+            termLogs.innerHTML = '';
+            break;
+          case 'sound':
+            soundEnabled = !soundEnabled;
+            writeTermLine(`Sound synthesizer audio feedback: ${soundEnabled ? 'ENABLED' : 'DISABLED'}`, "success");
+            if (soundEnabled) playSuccess();
+            break;
+          case '1':
+          case 'marketer':
+            selectPath('marketer');
+            break;
+          case '2':
+          case 'builder':
+            selectPath('builder');
+            break;
+          case '3':
+          case 'manifesto':
+            selectPath('manifesto');
+            break;
+          default:
+            writeTermLine(`Command '${cmd}' not recognized. Type 'help' for command reference.`, "error");
+            playError();
+        }
+        termBody.scrollTop = termBody.scrollHeight;
+      }, 100);
+    }
+
+    // Dynamic mouse-tracking coordinates listener & Audio feedback activation
+    document.addEventListener('DOMContentLoaded', () => {
+      runBootSequence();
+
+      // Global backdrop mouse glow
+      document.addEventListener('mousemove', (e) => {
+        const x = (e.clientX / window.innerWidth) * 100;
+        const y = (e.clientY / window.innerHeight) * 100;
+        document.body.style.setProperty('--mouse-x', `${x}%`);
+        document.body.style.setProperty('--mouse-y', `${y}%`);
+      });
+
+      // Card hover glows
+      const attachCardGlow = (card) => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          card.style.setProperty('--card-mouse-x', `${x}px`);
+          card.style.setProperty('--card-mouse-y', `${y}px`);
+        });
+      };
+
+      document.querySelectorAll('.door-card, .concept-card, .status-panel, .control-panel, .diagram-panel, .details-card, .info-card, .pipeline-panel, .spoke-card').forEach(attachCardGlow);
+      
+      // Audio feedbacks
+      attachAudioFeedback();
+      
+      // Re-observe dynamic additions
+      const observer = new MutationObserver(() => {
+        attachAudioFeedback();
+      });
+      observer.observe(termLogs, { childList: true });
     });
   </script>
 </body>
