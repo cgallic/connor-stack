@@ -7,6 +7,68 @@
   <meta name="description" content="Audit marketing campaigns against the Four U's framework. Compare raw fluff copy with punchy, audited results.">
   <link rel="stylesheet" href="../index.css">
   <style>
+    .why-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-top: 1rem;
+      margin-bottom: 2.5rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .why-section-title {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--text-primary) 50%, var(--accent-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .why-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      transition: all var(--transition-speed) var(--transition-bounce);
+    }
+
+    .why-card:hover {
+      border-color: rgba(236, 72, 153, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .why-card-title {
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .why-card-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
     .briefing-layout {
       display: grid;
       grid-template-columns: 1.1fr 1fr;
@@ -222,6 +284,47 @@
         <p style="margin-bottom: 2rem; max-width: 800px; color: var(--text-secondary);">
           Connor audits draft campaign assets against the Four U's parameters to weed out generic AI fluff. Adjust the parameters below to witness how scorecard logic flags and optimizations alter content grades.
         </p>
+      </section>
+
+      <!-- Why We Audit Briefs Section -->
+      <section class="why-section" aria-labelledby="why-heading">
+        <h2 class="why-section-title" id="why-heading">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-pink);"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          Why We Audit Marketing Briefs via the Four U's
+        </h2>
+        <div class="why-grid">
+          
+          <div class="why-card">
+            <h3 class="why-card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-pink);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              Filter Out Corporate Fluff
+            </h3>
+            <p class="why-card-desc">
+              AI models default to low-information corporate prose. The audit filter flags words like "seamless", "robust", or "leverage". This forces the copywriter agent to replace buzzwords with technical details.
+            </p>
+          </div>
+
+          <div class="why-card">
+            <h3 class="why-card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-pink);"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4l3 3"></path></svg>
+              Programmatic Quality Gates
+            </h3>
+            <p class="why-card-desc">
+              Setting quantitative scorecards (e.g. minimum 12/16) gives the AI agent a testable quality threshold. Fails trigger automated rewrite instructions, blocking substandard copy from reaching client review.
+            </p>
+          </div>
+
+          <div class="why-card">
+            <h3 class="why-card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-pink);"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+              Increase Information Gain
+            </h3>
+            <p class="why-card-desc">
+              Evaluating files for uniqueness and specificity forces the agent to use concrete database names (e.g. SQLite), library tools (e.g. Rhubarb), and exact metrics, producing high-impact, authentic assets.
+            </p>
+          </div>
+
+        </div>
       </section>
 
       <div class="briefing-layout">
