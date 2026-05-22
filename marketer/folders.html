@@ -7,6 +7,68 @@
   <meta name="description" content="Explore Connor Gallic's standardized client folder structures and copy the generator shell scripts.">
   <link rel="stylesheet" href="../index.css">
   <style>
+    .why-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-top: 1rem;
+      margin-bottom: 2.5rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .why-section-title {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--text-primary) 50%, var(--accent-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .why-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      transition: all var(--transition-speed) var(--transition-bounce);
+    }
+
+    .why-card:hover {
+      border-color: rgba(236, 72, 153, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .why-card-title {
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .why-card-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
     .folders-layout {
       display: grid;
       grid-template-columns: 1.1fr 1fr;
@@ -236,6 +298,67 @@
         </p>
       </section>
 
+      <!-- Why We Structure for Agents Section -->
+      <section class="why-section" aria-labelledby="why-heading">
+        <h2 class="why-section-title" id="why-heading">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-pink);"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          Why We Structure Client Workspaces for AI Agents
+        </h2>
+        <div class="why-grid">
+          
+          <div class="why-card">
+            <h3 class="why-card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-pink);"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              Prevent Context Leakage
+            </h3>
+            <p class="why-card-desc">
+              Bounding agent workspace contexts to <code>clients/{client_name}/</code> subdirectories prevents the agent from reading other client folders. This eliminates cross-account data exposure and brand styling leakage.
+            </p>
+          </div>
+
+          <div class="why-card">
+            <h3 class="why-card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-pink);"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+              Deterministic Paths
+            </h3>
+            <p class="why-card-desc">
+              Standardizing paths (e.g., <code>outputs/ads/</code>) ensures CLI scripts run relative to predictable locations. AI agents lack human intuition; rigid structures prevent script execution and path navigation errors.
+            </p>
+          </div>
+
+          <div class="why-card">
+            <h3 class="why-card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-pink);"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+              No Self-Reference Loops
+            </h3>
+            <p class="why-card-desc">
+              Separating static inputs (<code>knowledge/</code>, <code>leads/</code>) from generated assets (<code>outputs/</code>) keeps guidelines clean. This prevents the agent from reading its own draft outputs as rules, stopping self-reference loops.
+            </p>
+          </div>
+
+          <div class="why-card">
+            <h3 class="why-card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-pink);"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+              Credential Isolation
+            </h3>
+            <p class="why-card-desc">
+              Private API tokens belong in a local <code>.env</code> file inside <code>scripts/analytics/</code>. By adding it to <code>.gitignore</code>, the AI agent is physically blocked from staging or committing secrets to git.
+            </p>
+          </div>
+
+          <div class="why-card">
+            <h3 class="why-card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-pink);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              CLAUDE.md Instruction Boundaries
+            </h3>
+            <p class="why-card-desc">
+              Placing a client-specific <code>CLAUDE.md</code> at the client root loads custom run commands and instructions. The local Claude Code agent parses this automatically on boot to establish contextual bounds.
+            </p>
+          </div>
+
+        </div>
+      </section>
+
       <div class="folders-layout">
         <!-- Interactive Tree Panel -->
         <div class="tree-panel">
@@ -243,63 +366,91 @@
           
           <div class="tree-root">
             <div class="tree-label selected" data-node="root">
-              <span class="tree-arrow">▼</span> 📁 clients/
+              <span class="tree-arrow">▼</span>
+              <svg class="tree-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-pink); margin-right: 2px; vertical-align: middle;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+              <span>clients/</span>
             </div>
             
             <div class="tree-children" id="children-root">
               <div class="tree-node">
                 <div class="tree-label" data-node="client-name">
-                  <span class="tree-arrow">▼</span> 📁 {client_name}/
+                  <span class="tree-arrow">▼</span>
+                  <svg class="tree-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-pink); margin-right: 2px; vertical-align: middle;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                  <span>{client_name}/</span>
                 </div>
                 
                 <div class="tree-children" id="children-client">
-                  <!-- briefs -->
+                  <!-- outputs -->
                   <div class="tree-node">
-                    <div class="tree-label" data-node="briefs">
-                      <span class="tree-arrow">▼</span> 📁 briefs/
+                    <div class="tree-label" data-node="outputs">
+                      <span class="tree-arrow">▼</span>
+                      <svg class="tree-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-pink); margin-right: 2px; vertical-align: middle;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                      <span>outputs/</span>
                     </div>
-                    <div class="tree-children" id="children-briefs">
-                      <div class="tree-node"><div class="tree-label file" data-node="brief-txt">📄 q3_campaign.txt</div></div>
+                    <div class="tree-children" id="children-outputs">
+                      <div class="tree-node"><div class="tree-label file" data-node="outputs-ads"><svg class="tree-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); margin-right: 2px; vertical-align: middle;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>ads/</div></div>
+                      <div class="tree-node"><div class="tree-label file" data-node="outputs-blog"><svg class="tree-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); margin-right: 2px; vertical-align: middle;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>blog-posts/</div></div>
+                      <div class="tree-node"><div class="tree-label file" data-node="outputs-directory"><svg class="tree-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); margin-right: 2px; vertical-align: middle;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>directory-listings/</div></div>
+                      <div class="tree-node"><div class="tree-label file" data-node="outputs-email"><svg class="tree-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); margin-right: 2px; vertical-align: middle;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>email-copy/</div></div>
+                      <div class="tree-node"><div class="tree-label file" data-node="outputs-press"><svg class="tree-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); margin-right: 2px; vertical-align: middle;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>press-releases/</div></div>
+                      <div class="tree-node"><div class="tree-label file" data-node="outputs-prompts"><svg class="tree-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); margin-right: 2px; vertical-align: middle;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>prompts/</div></div>
+                      <div class="tree-node"><div class="tree-label file" data-node="outputs-social"><svg class="tree-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); margin-right: 2px; vertical-align: middle;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>social/</div></div>
                     </div>
                   </div>
 
-                  <!-- drafts -->
+                  <!-- knowledge -->
                   <div class="tree-node">
-                    <div class="tree-label" data-node="drafts">
-                      <span class="tree-arrow">▼</span> 📁 drafts/
-                    </div>
-                    <div class="tree-children" id="children-drafts">
-                      <div class="tree-node"><div class="tree-label file" data-node="draft-txt">📄 ralph_draft_v1.txt</div></div>
+                    <div class="tree-label file" data-node="knowledge">
+                      <svg class="tree-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-pink); margin-right: 2px; vertical-align: middle;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                      <span>knowledge/</span>
                     </div>
                   </div>
 
-                  <!-- final -->
+                  <!-- leads -->
                   <div class="tree-node">
-                    <div class="tree-label" data-node="final">
-                      <span class="tree-arrow">▼</span> 📁 final/
-                    </div>
-                    <div class="tree-children" id="children-final">
-                      <div class="tree-node"><div class="tree-label file" data-node="final-html">📄 campaign_mock.html</div></div>
+                    <div class="tree-label file" data-node="leads">
+                      <svg class="tree-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-pink); margin-right: 2px; vertical-align: middle;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                      <span>leads/</span>
                     </div>
                   </div>
 
-                  <!-- configs -->
+                  <!-- scripts -->
                   <div class="tree-node">
-                    <div class="tree-label" data-node="configs">
-                      <span class="tree-arrow">▼</span> 📁 configs/
+                    <div class="tree-label" data-node="scripts">
+                      <span class="tree-arrow">▼</span>
+                      <svg class="tree-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-pink); margin-right: 2px; vertical-align: middle;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                      <span>scripts/</span>
                     </div>
-                    <div class="tree-children" id="children-configs">
-                      <div class="tree-node"><div class="tree-label file" data-node="claude-json">📄 .claude.json</div></div>
+                    <div class="tree-children" id="children-scripts">
+                      <div class="tree-node">
+                        <div class="tree-label" data-node="scripts-analytics">
+                          <span class="tree-arrow">▼</span>
+                          <svg class="tree-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-pink); margin-right: 2px; vertical-align: middle;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                          <span>analytics/</span>
+                        </div>
+                        <div class="tree-children" id="children-analytics">
+                          <div class="tree-node"><div class="tree-label file" data-node="scripts-cli"><svg class="tree-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); margin-right: 2px; vertical-align: middle;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>cli.py</div></div>
+                          <div class="tree-node"><div class="tree-label file" data-node="scripts-config"><svg class="tree-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); margin-right: 2px; vertical-align: middle;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>config.py</div></div>
+                          <div class="tree-node"><div class="tree-label file" data-node="scripts-client-analytics"><svg class="tree-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); margin-right: 2px; vertical-align: middle;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>{client}_analytics.py</div></div>
+                          <div class="tree-node"><div class="tree-label file" data-node="scripts-env"><svg class="tree-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); margin-right: 2px; vertical-align: middle;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>.env</div></div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  <!-- logs -->
+                  <!-- assets -->
                   <div class="tree-node">
-                    <div class="tree-label" data-node="logs">
-                      <span class="tree-arrow">▼</span> 📁 logs/
+                    <div class="tree-label file" data-node="assets">
+                      <svg class="tree-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-pink); margin-right: 2px; vertical-align: middle;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                      <span>assets/</span>
                     </div>
-                    <div class="tree-children" id="children-logs">
-                      <div class="tree-node"><div class="tree-label file" data-node="logs-db">📄 session_events.db</div></div>
+                  </div>
+
+                  <!-- CLAUDE.md -->
+                  <div class="tree-node">
+                    <div class="tree-label file" data-node="claude-md">
+                      <svg class="tree-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); margin-right: 2px; vertical-align: middle;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                      <span>CLAUDE.md</span>
                     </div>
                   </div>
                 </div>
@@ -326,7 +477,7 @@
                 <span class="script-title">Setup Script</span>
                 <button class="copy-btn" id="btn-copy-script">Copy</button>
               </div>
-              <pre class="script-code" id="script-block">mkdir -p clients/{client_name}/{briefs,drafts,final,configs,logs}</pre>
+              <pre class="script-code" id="script-block">mkdir -p clients/{client_name}/{outputs/{ads,blog-posts,directory-listings,email-copy,press-releases,prompts,social},knowledge,leads,scripts/analytics,assets}</pre>
             </div>
           </div>
         </div>
@@ -376,98 +527,164 @@
         title: "clients/",
         desc: "The base directories mapping individual client accounts. Modular isolation ensures that your running agent sessions only read and write data specific to the current client project target.",
         list: [
-          "<strong>Isolated Access:</strong> Prevent LLM context leakage across accounts.",
+          "<strong>Security Isolation:</strong> Prevents LLM context leakage across accounts.",
           "<strong>Organized Setup:</strong> Easy to script folder creations when onboarding new client projects."
         ],
         script: "mkdir -p clients/"
       },
       'client-name': {
         title: "{client_name}/",
-        desc: "The container directory for an individual client workspace. Integrates scripts, campaign schedules, and output files in one namespace.",
+        desc: "The container directory for an individual client workspace. This directory acts as the strict contextual boundary for running AI agents.",
         list: [
-          "<strong>Scope boundary:</strong> Keep configurations specific to this brand's rules."
+          "<strong>Context Isolation (Why):</strong> Restricting the agent's active workspace session to a specific clients/{client_name}/ folder stops proprietary rules, style guides, or API configurations of one client from bleeding into the assets of another.",
+          "<strong>Targeted Execution:</strong> Keeps commands and file updates constrained inside the customer namespace."
         ],
-        script: "mkdir -p clients/{client_name}/{briefs,drafts,final,configs,logs}"
+        script: "mkdir -p clients/{client_name}/{outputs/{ads,blog-posts,directory-listings,email-copy,press-releases,prompts,social},knowledge,leads,scripts/analytics,assets}"
       },
-      briefs: {
-        title: "clients/{client_name}/briefs/",
-        desc: "Stores campaign goals, specs, and raw notes provided by the client. These files are read by the copywriter agent.",
+      outputs: {
+        title: "clients/{client_name}/outputs/",
+        desc: "The dedicated folder where AI agents are strictly instructed to write all generated marketing deliverables. Separated cleanly by media channel.",
         list: [
-          "<strong>Raw Input:</strong> Never modify these files. Keep them as the immutable source of truth."
+          "<strong>Predictable Agent Paths (Why):</strong> Standardized subfolders allow script pipelines and LLM agents to locate and write deliverables deterministically, avoiding navigation drift.",
+          "<strong>Self-Reference Prevention (Why):</strong> Isolating outputs from input parameters prevents agents from reading their own half-finished output files as instructions on subsequent runs."
         ],
-        script: "mkdir -p clients/{client_name}/briefs"
+        script: "mkdir -p clients/{client_name}/outputs/{ads,blog-posts,directory-listings,email-copy,press-releases,prompts,social}"
       },
-      'brief-txt': {
-        title: "q3_campaign.txt",
-        desc: "A raw campaign brief. Contains core product features, targeting details, and copy requests.",
+      'outputs-ads': {
+        title: "outputs/ads/",
+        desc: "AI-generated Meta/Facebook and Google ad copy, headlines, and creative assets briefs.",
         list: [
-          "<strong>Mutable:</strong> Edit this file to guide copy generation."
+          "<strong>Standardized Location:</strong> Content copywriters write ad copy variations directly to this subdirectory."
         ],
-        script: "cat << 'EOF' > clients/{client_name}/briefs/q3_campaign.txt\nProduct: Mascot Lipsync\nEOF"
+        script: "mkdir -p clients/{client_name}/outputs/ads"
       },
-      drafts: {
-        title: "clients/{client_name}/drafts/",
-        desc: "Holds output drafts written by copywriter agents before they have passed QA checks or optimization steps.",
+      'outputs-blog': {
+        title: "outputs/blog-posts/",
+        desc: "AI-generated blog drafts, SEO articles, and page layouts adhering to Algorithmic Authorship rules.",
         list: [
-          "<strong>Working drafts:</strong> Evaluated here by quality rating scripts."
+          "<strong>Standardized Location:</strong> Long-form content pieces are placed here for editorial review."
         ],
-        script: "mkdir -p clients/{client_name}/drafts"
+        script: "mkdir -p clients/{client_name}/outputs/blog-posts"
       },
-      'ralph-txt': {
-        title: "ralph_draft_v1.txt",
-        desc: "The initial campaign copy draft generated by the Ralph Wiggum copywriter skill.",
+      'outputs-directory': {
+        title: "outputs/directory-listings/",
+        desc: "Localized descriptions, category mapping, and business details for search citation directories.",
         list: [
-          "<strong>Pending approval:</strong> Waiting for QA audit scorecard."
+          "<strong>Standardized Location:</strong> Citation tools parse directory submission payloads from this folder."
         ],
-        script: "# Generated by running copywriter agent"
+        script: "mkdir -p clients/{client_name}/outputs/directory-listings"
       },
-      final: {
-        title: "clients/{client_name}/final/",
-        desc: "The directory containing fully validated, optimized, and formatted output campaign files ready for distribution.",
+      'outputs-email': {
+        title: "outputs/email-copy/",
+        desc: "AI-generated cold outreach sequences, email newsletter drafts, and automated drip flows.",
         list: [
-          "<strong>Deliverables:</strong> Finished HTML mockup wireframes and post copy."
+          "<strong>Standardized Location:</strong> Active CRM pipelines import formatted campaign copy from this folder."
         ],
-        script: "mkdir -p clients/{client_name}/final"
+        script: "mkdir -p clients/{client_name}/outputs/email-copy"
       },
-      'final-html': {
-        title: "campaign_mock.html",
-        desc: "A fully styled landing page wireframe delivered by the harness as a client preview.",
+      'outputs-press': {
+        title: "outputs/press-releases/",
+        desc: "Press release announcements and formatted media hook letters.",
         list: [
-          "<strong>Output:</strong> Packaged index.html with inline vanilla CSS."
+          "<strong>Standardized Location:</strong> PR dispatch tools pull press releases from here."
         ],
-        script: "# Packaged campaign asset"
+        script: "mkdir -p clients/{client_name}/outputs/press-releases"
       },
-      configs: {
-        title: "clients/{client_name}/configs/",
-        desc: "Holds localized rule overrides, key terms lists, and tone-of-voice settings files.",
+      'outputs-prompts': {
+        title: "outputs/prompts/",
+        desc: "Client-specific system prompts, custom instructions, and evaluation guidelines overrides.",
         list: [
-          "<strong>Settings override:</strong> Inject custom guidelines here to override default stack rules."
+          "<strong>Standardized Location:</strong> Local agent nodes look for customized system prompt overrides here."
         ],
-        script: "mkdir -p clients/{client_name}/configs"
+        script: "mkdir -p clients/{client_name}/outputs/prompts"
       },
-      'claude-json': {
-        title: ".claude.json",
-        desc: "Config file overriding system paths and specifying custom system rules for local sessions.",
+      'outputs-social': {
+        title: "outputs/social/",
+        desc: "Twitter/X threads, LinkedIn posts, and short video transcription caption copy.",
         list: [
-          "<strong>System parameters:</strong> Path variables mapping database triggers."
+          "<strong>Standardized Location:</strong> Social media publishing managers fetch final posts from here."
         ],
-        script: "cat << 'EOF' > clients/{client_name}/configs/.claude.json\n{\n  \"skillsPath\": \"../../skills\"\n}\nEOF"
+        script: "mkdir -p clients/{client_name}/outputs/social"
       },
-      logs: {
-        title: "clients/{client_name}/logs/",
-        desc: "Houses execution logs and database events showing exactly how and when each agent step ran.",
+      knowledge: {
+        title: "clients/{client_name}/knowledge/",
+        desc: "Human-written SOPs, tone-of-voice booklets, core messaging documents, and client guidelines. Ingested as immutable context.",
         list: [
-          "<strong>Traceability:</strong> Know why a copy draft changed and which parameters scored it."
+          "<strong>Input/Output Separation (Why):</strong> Keeping source specifications separated from the agent's outputs folder ensures instructions remain clean, static, and un-polluted by intermediate drafts."
         ],
-        script: "mkdir -p clients/{client_name}/logs"
+        script: "mkdir -p clients/{client_name}/knowledge"
       },
-      'logs-db': {
-        title: "session_events.db",
-        desc: "A localized SQLite database recording events and scorecards generated during campaigns.",
+      leads: {
+        title: "clients/{client_name}/leads/",
+        desc: "Prospect spreadsheet tables, scoring data sheets, and custom lead CSV files.",
         list: [
-          "<strong>Chronological logs:</strong> Keep history logs specific to this client."
+          "<strong>Data Separation:</strong> Ingest directories for leads to keep tracking metrics isolated from copy production directories."
         ],
-        script: "sqlite3 clients/{client_name}/logs/session_events.db \"CREATE TABLE events ...\""
+        script: "mkdir -p clients/{client_name}/leads"
+      },
+      scripts: {
+        title: "clients/{client_name}/scripts/",
+        desc: "Client-specific scripting logic, local APIs adapters, and customized database operations scripts.",
+        list: [
+          "<strong>Tooling Isolation:</strong> Separates client automation adapters from the global codebase root."
+        ],
+        script: "mkdir -p clients/{client_name}/scripts"
+      },
+      'scripts-analytics': {
+        title: "scripts/analytics/",
+        desc: "Analytics scripting files handling reporting queries for Supabase databases, GA4 search console, calls, and Meta ads.",
+        list: [
+          "<strong>Tracking Module:</strong> Local cli.py reports parse analytics statistics specific to this client's tag identifiers."
+        ],
+        script: "mkdir -p clients/{client_name}/scripts/analytics"
+      },
+      'scripts-cli': {
+        title: "cli.py",
+        desc: "Command-line interface file executing reports, fetching lead scorecards, and pulling GA4 statistics.",
+        list: [
+          "<strong>Usage:</strong> Run python cli.py overview or python cli.py leads to output local dashboards."
+        ],
+        script: "# Run cli commands:\npython clients/{client_name}/scripts/analytics/cli.py overview"
+      },
+      'scripts-config': {
+        title: "config.py",
+        desc: "Environment configuration script mapping and loading environment credentials.",
+        list: [
+          "<strong>Setup:</strong> Reads Supabase URLs and API keys, verifying authentication tags before scripting queries."
+        ],
+        script: "# Loads credentials safely into analytical script runs"
+      },
+      'scripts-client-analytics': {
+        title: "{client}_analytics.py",
+        desc: "The primary client-specific analytics class querying database records and API feeds.",
+        list: [
+          "<strong>Reporting Core:</strong> Aggregates Google Analytics and Facebook Ads results."
+        ],
+        script: "# Local python analytics library"
+      },
+      'scripts-env': {
+        title: ".env",
+        desc: "Local configuration file storing private API keys, Supabase credentials, and Meta tokens. Added to .gitignore.",
+        list: [
+          "<strong>Credential Isolation (Why):</strong> Storing API keys in scripts/analytics/.env keeps secrets segregated. By gitignoring it, the AI agent is physically blocked from committing client secret keys to the public repository."
+        ],
+        script: "cat << 'EOF' > clients/{client_name}/scripts/analytics/.env\n{CLIENT}_SUPABASE_URL=https://xxx.supabase.co\n{CLIENT}_SUPABASE_KEY=your-supabase-key\nEOF"
+      },
+      assets: {
+        title: "clients/{client_name}/assets/",
+        desc: "Static PDFs, logos, reference diagrams, and raw resources uploaded by the client.",
+        list: [
+          "<strong>Immutable Reference:</strong> Static assets folder for loading media and PDFs. Read-only."
+        ],
+        script: "mkdir -p clients/{client_name}/assets"
+      },
+      'claude-md': {
+        title: "CLAUDE.md",
+        desc: "Client-specific runbook and rules file parsed by Claude Code when initializing in this directory.",
+        list: [
+          "<strong>Instruction Override (Why):</strong> Putting CLAUDE.md in the client folder gives the agent localized instructions and custom terminal commands (CLI options, build scripts, custom parameters) specific to this workspace context."
+        ],
+        script: "cat << 'EOF' > clients/{client_name}/CLAUDE.md\n# Client Instructions\n- Run python cli.py for reports\nEOF"
       }
     };
 

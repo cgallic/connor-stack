@@ -11,15 +11,36 @@ Create a modular client directory structure under a root directory of the user's
 ```text
 clients/
 └── {client_name}/
-    ├── briefs/
-    │   └── [campaign-briefs-here].md
-    ├── drafts/
-    │   └── [raw-copy-here].txt
+    ├── outputs/
+    │   ├── ads/
+    │   ├── blog-posts/
+    │   ├── directory-listings/
+    │   ├── email-copy/
+    │   ├── press-releases/
+    │   ├── prompts/
+    │   └── social/
+    ├── knowledge/
+    │   └── [immutable-SOPs-and-client-guidelines].md
+    ├── leads/
+    │   └── [lead-lists-and-CSV-spreadsheets].csv
+    ├── scripts/
+    │   └── analytics/
+    │       ├── cli.py
+    │       ├── config.py
+    │       ├── {client}_analytics.py
+    │       └── .env
     ├── assets/
-    │   └── [images-videos-logos-here]
-    └── mockups/
-        └── [html-visualizations-here].html
+    │   └── [static-logos-PDFs-and-images]
+    └── CLAUDE.md
 ```
+
+### Agent Workspace Rationales (The "Why")
+When explaining this workspace setup to the user, you must clarify the direct technical reasons why we structure directories this way for AI agents:
+1. **Prevent Context Leakage (Security)**: Restricting an agent session's workspace path specifically to `clients/{client_name}/` ensures it never reads or writes to other client folders, preventing brand style or API key leakage.
+2. **Deterministic Agent Paths (Predictability)**: AI agents lack human intuition to dynamically discover files. Storing campaign assets in predictable directories like `outputs/ads/` allows scripts and API routines to run reliably.
+3. **No Self-Reference Loops (Data Flow)**: Separating static reference guides (`knowledge/`, `leads/`) from generated assets (`outputs/`) keeps client instructions static and unpolluted. This stops the agent from reading its own half-finished drafts as rules.
+4. **Credential Isolation (Safety)**: API keys inside `scripts/analytics/.env` must never be staged. Adding `.env` to `.gitignore` ensures the agent is physically prevented from committing secrets.
+5. **Instruction Boundaries (Autonomy)**: Placing a client-specific `CLAUDE.md` at the directory root provides localized build commands and custom rules that the agent parses automatically upon initialization.
 
 Auto-generate a bash script or Python file for the user to run to initialize a new client structure.
 

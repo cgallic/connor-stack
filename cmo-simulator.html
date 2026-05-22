@@ -557,7 +557,7 @@
             <div class="graph-node" id="node-1" data-step="1">
               <div class="node-num">1</div>
               <div class="node-info">
-                <div class="node-title">Copywriter Agent (Ralph)</div>
+                <div class="node-title">Copywriter Agent (Kai)</div>
                 <div class="node-desc">Writes punchy, opinionated drafts based on the brief.</div>
               </div>
               <span class="node-badge">Drafting</span>
@@ -642,7 +642,7 @@
         <pre class="prompt-code-block" id="prompt-block">I need to run the CMO Harness pipeline.
 1. Load project memory from ~/.claude/projects/connor-stack/memory/
 2. Ingest the campaign specs from the active file
-3. Run the copywriter skill using the Ralph Wiggum persona settings
+3. Run the copywriter skill using the Kai persona settings
 4. Run the QA Auditor tool and calculate the Four U's scorecard
 5. Format the final output as a responsive HTML artifact file and save it to templates/html-artifacts/</pre>
       </section>
@@ -860,16 +860,16 @@
       const campaign = briefTemplates[selectedCampaign];
 
       if (step === 1) {
-        // Copywriter Agent (Ralph Wiggum)
+        // Copywriter Agent (Kai)
         workspaceStatus.textContent = 'DRAFTING';
         logToTerminal('claude --skill write_draft --brief "E:/Dev2/connor-stack/workspace/brief.txt"', 'term-prompt');
-        logToTerminal('[Copywriter] Ingested raw brief. Generating copy assets using Ralph Wiggum rules.');
+        logToTerminal('[Copywriter] Ingested raw brief. Generating copy assets using Kai CMO Harness rules.');
         logToTerminal('[Copywriter] Rules check: no emojis, no rhetorical setup-payoff loops.');
         logToTerminal('[Copywriter] Completed initial draft.', 'term-success');
 
         workspaceView.innerHTML = `
           <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px;">
-            <h4 style="font-family: var(--font-display); margin-bottom: 0.5rem; color: var(--accent-pink);">Ralph Wiggum Draft</h4>
+            <h4 style="font-family: var(--font-display); margin-bottom: 0.5rem; color: var(--accent-pink);">Kai Draft</h4>
             <p style="font-size: 0.9rem; font-style: italic; color: var(--text-primary); border-left: 2px solid var(--accent-pink); padding-left: 1rem; margin: 1rem 0;">
               "${campaign.copywriter}"
             </p>
