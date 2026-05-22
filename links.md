@@ -24,3 +24,8 @@ For the interactive tour, simulators, and guides, visit the live portal at [cgal
 | **mdi-mcp-server** | Community | Model Context Protocol server exposing MDI sandbox tools directly to terminal assistants. | [cgallic/mdi-mcp-server](https://github.com/cgallic/mdi-mcp-server) |
 | **awesome-meetkai** | Community | Curated list of OpenClaw configurations, custom skills, and deployment configurations. | [cgallic/awesome-meetkai](https://github.com/cgallic/awesome-meetkai) |
 | **wake-up-skill** | Community | ClawdHub skill checking background daemon loops and firing notifications for offline systems. | [cgallic/wake-up-skill](https://github.com/cgallic/wake-up-skill) |
+| **mdi-oracle-solana** | Community | Collective Intelligence Oracle on Solana connecting 175 autonomous agents to provide verifiable on-chain answers. | [cgallic/mdi-oracle-solana](https://github.com/cgallic/mdi-oracle-solana) |
+| **snappedai** | Community | Autonomous agent infrastructure for the SNAP AI interactive workspace and utility layers. | [cgallic/snappedai](https://github.com/cgallic/snappedai) |
+| **saltyfacts** | Community | One-page affiliate lander showing simple static marketing deployment integrations. | [cgallic/saltyfacts](https://github.com/cgallic/saltyfacts) |
+| **commentconnor** | Community | TikTok comment scraper and email conversion lander showcasing simple user acquisition hooks. | [cgallic/commentconnor](https://github.com/cgallic/commentconnor) |
+| **MyMoonbagsPublic** | Community | Headless Shopify front-end integrated with Web3 utility scripts and decentralized checkouts. | [cgallic/MyMoonbagsPublic](https://github.com/cgallic/MyMoonbagsPublic) |
