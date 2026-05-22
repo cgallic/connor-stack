@@ -223,6 +223,68 @@
       overflow-y: auto;
       line-height: 1.5;
     }
+
+    .why-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-top: 1rem;
+      margin-bottom: 2.5rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .why-section-title {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--text-primary) 50%, var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .why-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      transition: all var(--transition-speed) var(--transition-bounce);
+    }
+
+    .why-card:hover {
+      border-color: rgba(6, 182, 212, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .why-card-title {
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .why-card-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
   </style>
 </head>
 <body>
@@ -262,6 +324,69 @@
         <p style="margin-bottom: 2rem; max-width: 800px; color: var(--text-secondary);">
           Understand subagent dispatch frameworks. Execute linear workflows in a single session to prevent drift, or launch isolated parallel subagents for independent tasks.
         </p>
+      </section>
+
+      <!-- Why We Limit Parallel Subagents to Independent Jobs Panel -->
+      <section class="why-section" aria-labelledby="why-orchestration-title">
+        <h2 class="why-section-title" id="why-orchestration-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+          Why We Limit Parallel Subagents to Independent Jobs
+        </h2>
+        <div class="why-grid">
+          <div class="why-card">
+            <h3 class="why-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="9" y1="3" x2="9" y2="21"></line>
+              </svg>
+              Prevents Context Fragmentation
+            </h3>
+            <p class="why-card-desc">
+              Confining subagents to isolated workspaces with narrow target paths keeps prompts small, preventing context-drift and irrelevant tool calls.
+            </p>
+          </div>
+          <div class="why-card">
+            <h3 class="why-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);">
+                <line x1="18" y1="2" x2="22" y2="6"></line>
+                <path d="M7.5 11.5L2 6l5.5-5.5"></path>
+                <path d="M16.5 12.5L22 18l-5.5 5.5"></path>
+                <line x1="2" y1="18" x2="6" y2="22"></line>
+              </svg>
+              Eliminates Stitching Deadlocks
+            </h3>
+            <p class="why-card-desc">
+              Avoiding shared-state editing locks avoids merge conflicts, keeping the codebase buildable without complex reconciliation engines.
+            </p>
+          </div>
+          <div class="why-card">
+            <h3 class="why-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              Direct Code Symbol Visibility
+            </h3>
+            <p class="why-card-desc">
+              A single chronological path for heavy file refactoring keeps all symbols and edits visible to the master thread for simple debugging.
+            </p>
+          </div>
+          <div class="why-card">
+            <h3 class="why-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+              </svg>
+              Decoupled Monitoring Metrics
+            </h3>
+            <p class="why-card-desc">
+              Running subagents asynchronously under thin wrappers lets external observers monitor status codes and audit resources without halting coding pipelines.
+            </p>
+          </div>
+        </div>
       </section>
 
       <div class="orch-layout">

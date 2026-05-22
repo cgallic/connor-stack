@@ -206,6 +206,68 @@
       from, to { background-color: transparent }
       50% { background-color: var(--accent-cyan) }
     }
+
+    .why-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-top: 1rem;
+      margin-bottom: 2.5rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .why-section-title {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--text-primary) 50%, var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .why-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      transition: all var(--transition-speed) var(--transition-bounce);
+    }
+
+    .why-card:hover {
+      border-color: rgba(6, 182, 212, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .why-card-title {
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .why-card-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
   </style>
 </head>
 <body>
@@ -245,6 +307,72 @@
         <p style="margin-bottom: 2rem; max-width: 800px; color: var(--text-secondary);">
           Optimize your Claude Code terminal. Configure system rules, approve automation parameters, and write specialized skill templates to guide LLM agents without bloat.
         </p>
+      </section>
+
+      <!-- Why We Configure Claude Code via Local Instructions Panel -->
+      <section class="why-section" aria-labelledby="why-power-user-title">
+        <h2 class="why-section-title" id="why-power-user-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          Why We Configure Claude Code via Local Instructions
+        </h2>
+        <div class="why-grid">
+          <div class="why-card">
+            <h3 class="why-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+              Deterministic CLI Hooks
+            </h3>
+            <p class="why-card-desc">
+              Restricting agent executions to designated terminal command hooks eliminates rogue shell commands, preventing unintended file updates or execution loops.
+            </p>
+          </div>
+          <div class="why-card">
+            <h3 class="why-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              Lightweight CLAUDE.md Boundaries
+            </h3>
+            <p class="why-card-desc">
+              Project-specific style directions and command mappings keep rules local, stopping context-drift and eliminating excessive system prompts in long chats.
+            </p>
+          </div>
+          <div class="why-card">
+            <h3 class="why-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              Pre-Approved Paths
+            </h3>
+            <p class="why-card-desc">
+              Whitelisting read-only access to standard configuration schemas and documentation directories prevents unnecessary user verification prompts for safe files.
+            </p>
+          </div>
+          <div class="why-card">
+            <h3 class="why-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                <polyline points="2 17 12 22 22 17"></polyline>
+                <polyline points="2 12 12 17 22 12"></polyline>
+              </svg>
+              Zero-Emoji Precision
+            </h3>
+            <p class="why-card-desc">
+              Banning decorative character patterns and boilerplate language in local configurations keeps code structures clean, preventing system bloat.
+            </p>
+          </div>
+        </div>
       </section>
 
       <div class="split-layout">
