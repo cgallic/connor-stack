@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>connor-stack — SQLite Brain Loop</title>
+  <meta name="description" content="Explore Connor's central SQLite events database schema and stream real-time logs.">
+  <link rel="stylesheet" href="../index.css">
+  <style>
+    .db-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 3rem;
+      margin-top: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    @media (max-width: 1024px) {
+      .db-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+
+    /* SQLite Schema panel */
+    .schema-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .schema-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .schema-selector {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .schema-btn {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all var(--transition-speed);
+    }
+
+    .schema-btn:hover {
+      border-color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.02);
+    }
+
+    .schema-btn.active {
+      border-color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.05);
+    }
+
+    .schema-btn-name {
+      font-family: monospace;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .schema-btn-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .sql-code-box {
+      background: #0d0c12;
+      border: 1px solid var(--code-border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+
+    .sql-code {
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #38bdf8;
+      white-space: pre-wrap;
+    }
+
+    /* Live Event Feed Panel */
+    .feed-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      height: 600px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .feed-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 1rem;
+    }
+
+    .feed-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .feed-controls {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .control-btn {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-secondary);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+      font-family: var(--font-display);
+      transition: all var(--transition-speed);
+    }
+
+    .control-btn:hover {
+      border-color: var(--accent-cyan);
+      color: var(--text-primary);
+    }
+
+    .control-btn.active {
+      background: rgba(6, 182, 212, 0.05);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
+    .feed-stream {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      overflow-y: auto;
+      flex-grow: 1;
+      padding-right: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .event-row {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-family: monospace;
+      font-size: 0.8rem;
+      transition: all var(--transition-speed);
+    }
+
+    .event-row:hover {
+      border-color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.02);
+    }
+
+    .event-source {
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .src-paperboy { background: rgba(59, 130, 246, 0.1); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); }
+    .src-openbrane { background: rgba(168, 85, 247, 0.1); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.2); }
+    .src-blackbox { background: rgba(236, 72, 153, 0.1); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.2); }
+
+    .event-desc {
+      color: var(--text-primary);
+      flex-grow: 1;
+      margin-left: 1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .event-time {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    /* Detail Modal / Drawer */
+    .detail-view {
+      background: #0d0c12;
+      border: 1px solid var(--code-border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      display: none;
+    }
+
+    .detail-view.active {
+      display: block;
+    }
+
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 0.5rem;
+    }
+
+    .detail-title {
+      font-family: monospace;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .detail-json {
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: #10b981;
+      white-space: pre-wrap;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="layout-container">
+    <!-- Navigation bar -->
+    <header class="nav-header" role="banner">
+      <a href="../index.html" class="brand" id="nav-brand-link">
+        <span class="brand-accent">connor-stack</span>
+      </a>
+      <nav class="nav-actions" role="navigation" aria-label="Main Navigation">
+        <a href="../philosophy.html" class="nav-link" id="nav-philosophy-link">Manifesto</a>
+        <a href="../tour.html" class="nav-link" id="nav-tour-link">Tour</a>
+        <a href="../spokes.html" class="nav-link" id="nav-spokes-link">Spokes</a>
+        <button class="theme-toggle-btn" id="theme-toggle-button" aria-label="Toggle color theme" title="Toggle dark/light mode">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2"></path>
+            <path d="M12 20v2"></path>
+            <path d="M5 5l1.5 1.5"></path>
+            <path d="M17.5 17.5L19 19"></path>
+            <path d="M2 12h2"></path>
+            <path d="M20 12h2"></path>
+            <path d="M5 19l1.5-1.5"></path>
+            <path d="M17.5 6.5L19 5"></path>
+          </svg>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main role="main">
+      <section aria-labelledby="brain-heading">
+        <a href="index.html" class="hero-tag" style="color: var(--accent-cyan); border-color: rgba(6, 182, 212, 0.25); background-color: rgba(6, 182, 212, 0.05); text-decoration: none;">&larr; Builder Hub</a>
+        <h1 class="hero-title" id="brain-heading" style="text-align: left; margin-top: 1rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--text-primary) 30%, var(--accent-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">SQLite Brain Loop</h1>
+        <p style="margin-bottom: 2rem; max-width: 800px; color: var(--text-secondary);">
+          Trace structural data pipelines. The events database captures life logs, scans, and feedback, enabling agents to operate with persistent historical memory.
+        </p>
+      </section>
+
+      <div class="db-layout">
+        <!-- Schema Section -->
+        <div class="schema-panel">
+          <div class="schema-card">
+            <h2 class="feed-title" style="margin-bottom: 1rem;">Schema Inspector</h2>
+            <p class="config-desc" style="margin-bottom: 1.5rem;">
+              Select a core database table to examine its SQL definition and structural parameters inside Connor's brain stack.
+            </p>
+            
+            <div class="schema-selector">
+              <button class="schema-btn active" data-table="events">
+                <span class="schema-btn-name">events</span>
+                <span class="schema-btn-meta">Unified chronological log</span>
+              </button>
+              <button class="schema-btn" data-table="memories">
+                <span class="schema-btn-name">memories</span>
+                <span class="schema-btn-meta">Distilled system facts</span>
+              </button>
+              <button class="schema-btn" data-table="feedbacks">
+                <span class="schema-btn-name">feedbacks</span>
+                <span class="schema-btn-meta">Blackbox performance logs</span>
+              </button>
+            </div>
+
+            <div class="sql-code-box">
+              <pre class="sql-code" id="sql-code-block"></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Event Stream Section -->
+        <div class="feed-panel">
+          <div class="feed-header">
+            <h2 class="feed-title">Live Event Stream</h2>
+            <div class="feed-controls">
+              <button class="control-btn active" id="btn-stream-toggle">Pause Stream</button>
+              <button class="control-btn" id="btn-stream-clear">Clear</button>
+            </div>
+          </div>
+
+          <div class="feed-stream" id="event-stream-container">
+            <!-- Event rows injected by JS -->
+          </div>
+
+          <!-- Detail View -->
+          <div class="detail-view" id="event-detail-card">
+            <div class="detail-header">
+              <span class="detail-title" id="detail-event-id">event_id: 1284</span>
+              <button class="copy-btn" id="btn-copy-json" style="font-size: 0.7rem; padding: 0.15rem 0.35rem;">Copy Payload</button>
+            </div>
+            <pre class="detail-json" id="detail-event-payload"></pre>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer Area -->
+    <footer class="footer" role="contentinfo">
+      <p class="footer-text">Built by Connor Gallic. Code licensed MIT. Personal configurations and proofs of concept for remixing.</p>
+      <div class="footer-links">
+        <a href="../philosophy.html" class="footer-link">Philosophy</a>
+        <a href="../tour.html" class="footer-link">Architecture Tour</a>
+        <a href="../spokes.html" class="footer-link">Spoke Registry</a>
+        <a href="https://github.com/cgallic/connor-stack" class="footer-link" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Theme control
+    const themeBtn = document.getElementById('theme-toggle-button');
+    let currentTheme = localStorage.getItem('theme');
+    if (!currentTheme) {
+      currentTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    document.documentElement.style.colorScheme = currentTheme;
+    updateThemeIcon(currentTheme);
+    
+    themeBtn.addEventListener('click', () => {
+      const isDark = document.documentElement.style.colorScheme === 'dark';
+      const nextTheme = isDark ? 'light' : 'dark';
+      document.documentElement.style.colorScheme = nextTheme;
+      localStorage.setItem('theme', nextTheme);
+      updateThemeIcon(nextTheme);
+    });
+
+    function updateThemeIcon(theme) {
+      const isDark = theme === 'dark';
+      themeBtn.querySelector('.theme-icon').innerHTML = isDark 
+        ? `<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M5 5l1.5 1.5"></path><path d="M17.5 17.5L19 19"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M5 19l1.5-1.5"></path><path d="M17.5 6.5L19 5"></path>`
+        : `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+    }
+
+    // SQLite schemas
+    const schemas = {
+      events: `CREATE TABLE events (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  timestamp TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+  source TEXT NOT NULL,
+  event_type TEXT NOT NULL,
+  payload TEXT NOT NULL -- Stores structured JSON data
+);
+
+CREATE INDEX idx_events_timestamp ON events(timestamp);
+CREATE INDEX idx_events_source ON events(source);`,
+
+      memories: `CREATE TABLE memories (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  category TEXT NOT NULL, -- e.g., 'preference', 'client_rule'
+  fact TEXT NOT NULL,
+  confidence REAL DEFAULT 1.0,
+  created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
+);`,
+
+      feedbacks: `CREATE TABLE feedbacks (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  agent_session TEXT NOT NULL,
+  prompt_tokens INTEGER,
+  completion_tokens INTEGER,
+  success INTEGER DEFAULT 1,
+  error_message TEXT,
+  score_card TEXT -- Distilled JSON evaluations
+);`
+    };
+
+    // Schema switching
+    document.querySelectorAll('.schema-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.schema-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const key = btn.getAttribute('data-table');
+        document.getElementById('sql-code-block').textContent = schemas[key];
+      });
+    });
+
+    // Default schema init
+    document.getElementById('sql-code-block').textContent = schemas.events;
+
+    // Simulated event generators
+    const mockEventsPool = [
+      {
+        source: "paperboy",
+        desc: "Daily paper scanner completed.",
+        payload: { query: "AI multi-agent orchestrators", papers_found: 4, action: "pushed_to_discord" }
+      },
+      {
+        source: "openbrane",
+        desc: "Auto-memory preference summarized.",
+        payload: { key: "cmo_accent_color", value: "neon-cyan", confidence: 0.98 }
+      },
+      {
+        source: "blackbox",
+        desc: "Feedback loops evaluation finalized.",
+        payload: { session_id: "cc-9812", status: "success", prompt_efficiency: 0.94, lint_errors_fixed: 2 }
+      },
+      {
+        source: "paperboy",
+        desc: "Scanned Google Scholar RSS feeds.",
+        payload: { feeds_checked: [ "arxiv_cs", "biorxiv" ], status: "idle" }
+      },
+      {
+        source: "openbrane",
+        desc: "Indexed new webhook gateway payload.",
+        payload: { spoke: "agent-webhook-gateway", endpoint: "/v1/events", bytes_received: 1240 }
+      },
+      {
+        source: "blackbox",
+        desc: "Recorded CLI command metrics.",
+        payload: { command: "node scripts/audit-brief.js", execution_ms: 184, exit_code: 0 }
+      }
+    ];
+
+    const streamContainer = document.getElementById('event-stream-container');
+    const detailCard = document.getElementById('event-detail-card');
+    const detailId = document.getElementById('detail-event-id');
+    const detailPayload = document.getElementById('detail-event-payload');
+
+    let streamActive = true;
+    let eventCounter = 1284;
+    let streamInterval = null;
+
+    function formatTime() {
+      return new Date().toISOString().split('T')[1].slice(0, 8) + 'Z';
+    }
+
+    function addEventRow(ev) {
+      eventCounter++;
+      const row = document.createElement('div');
+      row.className = 'event-row';
+      row.setAttribute('data-id', `event_id: ${eventCounter}`);
+      row.setAttribute('data-json', JSON.stringify(ev.payload, null, 2));
+
+      row.innerHTML = `
+        <span class="event-source src-${ev.source}">${ev.source}</span>
+        <span class="event-desc">${ev.desc}</span>
+        <span class="event-time">${formatTime()}</span>
+      `;
+
+      row.addEventListener('click', () => {
+        detailCard.classList.add('active');
+        detailId.textContent = row.getAttribute('data-id');
+        detailPayload.textContent = row.getAttribute('data-json');
+        streamContainer.scrollTop = streamContainer.scrollHeight;
+      });
+
+      streamContainer.appendChild(row);
+      
+      // Limit to 20 visible rows to prevent memory build-up
+      while (streamContainer.children.length > 20) {
+        streamContainer.removeChild(streamContainer.firstChild);
+      }
+      
+      if (!detailCard.classList.contains('active')) {
+        streamContainer.scrollTop = streamContainer.scrollHeight;
+      }
+    }
+
+    function startStream() {
+      streamInterval = setInterval(() => {
+        if (!streamActive) return;
+        const randomEv = mockEventsPool[Math.floor(Math.random() * mockEventsPool.length)];
+        addEventRow(randomEv);
+      }, 3000);
+    }
+
+    // Populate initial rows
+    mockEventsPool.slice(0, 4).forEach(addEventRow);
+
+    startStream();
+
+    // Controls
+    const btnToggle = document.getElementById('btn-stream-toggle');
+    btnToggle.addEventListener('click', () => {
+      streamActive = !streamActive;
+      btnToggle.textContent = streamActive ? "Pause Stream" : "Resume Stream";
+      btnToggle.classList.toggle('active');
+    });
+
+    const btnClear = document.getElementById('btn-stream-clear');
+    btnClear.addEventListener('click', () => {
+      streamContainer.innerHTML = '';
+      detailCard.classList.remove('active');
+    });
+
+    // Copy Payload Action
+    const btnCopyJson = document.getElementById('btn-copy-json');
+    btnCopyJson.addEventListener('click', () => {
+      const code = detailPayload.textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        btnCopyJson.textContent = 'Copied!';
+        btnCopyJson.style.borderColor = 'var(--accent-cyan)';
+        btnCopyJson.style.color = 'var(--accent-cyan)';
+        setTimeout(() => {
+          btnCopyJson.textContent = 'Copy Payload';
+          btnCopyJson.style.borderColor = 'var(--card-border)';
+          btnCopyJson.style.color = 'var(--text-secondary)';
+        }, 1500);
+      });
+    });
+  </script>
+</body>
+</html>

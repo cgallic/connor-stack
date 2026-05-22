@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>connor-stack — Choose Your Own Adventure AI Portal</title>
+  <meta name="description" content="An interactive portal showcasing Connor Gallic's personal AI stack. Explore composable agents, content quality loops, and custom setup prompts.">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+  <div class="layout-container">
+    <!-- Navigation bar -->
+    <header class="nav-header" role="banner">
+      <a href="index.html" class="brand" id="nav-brand-link">
+        <span class="brand-accent">connor-stack</span>
+      </a>
+      <nav class="nav-actions" role="navigation" aria-label="Main Navigation">
+        <a href="philosophy.html" class="nav-link" id="nav-philosophy-link">Manifesto</a>
+        <a href="tour.html" class="nav-link" id="nav-tour-link">Tour</a>
+        <a href="spokes.html" class="nav-link" id="nav-spokes-link">Spokes</a>
+        <button class="theme-toggle-btn" id="theme-toggle-button" aria-label="Toggle color theme" title="Toggle dark/light mode">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2"></path>
+            <path d="M12 20v2"></path>
+            <path d="M5 5l1.5 1.5"></path>
+            <path d="M17.5 17.5L19 19"></path>
+            <path d="M2 12h2"></path>
+            <path d="M20 12h2"></path>
+            <path d="M5 19l1.5-1.5"></path>
+            <path d="M17.5 6.5L19 5"></path>
+          </svg>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main role="main">
+      <section class="hero" aria-labelledby="main-heading">
+        <span class="hero-tag">Curated Proofs of Concept</span>
+        <h1 class="hero-title" id="main-heading">How I actually use AI</h1>
+        <p class="hero-subtitle">Not a framework. An opinionated stack of small, composable scripts I use every day — and the prompts you paste into your own Claude Code to finish the assembly.</p>
+      </section>
+
+      <!-- Video walkthrough player placeholder -->
+      <section class="video-showcase" aria-label="Video Introduction">
+        <div class="video-wrapper">
+          <div class="video-placeholder" id="intro-video-container">
+            <h2 class="video-placeholder-title">A 3-minute tour of the stack</h2>
+            <p class="video-placeholder-desc">Connor walks through the core architecture, shows the tools in action, and explains how to drive the setup prompts locally.</p>
+            <button class="play-trigger" id="video-play-trigger" aria-label="Play introduction video">
+              <span class="play-icon"></span>
+              <span>Watch Video Walkthrough</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- The Three Doors Route Selection -->
+      <section class="doors-grid" aria-label="Audience Pathways">
+        
+        <!-- Marketer Door -->
+        <a href="marketer/index.html" class="door-card marketer" id="door-marketer-link">
+          <div class="door-icon-wrapper">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+              <path d="M12 12h.01"></path>
+              <path d="M16 16h.01"></path>
+              <path d="M8 16h.01"></path>
+              <path d="M12 16h.01"></path>
+              <path d="M8 12h.01"></path>
+              <path d="M16 12h.01"></path>
+            </svg>
+          </div>
+          <span class="door-meta">Marketers / Agency Owners</span>
+          <h3 class="door-title">Copy the workflow</h3>
+          <p class="door-desc">Get client folder structures, perception copywriting guides, content quality checking rules, and the actual .claude config templates I run on client projects.</p>
+          <span class="door-action">
+            <span>Explore Marketer Path</span>
+            <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </span>
+        </a>
+
+        <!-- Builder Door -->
+        <a href="builder/index.html" class="door-card builder" id="door-builder-link">
+          <div class="door-icon-wrapper">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="16 18 22 12 16 6"></polyline>
+              <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>
+          </div>
+          <span class="door-meta">Claude Code / Agent Builders</span>
+          <h3 class="door-title">Build the machine</h3>
+          <p class="door-desc">Master terminal slash commands, configure preflight hooks, orchestrate parallel subagents, and wire open-brane to paperboy's SQLite log database.</p>
+          <span class="door-action">
+            <span>Explore Builder Path</span>
+            <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </span>
+        </a>
+
+        <!-- Curious Door -->
+        <a href="tour.html" class="door-card curious" id="door-tour-link">
+          <div class="door-icon-wrapper">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 2 22 22 22"></polygon>
+            </svg>
+          </div>
+          <span class="door-meta">Curious Readers</span>
+          <h3 class="door-title">Take the tour</h3>
+          <p class="door-desc">Read the core design principles, inspect the hub-and-spoke diagram, and browse all 15 public repositories linked in a single catalog.</p>
+          <span class="door-action">
+            <span>Start the Tour</span>
+            <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </span>
+        </a>
+
+      </section>
+    </main>
+
+    <!-- Footer Area -->
+    <footer class="footer" role="contentinfo">
+      <p class="footer-text">Built by Connor Gallic. Code licensed MIT. Personal configurations and proofs of concept for remixing.</p>
+      <div class="footer-links">
+        <a href="philosophy.html" class="footer-link">Philosophy</a>
+        <a href="tour.html" class="footer-link">Architecture Tour</a>
+        <a href="spokes.html" class="footer-link">Spoke Registry</a>
+        <a href="https://github.com/cgallic/connor-stack" class="footer-link" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Theme control using light-dark() CSS reactivity and color-scheme properties
+    const themeBtn = document.getElementById('theme-toggle-button');
+    
+    // Get initial preference
+    let currentTheme = localStorage.getItem('theme');
+    if (!currentTheme) {
+      currentTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    
+    // Set initial layout
+    document.documentElement.style.colorScheme = currentTheme;
+    updateThemeIcon(currentTheme);
+    
+    themeBtn.addEventListener('click', () => {
+      const isDark = document.documentElement.style.colorScheme === 'dark';
+      const nextTheme = isDark ? 'light' : 'dark';
+      
+      document.documentElement.style.colorScheme = nextTheme;
+      localStorage.setItem('theme', nextTheme);
+      updateThemeIcon(nextTheme);
+    });
+
+    function updateThemeIcon(theme) {
+      const isDark = theme === 'dark';
+      // Change SVGs or icon states natively
+      themeBtn.querySelector('.theme-icon').innerHTML = isDark 
+        ? `<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M5 5l1.5 1.5"></path><path d="M17.5 17.5L19 19"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M5 19l1.5-1.5"></path><path d="M17.5 6.5L19 5"></path>`
+        : `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+    }
+
+    // Video play trigger demo feedback (avoids broken page loads while video is empty)
+    const playTrigger = document.getElementById('video-play-trigger');
+    playTrigger.addEventListener('click', () => {
+      const container = document.getElementById('intro-video-container');
+      container.innerHTML = `
+        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #000;">
+          <p style="color: var(--text-dark); font-family: var(--font-display); font-size: 1.1rem; font-weight: 500;">
+            Video walkthrough will be recorded and linked before final launch.
+          </p>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>connor-stack — Agent Orchestration Flow</title>
+  <meta name="description" content="Simulate agent execution loops. Compare linear threads and concurrent subagent dispatch pipelines.">
+  <link rel="stylesheet" href="../index.css">
+  <style>
+    .orch-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      margin-top: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    @media (max-width: 1024px) {
+      .orch-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+
+    /* Diagram Canvas */
+    .diagram-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      height: 520px;
+    }
+
+    .diagram-viewport {
+      flex-grow: 1;
+      border: 1px dashed var(--card-border);
+      border-radius: 8px;
+      background: rgba(8, 7, 11, 0.4);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Visualizing SVG flows */
+    .flow-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .flow-node {
+      fill: #12111a;
+      stroke: var(--card-border);
+      stroke-width: 1.5px;
+      transition: all var(--transition-speed);
+    }
+
+    .flow-node.active {
+      stroke: var(--accent-cyan);
+      fill: rgba(6, 182, 212, 0.05);
+      filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.3));
+    }
+
+    .flow-node.completed {
+      stroke: #10b981;
+      fill: rgba(16, 185, 129, 0.05);
+    }
+
+    .flow-text {
+      font-family: monospace;
+      font-size: 0.75rem;
+      fill: var(--text-secondary);
+      text-anchor: middle;
+      pointer-events: none;
+      transition: fill var(--transition-speed);
+    }
+
+    .flow-node.active + .flow-text {
+      fill: var(--accent-cyan);
+      font-weight: bold;
+    }
+
+    .flow-line {
+      stroke: var(--card-border);
+      stroke-width: 1.5px;
+      stroke-dasharray: 4 4;
+      transition: all var(--transition-speed);
+    }
+
+    .flow-line.active {
+      stroke: var(--accent-cyan);
+      stroke-dasharray: none;
+      animation: dashMove 1s linear infinite;
+    }
+
+    .flow-line.completed {
+      stroke: #10b981;
+      stroke-dasharray: none;
+    }
+
+    @keyframes dashMove {
+      to {
+        stroke-dashoffset: -20;
+      }
+    }
+
+    /* Controls & Details */
+    .orch-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .selector-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      gap: 1rem;
+    }
+
+    .mode-btn {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      color: var(--text-secondary);
+      padding: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-family: var(--font-display);
+      font-weight: 700;
+      transition: all var(--transition-speed);
+    }
+
+    .mode-btn:hover {
+      border-color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.02);
+    }
+
+    .mode-btn.active {
+      border-color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.05);
+      color: var(--accent-cyan);
+    }
+
+    .mode-title {
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .mode-subtitle {
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--text-muted);
+    }
+
+    .info-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      flex-grow: 1;
+    }
+
+    .info-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .info-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .action-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+    }
+
+    .simulate-btn {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      color: #08070b;
+      border: none;
+      border-radius: 6px;
+      padding: 0.6rem 1.2rem;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: opacity var(--transition-speed);
+    }
+
+    .simulate-btn:hover {
+      opacity: 0.9;
+    }
+
+    .log-terminal {
+      background: #0d0c12;
+      border: 1px solid var(--code-border);
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #10b981;
+      height: 140px;
+      overflow-y: auto;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="layout-container">
+    <!-- Navigation bar -->
+    <header class="nav-header" role="banner">
+      <a href="../index.html" class="brand" id="nav-brand-link">
+        <span class="brand-accent">connor-stack</span>
+      </a>
+      <nav class="nav-actions" role="navigation" aria-label="Main Navigation">
+        <a href="../philosophy.html" class="nav-link" id="nav-philosophy-link">Manifesto</a>
+        <a href="../tour.html" class="nav-link" id="nav-tour-link">Tour</a>
+        <a href="../spokes.html" class="nav-link" id="nav-spokes-link">Spokes</a>
+        <button class="theme-toggle-btn" id="theme-toggle-button" aria-label="Toggle color theme" title="Toggle dark/light mode">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2"></path>
+            <path d="M12 20v2"></path>
+            <path d="M5 5l1.5 1.5"></path>
+            <path d="M17.5 17.5L19 19"></path>
+            <path d="M2 12h2"></path>
+            <path d="M20 12h2"></path>
+            <path d="M5 19l1.5-1.5"></path>
+            <path d="M17.5 6.5L19 5"></path>
+          </svg>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main role="main">
+      <section aria-labelledby="orch-heading">
+        <a href="index.html" class="hero-tag" style="color: var(--accent-cyan); border-color: rgba(6, 182, 212, 0.25); background-color: rgba(6, 182, 212, 0.05); text-decoration: none;">&larr; Builder Hub</a>
+        <h1 class="hero-title" id="orch-heading" style="text-align: left; margin-top: 1rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--text-primary) 30%, var(--accent-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Agent Orchestration</h1>
+        <p style="margin-bottom: 2rem; max-width: 800px; color: var(--text-secondary);">
+          Understand subagent dispatch frameworks. Execute linear workflows in a single session to prevent drift, or launch isolated parallel subagents for independent tasks.
+        </p>
+      </section>
+
+      <div class="orch-layout">
+        <!-- Interactive Diagram Panel -->
+        <div class="diagram-panel">
+          <h2 class="feed-title" style="margin-bottom: 1rem;">Execution Flowchart</h2>
+          <div class="diagram-viewport">
+            <svg class="flow-svg" id="flow-svg-canvas" viewBox="0 0 400 400">
+              <!-- Elements injected/managed by script -->
+            </svg>
+          </div>
+        </div>
+
+        <!-- Mode Selector and Info panel -->
+        <div class="orch-panel">
+          <div class="selector-box">
+            <button class="mode-btn active" id="btn-mode-linear">
+              <div class="mode-title">Linear Execution</div>
+              <div class="mode-subtitle">Single thread, no context drift</div>
+            </button>
+            <button class="mode-btn" id="btn-mode-parallel">
+              <div class="mode-title">Always-On Harness</div>
+              <div class="mode-subtitle">OpenClaw / Hermes Orchestration</div>
+            </button>
+          </div>
+
+          <div class="info-card">
+            <h2 class="info-title" id="panel-title">Linear Thread Workflow</h2>
+            <p class="info-desc" id="panel-desc">
+              Linear tasks execute chronologically in one single Claude Code workspace. Keeping operations in sequence prevents context fragmentation, ensures direct code symbol visibility, and matches human pair programming.
+            </p>
+
+            <div class="log-terminal" id="log-terminal-output">
+              <span style="color: #64748b;">// Terminal output logs will print here during simulation.</span>
+            </div>
+
+            <div class="action-row">
+              <span style="font-size: 0.8rem; color: var(--text-muted);">Simulation time: <strong id="sim-duration">~4.5s</strong></span>
+              <button class="simulate-btn" id="btn-simulate">Run Simulation</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer Area -->
+    <footer class="footer" role="contentinfo">
+      <p class="footer-text">Built by Connor Gallic. Code licensed MIT. Personal configurations and proofs of concept for remixing.</p>
+      <div class="footer-links">
+        <a href="../philosophy.html" class="footer-link">Philosophy</a>
+        <a href="../tour.html" class="footer-link">Architecture Tour</a>
+        <a href="../spokes.html" class="footer-link">Spoke Registry</a>
+        <a href="https://github.com/cgallic/connor-stack" class="footer-link" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Theme control
+    const themeBtn = document.getElementById('theme-toggle-button');
+    let currentTheme = localStorage.getItem('theme');
+    if (!currentTheme) {
+      currentTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    document.documentElement.style.colorScheme = currentTheme;
+    updateThemeIcon(currentTheme);
+    
+    themeBtn.addEventListener('click', () => {
+      const isDark = document.documentElement.style.colorScheme === 'dark';
+      const nextTheme = isDark ? 'light' : 'dark';
+      document.documentElement.style.colorScheme = nextTheme;
+      localStorage.setItem('theme', nextTheme);
+      updateThemeIcon(nextTheme);
+    });
+
+    function updateThemeIcon(theme) {
+      const isDark = theme === 'dark';
+      themeBtn.querySelector('.theme-icon').innerHTML = isDark 
+        ? `<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M5 5l1.5 1.5"></path><path d="M17.5 17.5L19 19"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M5 19l1.5-1.5"></path><path d="M17.5 6.5L19 5"></path>`
+        : `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+    }
+
+    // Orchestration data
+    const flowData = {
+      linear: {
+        title: "Linear Thread Workflow",
+        desc: "Linear tasks execute chronologically in one single Claude Code workspace. Keeping operations in sequence prevents context fragmentation, ensures direct code symbol visibility, and matches human pair programming.",
+        duration: "~4.5s",
+        logs: [
+          "Starting master session...",
+          "Read file: index.html [OK]",
+          "Locate element: #hero-heading [OK]",
+          "Modify file: index.html (applying typography styling) [OK]",
+          "Verify build: npm run check [Success]",
+          "Workflow finalized. Single thread session closed."
+        ],
+        draw: `
+          <!-- Nodes -->
+          <rect id="node-1" x="150" y="40" width="100" height="40" rx="6" class="flow-node"/>
+          <text x="200" y="65" class="flow-text">1. Master Init</text>
+
+          <rect id="node-2" x="150" y="140" width="100" height="40" rx="6" class="flow-node"/>
+          <text x="200" y="165" class="flow-text">2. Read & Analyze</text>
+
+          <rect id="node-3" x="150" y="240" width="100" height="40" rx="6" class="flow-node"/>
+          <text x="200" y="265" class="flow-text">3. Edit Files</text>
+
+          <rect id="node-4" x="150" y="340" width="100" height="40" rx="6" class="flow-node"/>
+          <text x="200" y="365" class="flow-text">4. Verify Build</text>
+
+          <!-- Lines -->
+          <line id="line-1" x1="200" y1="80" x2="200" y2="140" class="flow-line"/>
+          <line id="line-2" x1="200" y1="180" x2="200" y2="240" class="flow-line"/>
+          <line id="line-3" x1="200" y1="280" x2="200" y2="340" class="flow-line"/>
+        `
+      },
+      parallel: {
+        title: "Always-On Harness & Multi-Agent Orchestration",
+        desc: "Demonstrates how three always-on agents (such as Beast running on Hermes) communicate via a thin OpenClaw or Hermes harness layer. While Codex Gemini writes code in real-time, the always-on agents coordinate, run checks, and manage workflows in parallel.",
+        duration: "~5.5s",
+        logs: [
+          "Harness: Initializing OpenClaw/Hermes message broker...",
+          "Harness: Verifying active connections to 3 always-on agents...",
+          "Harness: Beast agent active on Hermes VPS [Online]",
+          "Harness: Dispatching code writing task to Codex Gemini...",
+          "Codex Gemini: Generating codebase edits... [OK]",
+          "Beast on Hermes: Inspecting edits, verifying safety gates... [Clear]",
+          "Harness: Code merged and active.",
+          "Orchestration completed."
+        ],
+        draw: `
+          <!-- Nodes -->
+          <rect id="node-1" x="150" y="40" width="100" height="40" rx="6" class="flow-node"/>
+          <text x="200" y="65" class="flow-text">Harness Layer</text>
+
+          <!-- Subagent 1 -->
+          <rect id="node-2" x="30" y="180" width="100" height="40" rx="6" class="flow-node"/>
+          <text x="80" y="205" class="flow-text">Beast (Hermes)</text>
+
+          <!-- Subagent 2 -->
+          <rect id="node-3" x="150" y="180" width="100" height="40" rx="6" class="flow-node"/>
+          <text x="200" y="205" class="flow-text">Codex Gemini</text>
+
+          <!-- Subagent 3 -->
+          <rect id="node-4" x="270" y="180" width="100" height="40" rx="6" class="flow-node"/>
+          <text x="320" y="205" class="flow-text">Scout & Casa</text>
+
+          <!-- Merge Node -->
+          <rect id="node-5" x="150" y="320" width="100" height="40" rx="6" class="flow-node"/>
+          <text x="200" y="345" class="flow-text">Commit / Merge</text>
+
+          <!-- Lines -->
+          <line id="line-1" x1="200" y1="80" x2="80" y2="180" class="flow-line"/>
+          <line id="line-2" x1="200" y1="80" x2="200" y2="180" class="flow-line"/>
+          <line id="line-3" x1="200" y1="80" x2="320" y2="180" class="flow-line"/>
+
+          <line id="line-4" x1="80" y1="220" x2="200" y2="320" class="flow-line"/>
+          <line id="line-5" x1="200" y1="220" x2="200" y2="320" class="flow-line"/>
+          <line id="line-6" x1="320" y1="220" x2="200" y2="320" class="flow-line"/>
+        `
+      }
+    };
+
+    let activeMode = 'linear';
+    let simInterval = null;
+
+    function renderCanvas() {
+      const canvas = document.getElementById('flow-svg-canvas');
+      canvas.innerHTML = flowData[activeMode].draw;
+    }
+
+    function switchMode(mode) {
+      if (simInterval) clearInterval(simInterval);
+      activeMode = mode;
+      
+      document.getElementById('btn-mode-linear').classList.toggle('active', mode === 'linear');
+      document.getElementById('btn-mode-parallel').classList.toggle('active', mode === 'parallel');
+
+      document.getElementById('panel-title').textContent = flowData[mode].title;
+      document.getElementById('panel-desc').textContent = flowData[mode].desc;
+      document.getElementById('sim-duration').textContent = flowData[mode].duration;
+      
+      const term = document.getElementById('log-terminal-output');
+      term.innerHTML = '<span style="color: #64748b;">// Terminal output logs will print here during simulation.</span>';
+      
+      renderCanvas();
+    }
+
+    document.getElementById('btn-mode-linear').addEventListener('click', () => switchMode('linear'));
+    document.getElementById('btn-mode-parallel').addEventListener('click', () => switchMode('parallel'));
+
+    // Simulation Engine
+    const btnSimulate = document.getElementById('btn-simulate');
+    btnSimulate.addEventListener('click', () => {
+      if (simInterval) clearInterval(simInterval);
+      
+      const term = document.getElementById('log-terminal-output');
+      term.innerHTML = '';
+      
+      // Reset nodes visual
+      document.querySelectorAll('.flow-node').forEach(n => {
+        n.classList.remove('active', 'completed');
+      });
+      document.querySelectorAll('.flow-line').forEach(l => {
+        l.classList.remove('active', 'completed');
+      });
+
+      const logs = flowData[activeMode].logs;
+      let step = 0;
+      
+      btnSimulate.disabled = true;
+      btnSimulate.textContent = "Running...";
+
+      if (activeMode === 'linear') {
+        // Steps: Node 1 -> Line 1 -> Node 2 -> Line 2 -> Node 3 -> Line 3 -> Node 4
+        const animate = () => {
+          if (step === 0) {
+            printLog(logs[0]);
+            highlightNode(1, 'active');
+          } else if (step === 1) {
+            printLog(logs[1]);
+            highlightNode(1, 'completed');
+            highlightLine(1, 'active');
+          } else if (step === 2) {
+            printLog(logs[2]);
+            highlightLine(1, 'completed');
+            highlightNode(2, 'active');
+          } else if (step === 3) {
+            printLog(logs[3]);
+            highlightNode(2, 'completed');
+            highlightLine(2, 'active');
+            highlightNode(3, 'active');
+          } else if (step === 4) {
+            printLog(logs[4]);
+            highlightNode(3, 'completed');
+            highlightLine(3, 'active');
+            highlightNode(4, 'active');
+          } else if (step === 5) {
+            printLog(logs[5]);
+            highlightLine(3, 'completed');
+            highlightNode(4, 'completed');
+            clearInterval(simInterval);
+            btnSimulate.disabled = false;
+            btnSimulate.textContent = "Run Simulation";
+          }
+          step++;
+        };
+        animate();
+        simInterval = setInterval(animate, 800);
+      } else {
+        // Parallel Flow
+        const animate = () => {
+          if (step === 0) {
+            printLog(logs[0]);
+            highlightNode(1, 'active');
+          } else if (step === 1) {
+            printLog(logs[1]);
+            printLog(logs[2]);
+            printLog(logs[3]);
+            printLog(logs[4]);
+            highlightNode(1, 'completed');
+            highlightLine(1, 'active');
+            highlightLine(2, 'active');
+            highlightLine(3, 'active');
+            highlightNode(2, 'active');
+            highlightNode(3, 'active');
+            highlightNode(4, 'active');
+          } else if (step === 2) {
+            printLog(logs[5]);
+            highlightNode(2, 'completed');
+            highlightLine(1, 'completed');
+            highlightLine(4, 'active');
+          } else if (step === 3) {
+            printLog(logs[6]);
+            highlightNode(3, 'completed');
+            highlightNode(4, 'completed');
+            highlightLine(2, 'completed');
+            highlightLine(3, 'completed');
+            highlightLine(5, 'active');
+            highlightLine(6, 'active');
+            highlightNode(5, 'active');
+          } else if (step === 4) {
+            printLog(logs[7]);
+            highlightLine(4, 'completed');
+            highlightLine(5, 'completed');
+            highlightLine(6, 'completed');
+            highlightNode(5, 'completed');
+            clearInterval(simInterval);
+            btnSimulate.disabled = false;
+            btnSimulate.textContent = "Run Simulation";
+          }
+          step++;
+        };
+        animate();
+        simInterval = setInterval(animate, 1000);
+      }
+    });
+
+    function printLog(text) {
+      const term = document.getElementById('log-terminal-output');
+      const p = document.createElement('p');
+      p.textContent = `> ${text}`;
+      term.appendChild(p);
+      term.scrollTop = term.scrollHeight;
+    }
+
+    function highlightNode(id, cls) {
+      const node = document.getElementById(`node-${id}`);
+      if (node) {
+        node.classList.remove('active', 'completed');
+        node.classList.add(cls);
+      }
+    }
+
+    function highlightLine(id, cls) {
+      const line = document.getElementById(`line-${id}`);
+      if (line) {
+        line.classList.remove('active', 'completed');
+        line.classList.add(cls);
+      }
+    }
+
+    // Init
+    switchMode('linear');
+  </script>
+</body>
+</html>

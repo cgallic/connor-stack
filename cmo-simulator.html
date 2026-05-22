@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>connor-stack — AI CMO Team Simulator</title>
+  <meta name="description" content="Watch Connor Gallic's CMO Harness team automate copywriting, QA checks, SEO scoring, and delivery in real-time.">
+  <link rel="stylesheet" href="index.css">
+  <style>
+    /* Simulator-specific styles */
+    .simulator-container {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 2rem;
+      margin-top: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    @media (max-width: 1024px) {
+      .simulator-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Column Elements */
+    .control-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .campaign-select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      outline: none;
+      cursor: pointer;
+      transition: border-color var(--transition-speed);
+    }
+
+    .campaign-select:focus {
+      border-color: var(--accent-cyan);
+    }
+
+    .input-text {
+      width: 100%;
+      height: 100px;
+      padding: 0.75rem 1rem;
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      resize: none;
+      outline: none;
+      transition: border-color var(--transition-speed);
+    }
+
+    .input-text:focus {
+      border-color: var(--accent-cyan);
+    }
+
+    .action-row {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .sim-btn {
+      padding: 0.6rem 1.25rem;
+      border-radius: 8px;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all var(--transition-speed) var(--transition-bounce);
+      border: 1px solid var(--card-border);
+    }
+
+    .sim-btn-primary {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      color: #ffffff;
+      border: none;
+      box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+    }
+
+    .sim-btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(6, 182, 212, 0.3);
+    }
+
+    .sim-btn-secondary {
+      background: var(--code-bg);
+      color: var(--text-primary);
+    }
+
+    .sim-btn-secondary:hover:not(:disabled) {
+      border-color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.05);
+    }
+
+    .sim-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    /* Workflow Graph Visualizer */
+    .flow-graph {
+      margin-top: 2rem;
+      position: relative;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .graph-node {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      position: relative;
+      z-index: 2;
+      transition: all var(--transition-speed) ease;
+    }
+
+    .graph-node.active {
+      background: rgba(6, 182, 212, 0.05);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
+      transform: translateX(5px);
+    }
+
+    .graph-node.completed {
+      border-color: var(--accent-purple);
+      background: rgba(168, 85, 247, 0.02);
+    }
+
+    .node-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 9999px;
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      transition: all var(--transition-speed);
+    }
+
+    .graph-node.active .node-num {
+      background: var(--accent-cyan);
+      border-color: var(--accent-cyan);
+      color: #ffffff;
+    }
+
+    .graph-node.completed .node-num {
+      background: var(--accent-purple);
+      border-color: var(--accent-purple);
+      color: #ffffff;
+    }
+
+    .node-info {
+      flex-grow: 1;
+    }
+
+    .node-title {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .node-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .node-badge {
+      font-size: 0.75rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+    }
+
+    .graph-node.active .node-badge {
+      color: var(--accent-cyan);
+      border-color: rgba(6, 182, 212, 0.3);
+      background: rgba(6, 182, 212, 0.05);
+    }
+
+    .graph-node.completed .node-badge {
+      color: var(--accent-purple);
+      border-color: rgba(168, 85, 247, 0.3);
+      background: rgba(168, 85, 247, 0.05);
+    }
+
+    /* Connectors using simple visual border-left overlay on the flow-graph container */
+    .flow-graph::before {
+      content: '';
+      position: absolute;
+      left: calc(1.5rem + 24px);
+      top: 3.5rem;
+      bottom: 3.5rem;
+      width: 2px;
+      background: var(--card-border);
+      z-index: 1;
+    }
+
+    /* Right Column Elements */
+    .terminal-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .terminal-window {
+      background: #0d0c12;
+      border: 1px solid var(--code-border);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .terminal-header {
+      background: #15141d;
+      padding: 0.5rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--code-border);
+    }
+
+    .terminal-dots {
+      display: flex;
+      gap: 0.35rem;
+    }
+
+    .terminal-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 9999px;
+    }
+    .terminal-dot.red { background: #ef4444; }
+    .terminal-dot.yellow { background: #eab308; }
+    .terminal-dot.green { background: #22c55e; }
+
+    .terminal-title {
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .terminal-body {
+      padding: 1rem;
+      height: 250px;
+      overflow-y: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      color: #cbd5e1;
+    }
+
+    .term-line {
+      margin-bottom: 0.35rem;
+      white-space: pre-wrap;
+    }
+
+    .term-prompt {
+      color: var(--accent-cyan);
+      font-weight: bold;
+    }
+
+    .term-system {
+      color: #64748b;
+    }
+
+    .term-success {
+      color: #22c55e;
+    }
+
+    .term-warn {
+      color: #eab308;
+    }
+
+    /* Output Workspace Preview */
+    .workspace-preview {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      min-height: 250px;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .workspace-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.5rem;
+    }
+
+    .workspace-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .workspace-status {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent-purple);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .workspace-content {
+      flex-grow: 1;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .empty-state {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    /* Rating Metrics Card */
+    .rating-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .metric-card {
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0.75rem;
+    }
+
+    .metric-name {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    .metric-value {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--accent-cyan);
+      margin-top: 0.15rem;
+    }
+
+    .metric-bar-container {
+      width: 100%;
+      height: 4px;
+      background: var(--card-border);
+      border-radius: 2px;
+      margin-top: 0.25rem;
+      overflow: hidden;
+    }
+
+    .metric-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
+      width: 0%;
+      transition: width 0.8s ease-out;
+    }
+
+    /* Prompt Clipboard Container */
+    .prompt-footer-box {
+      margin-top: 3rem;
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .prompt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .prompt-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-secondary);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: all var(--transition-speed);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .copy-btn:hover {
+      border-color: var(--accent-cyan);
+      color: var(--text-primary);
+    }
+
+    .prompt-code-block {
+      background: #0d0c12;
+      border: 1px solid var(--code-border);
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      overflow-x: auto;
+      max-height: 200px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="layout-container">
+    <!-- Navigation bar -->
+    <header class="nav-header" role="banner">
+      <a href="index.html" class="brand" id="nav-brand-link">
+        <span class="brand-accent">connor-stack</span>
+      </a>
+      <nav class="nav-actions" role="navigation" aria-label="Main Navigation">
+        <a href="philosophy.html" class="nav-link" id="nav-philosophy-link">Manifesto</a>
+        <a href="tour.html" class="nav-link" id="nav-tour-link">Tour</a>
+        <a href="spokes.html" class="nav-link" id="nav-spokes-link">Spokes</a>
+        <button class="theme-toggle-btn" id="theme-toggle-button" aria-label="Toggle color theme" title="Toggle dark/light mode">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2"></path>
+            <path d="M12 20v2"></path>
+            <path d="M5 5l1.5 1.5"></path>
+            <path d="M17.5 17.5L19 19"></path>
+            <path d="M2 12h2"></path>
+            <path d="M20 12h2"></path>
+            <path d="M5 19l1.5-1.5"></path>
+            <path d="M17.5 6.5L19 5"></path>
+          </svg>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main role="main">
+      <section aria-labelledby="simulator-heading">
+        <span class="hero-tag">Interactive Simulation</span>
+        <h1 class="hero-title" id="simulator-heading" style="text-align: left; margin-bottom: 0.5rem;">AI CMO Team Simulator</h1>
+        <p style="margin-bottom: 2rem; max-width: 800px;">
+          This dashboard models the CMO Harness system (`kai-cmo-harness`). Watch a raw campaign brief pass through specialized agent steps. Each step executes localized prompt logic and outputs raw updates, simulating real-world agent orchestration.
+        </p>
+      </section>
+
+      <div class="simulator-container">
+        <!-- Left Column: Controls & Node Chart -->
+        <div class="simulator-left">
+          <div class="control-panel">
+            <div class="form-group">
+              <label class="form-label" for="campaign-template">Select Campaign Brief Template</label>
+              <select class="campaign-select" id="campaign-template">
+                <option value="lipsync">Cartoonimator (Deterministic Mascot Lipsync)</option>
+                <option value="openbrane">Open-Brane (SQLite Events Database)</option>
+                <option value="custom">Custom Brief...</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="campaign-brief">Brief Text</label>
+              <textarea class="input-text" id="campaign-brief" placeholder="Enter campaign specs..."></textarea>
+            </div>
+
+            <div class="action-row">
+              <button class="sim-btn sim-btn-primary" id="btn-start">Start Simulation</button>
+              <button class="sim-btn sim-btn-secondary" id="btn-step" disabled>Step Forward</button>
+              <button class="sim-btn sim-btn-secondary" id="btn-reset" disabled>Reset</button>
+            </div>
+          </div>
+
+          <!-- Workflow Graph -->
+          <div class="flow-graph">
+            <div class="graph-node" id="node-0" data-step="0">
+              <div class="node-num">0</div>
+              <div class="node-info">
+                <div class="node-title">Campaign Brief Ingest</div>
+                <div class="node-desc">Raw input is structured and logged to SQLite events.db.</div>
+              </div>
+              <span class="node-badge">User Brief</span>
+            </div>
+
+            <div class="graph-node" id="node-1" data-step="1">
+              <div class="node-num">1</div>
+              <div class="node-info">
+                <div class="node-title">Copywriter Agent (Ralph)</div>
+                <div class="node-desc">Writes punchy, opinionated drafts based on the brief.</div>
+              </div>
+              <span class="node-badge">Drafting</span>
+            </div>
+
+            <div class="graph-node" id="node-2" data-step="2">
+              <div class="node-num">2</div>
+              <div class="node-info">
+                <div class="node-title">QA Guard Agent</div>
+                <div class="node-desc">Audit against the Four U's: Useful, Urgent, Unique, Ultra-specific.</div>
+              </div>
+              <span class="node-badge">Quality Gate</span>
+            </div>
+
+            <div class="graph-node" id="node-3" data-step="3">
+              <div class="node-num">3</div>
+              <div class="node-info">
+                <div class="node-title">SEO Specialist Agent</div>
+                <div class="node-desc">Optimizes headings, anchors, and keyword density.</div>
+              </div>
+              <span class="node-badge">Optimization</span>
+            </div>
+
+            <div class="graph-node" id="node-4" data-step="4">
+              <div class="node-num">4</div>
+              <div class="node-info">
+                <div class="node-title">Delivery Agent</div>
+                <div class="node-desc">Packages content and logs completion metrics.</div>
+              </div>
+              <span class="node-badge">Export</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Console & Outputs -->
+        <div class="simulator-right terminal-panel">
+          <!-- Terminal console mockup -->
+          <div class="terminal-window">
+            <div class="terminal-header">
+              <div class="terminal-dots">
+                <div class="terminal-dot red"></div>
+                <div class="terminal-dot yellow"></div>
+                <div class="terminal-dot green"></div>
+              </div>
+              <div class="terminal-title">kai-cmo-harness console</div>
+            </div>
+            <div class="terminal-body" id="term-logs">
+              <div class="term-line term-system">Console initialized. Select a campaign template and click Start.</div>
+            </div>
+          </div>
+
+          <!-- Workspace / Document State Preview -->
+          <div class="workspace-preview">
+            <div class="workspace-header">
+              <span class="workspace-title">Workspace Output</span>
+              <span class="workspace-status" id="workspace-status">IDLE</span>
+            </div>
+            <div class="workspace-content" id="workspace-view">
+              <div class="empty-state">
+                Simulator workspace is empty. Start the simulation to watch workspace artifacts render dynamically.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Make it Yours prompt section -->
+      <section class="prompt-footer-box" aria-label="Harness Prompt Setup">
+        <div class="prompt-header">
+          <h2 class="prompt-title">Run this CMO Harness session locally</h2>
+          <button class="copy-btn" id="btn-copy-prompt" aria-label="Copy prompt to clipboard">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span id="copy-btn-text">Copy Prompt</span>
+          </button>
+        </div>
+        <p style="margin-bottom: 1rem; font-size: 0.9rem; color: var(--text-secondary);">
+          You don't need a custom UI to run this loop. Paste this configuration block directly into your own Claude Code terminal workspace (with `kai-cmo-harness` installed) to execute the Copywriter, QA, and Delivery agents locally on your code files.
+        </p>
+        <pre class="prompt-code-block" id="prompt-block">I need to run the CMO Harness pipeline.
+1. Load project memory from ~/.claude/projects/connor-stack/memory/
+2. Ingest the campaign specs from the active file
+3. Run the copywriter skill using the Ralph Wiggum persona settings
+4. Run the QA Auditor tool and calculate the Four U's scorecard
+5. Format the final output as a responsive HTML artifact file and save it to templates/html-artifacts/</pre>
+      </section>
+    </main>
+
+    <!-- Footer Area -->
+    <footer class="footer" role="contentinfo">
+      <p class="footer-text">Built by Connor Gallic. Code licensed MIT. Personal configurations and proofs of concept for remixing.</p>
+      <div class="footer-links">
+        <a href="philosophy.html" class="footer-link">Philosophy</a>
+        <a href="tour.html" class="footer-link">Architecture Tour</a>
+        <a href="spokes.html" class="footer-link">Spoke Registry</a>
+        <a href="https://github.com/cgallic/connor-stack" class="footer-link" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Theme control using light-dark() CSS reactivity and color-scheme properties
+    const themeBtn = document.getElementById('theme-toggle-button');
+    let currentTheme = localStorage.getItem('theme');
+    if (!currentTheme) {
+      currentTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    document.documentElement.style.colorScheme = currentTheme;
+    updateThemeIcon(currentTheme);
+    
+    themeBtn.addEventListener('click', () => {
+      const isDark = document.documentElement.style.colorScheme === 'dark';
+      const nextTheme = isDark ? 'light' : 'dark';
+      document.documentElement.style.colorScheme = nextTheme;
+      localStorage.setItem('theme', nextTheme);
+      updateThemeIcon(nextTheme);
+    });
+
+    function updateThemeIcon(theme) {
+      const isDark = theme === 'dark';
+      themeBtn.querySelector('.theme-icon').innerHTML = isDark 
+        ? `<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M5 5l1.5 1.5"></path><path d="M17.5 17.5L19 19"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M5 19l1.5-1.5"></path><path d="M17.5 6.5L19 5"></path>`
+        : `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+    }
+
+    // Simulation Data & Engine
+    const briefTemplates = {
+      lipsync: {
+        brief: "We need an automated lipsync tool that runs on ffmpeg and pose PNGs. No model inference at render time. Rhubarb integration. Fast and robust without GPU overhead.",
+        copywriter: "Stop wasting compute on lipsync. Cartoonimator takes your character pose PNGs and Rhubarb audio alignments. It spits out clean MP4 lipsync via ffmpeg. Zero GPU required at render time.",
+        qa: {
+          scorecard: { useful: 8.5, urgent: 7.0, unique: 9.0, specific: 8.0 },
+          feedback: "Focus is solid. Let's make sure the delivery agent prints a clean setup CLI example."
+        },
+        seo: "Deterministic Mascot Lipsync: Cartoonimator pose-to-audio engine. Run Rhubarb audio alignments and pose PNGs through ffmpeg for instant rendering without GPU overhead.",
+        delivery: `
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px;">
+            <h4 style="font-family: var(--font-display); color: var(--accent-cyan); margin-bottom: 0.5rem;">Deterministic Mascot Lipsync</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+              Cartoonimator pose-to-audio engine. Run Rhubarb audio alignments and pose PNGs through ffmpeg for instant rendering without GPU overhead.
+            </p>
+            <pre style="background: #000; padding: 0.5rem 0.75rem; border-radius: 4px; font-family: monospace; font-size: 0.75rem; color: #22c55e;">$ cartoonimator --poses ./assets/poses/ --audio speech.wav --out lipsync.mp4</pre>
+          </div>
+        `
+      },
+      openbrane: {
+        brief: "Events.db brain foundation. One SQLite table, one write path, MCP for agents. Every adapter normalizes into it (calendar, drive, stripe, commits). Needs to solve context-window memory evaporation.",
+        copywriter: "Your agents are starving. They don't have memory; they have context windows that evaporate. Open-brane feeds them events.db. One write path, one schema, SQLite.",
+        qa: {
+          scorecard: { useful: 9.0, urgent: 8.0, unique: 8.5, specific: 9.0 },
+          feedback: "Direct problem-solution framing. Excellent. Ready for optimization."
+        },
+        seo: "Open Source SQLite Events Database: Open-brane memory layer for LLM agents. Read and write chronological system logs, Drive updates, and git commits to a single events.db via MCP.",
+        delivery: `
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px;">
+            <h4 style="font-family: var(--font-display); color: var(--accent-purple); margin-bottom: 0.5rem;">SQLite Events Database</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+              Open-brane memory layer for LLM agents. Read and write chronological system logs, Drive updates, and git commits to a single events.db via MCP.
+            </p>
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.75rem;">
+              <thead>
+                <tr style="border-bottom: 1px solid var(--card-border); text-align: left;">
+                  <th style="padding: 0.25rem 0;">Column</th>
+                  <th style="padding: 0.25rem 0;">Type</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td style="padding: 0.25rem 0; font-family: monospace;">timestamp</td><td style="color: var(--accent-cyan);">TEXT (ISO 8601)</td></tr>
+                <tr><td style="padding: 0.25rem 0; font-family: monospace;">source</td><td style="color: var(--accent-cyan);">TEXT</td></tr>
+                <tr><td style="padding: 0.25rem 0; font-family: monospace;">payload</td><td style="color: var(--accent-cyan);">JSON</td></tr>
+              </tbody>
+            </table>
+          </div>
+        `
+      },
+      custom: {
+        brief: "",
+        copywriter: "Your custom agent harness is cooking. Taking input and forming punchy copy assets without the fluff.",
+        qa: {
+          scorecard: { useful: 7.5, urgent: 6.0, unique: 7.0, specific: 7.0 },
+          feedback: "Custom logic parsed successfully. Proceeding with optimization."
+        },
+        seo: "Custom CMO Harness Production: Optimizing custom user briefs for high-efficiency campaign deployments.",
+        delivery: `
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px;">
+            <h4 style="font-family: var(--font-display); color: var(--accent-pink); margin-bottom: 0.5rem;">Custom Harness Deployment</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">
+              Custom brief processed. Final build completed successfully. Ready for copy and verification checks.
+            </p>
+          </div>
+        `
+      }
+    };
+
+    const campaignSelect = document.getElementById('campaign-template');
+    const briefTextarea = document.getElementById('campaign-brief');
+    const btnStart = document.getElementById('btn-start');
+    const btnStep = document.getElementById('btn-step');
+    const btnReset = document.getElementById('btn-reset');
+    const termLogs = document.getElementById('term-logs');
+    const workspaceView = document.getElementById('workspace-view');
+    const workspaceStatus = document.getElementById('workspace-status');
+
+    let currentStep = -1;
+    let selectedCampaign = 'lipsync';
+
+    // Set initial brief text
+    briefTextarea.value = briefTemplates[selectedCampaign].brief;
+
+    campaignSelect.addEventListener('change', (e) => {
+      selectedCampaign = e.target.value;
+      if (selectedCampaign !== 'custom') {
+        briefTextarea.value = briefTemplates[selectedCampaign].brief;
+        briefTextarea.readOnly = true;
+      } else {
+        briefTextarea.value = '';
+        briefTextarea.readOnly = false;
+        briefTextarea.focus();
+      }
+      resetSimulation();
+    });
+
+    btnStart.addEventListener('click', () => {
+      if (currentStep === -1) {
+        startSimulation();
+      }
+    });
+
+    btnStep.addEventListener('click', () => {
+      if (currentStep >= 0 && currentStep < 4) {
+        executeStep(currentStep + 1);
+      }
+    });
+
+    btnReset.addEventListener('click', () => {
+      resetSimulation();
+    });
+
+    function logToTerminal(message, type = '') {
+      const line = document.createElement('div');
+      line.className = `term-line \${type}`;
+      if (type === 'term-prompt') {
+        line.innerHTML = `<span class="term-prompt">$ </span>\${message}`;
+      } else {
+        line.textContent = message;
+      }
+      termLogs.appendChild(line);
+      termLogs.scrollTop = termLogs.scrollHeight;
+    }
+
+    function highlightNode(stepIndex) {
+      document.querySelectorAll('.graph-node').forEach(node => {
+        const nodeStep = parseInt(node.getAttribute('data-step'));
+        if (nodeStep === stepIndex) {
+          node.className = 'graph-node active';
+        } else if (nodeStep < stepIndex) {
+          node.className = 'graph-node completed';
+        } else {
+          node.className = 'graph-node';
+        }
+      });
+    }
+
+    function startSimulation() {
+      currentStep = 0;
+      btnStart.disabled = true;
+      campaignSelect.disabled = true;
+      briefTextarea.disabled = true;
+      btnStep.disabled = false;
+      btnReset.disabled = false;
+
+      // Extract brief text dynamically in case of edits/custom template
+      if (selectedCampaign === 'custom') {
+        briefTemplates.custom.brief = briefTextarea.value || 'Custom Campaign Idea';
+      }
+
+      termLogs.innerHTML = '';
+      logToTerminal('Initializing kai-cmo-harness...', 'term-system');
+      logToTerminal('git status --porcelain', 'term-prompt');
+      logToTerminal('Workspace clean. Ready to ingest brief.');
+      logToTerminal('sqlite3 events.db "INSERT INTO events (source, payload) VALUES (\'cmo-simulator\', \'{brief_ingested}\')"', 'term-prompt');
+      logToTerminal('Logged brief event to database.', 'term-success');
+
+      highlightNode(0);
+      workspaceStatus.textContent = 'INGESTED';
+      workspaceView.innerHTML = `
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px;">
+          <h4 style="font-family: var(--font-display); margin-bottom: 0.5rem;">Raw Brief Payload</h4>
+          <p style="font-family: monospace; font-size: 0.8rem; white-space: pre-wrap; color: var(--text-secondary);">\${briefTemplates[selectedCampaign].brief}</p>
+        </div>
+      `;
+    }
+
+    function executeStep(step) {
+      currentStep = step;
+      highlightNode(step);
+
+      const campaign = briefTemplates[selectedCampaign];
+
+      if (step === 1) {
+        // Copywriter Agent (Ralph Wiggum)
+        workspaceStatus.textContent = 'DRAFTING';
+        logToTerminal('claude --skill write_draft --brief "E:/Dev2/connor-stack/workspace/brief.txt"', 'term-prompt');
+        logToTerminal('[Copywriter] Ingested raw brief. Generating copy assets using Ralph Wiggum rules.');
+        logToTerminal('[Copywriter] Rules check: no emojis, no rhetorical setup-payoff loops.');
+        logToTerminal('[Copywriter] Completed initial draft.', 'term-success');
+
+        workspaceView.innerHTML = `
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px;">
+            <h4 style="font-family: var(--font-display); margin-bottom: 0.5rem; color: var(--accent-pink);">Ralph Wiggum Draft</h4>
+            <p style="font-size: 0.9rem; font-style: italic; color: var(--text-primary); border-left: 2px solid var(--accent-pink); padding-left: 1rem; margin: 1rem 0;">
+              "\${campaign.copywriter}"
+            </p>
+          </div>
+        `;
+      } 
+      else if (step === 2) {
+        // QA Guard Agent
+        workspaceStatus.textContent = 'AUDITING';
+        logToTerminal('claude --skill audit_draft --draft "E:/Dev2/connor-stack/workspace/draft.txt"', 'term-prompt');
+        logToTerminal('[QA Guard] Ingesting draft. Checking criteria...');
+        logToTerminal('[QA Guard] Criterion 1: Useful? Yes.');
+        logToTerminal('[QA Guard] Criterion 2: Urgent? Scored.');
+        logToTerminal('[QA Guard] Criterion 3: Unique? Evaluated.');
+        logToTerminal('[QA Guard] Criterion 4: Ultra-specific? Scored.');
+        logToTerminal(`[QA Guard] Feedback: \${campaign.qa.feedback}`);
+        logToTerminal('[QA Guard] Audit complete. Scorecard output written to events.db.', 'term-success');
+
+        const metrics = campaign.qa.scorecard;
+        workspaceView.innerHTML = `
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px;">
+            <h4 style="font-family: var(--font-display); margin-bottom: 0.5rem; color: var(--accent-cyan);">QA Guard Scorecard</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+              Feedback: "\${campaign.qa.feedback}"
+            </p>
+            <div class="rating-metrics">
+              <div class="metric-card">
+                <div class="metric-name">Useful</div>
+                <div class="metric-value">\${metrics.useful.toFixed(1)}/10</div>
+                <div class="metric-bar-container"><div class="metric-bar" id="bar-useful"></div></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-name">Urgent</div>
+                <div class="metric-value">\${metrics.urgent.toFixed(1)}/10</div>
+                <div class="metric-bar-container"><div class="metric-bar" id="bar-urgent"></div></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-name">Unique</div>
+                <div class="metric-value">\${metrics.unique.toFixed(1)}/10</div>
+                <div class="metric-bar-container"><div class="metric-bar" id="bar-unique"></div></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-name">Ultra-specific</div>
+                <div class="metric-value">\${metrics.specific.toFixed(1)}/10</div>
+                <div class="metric-bar-container"><div class="metric-bar" id="bar-specific"></div></div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // Trigger animations
+        setTimeout(() => {
+          document.getElementById('bar-useful').style.width = `\${metrics.useful * 10}%`;
+          document.getElementById('bar-urgent').style.width = `\${metrics.urgent * 10}%`;
+          document.getElementById('bar-unique').style.width = `\${metrics.unique * 10}%`;
+          document.getElementById('bar-specific').style.width = `\${metrics.specific * 10}%`;
+        }, 50);
+      } 
+      else if (step === 3) {
+        // SEO Specialist Agent
+        workspaceStatus.textContent = 'OPTIMIZING';
+        logToTerminal('claude --skill optimize_seo --draft "E:/Dev2/connor-stack/workspace/draft.txt"', 'term-prompt');
+        logToTerminal('[SEO Specialist] Adjusting heading structures. Injecting key terms.');
+        logToTerminal('[SEO Specialist] Ensuring title tag length is optimized.');
+        logToTerminal('[SEO Specialist] Finished search engine formatting.', 'term-success');
+
+        workspaceView.innerHTML = `
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px;">
+            <h4 style="font-family: var(--font-display); margin-bottom: 0.5rem; color: var(--accent-purple);">SEO Optimized Text</h4>
+            <p style="font-size: 0.9rem; color: var(--text-primary); line-height: 1.5; margin: 1rem 0;">
+              \${campaign.seo}
+            </p>
+          </div>
+        `;
+      } 
+      else if (step === 4) {
+        // Delivery Agent
+        workspaceStatus.textContent = 'DELIVERED';
+        logToTerminal('claude --skill build_artifact --text "E:/Dev2/connor-stack/workspace/optimized.txt"', 'term-prompt');
+        logToTerminal('[Delivery Agent] Packaging campaign assets as responsive HTML components.');
+        logToTerminal('[Delivery Agent] Saving final files to templates/html-artifacts/.');
+        logToTerminal('sqlite3 events.db "INSERT INTO events (source, payload) VALUES (\'delivery-agent\', \'{\\\"status\\\":\\\"success\\\"}\')"', 'term-prompt');
+        logToTerminal('[Delivery Agent] Campaign finalized and logged. Pipeline complete.', 'term-success');
+
+        workspaceView.innerHTML = campaign.delivery;
+        btnStep.disabled = true;
+      }
+    }
+
+    function resetSimulation() {
+      currentStep = -1;
+      btnStart.disabled = false;
+      campaignSelect.disabled = false;
+      briefTextarea.disabled = selectedCampaign !== 'custom';
+      btnStep.disabled = true;
+      btnReset.disabled = true;
+
+      document.querySelectorAll('.graph-node').forEach(node => {
+        node.className = 'graph-node';
+      });
+
+      termLogs.innerHTML = '<div class="term-line term-system">Console initialized. Select a campaign template and click Start.</div>';
+      workspaceStatus.textContent = 'IDLE';
+      workspaceView.innerHTML = `
+        <div class="empty-state">
+          Simulator workspace is empty. Start the simulation to watch workspace artifacts render dynamically.
+        </div>
+      `;
+    }
+
+    // Copy Prompt Functionality
+    const btnCopyPrompt = document.getElementById('btn-copy-prompt');
+    const copyBtnText = document.getElementById('copy-btn-text');
+    const promptCodeBlock = document.getElementById('prompt-block');
+
+    btnCopyPrompt.addEventListener('click', () => {
+      navigator.clipboard.writeText(promptCodeBlock.textContent).then(() => {
+        copyBtnText.textContent = 'Copied!';
+        btnCopyPrompt.style.borderColor = 'var(--accent-purple)';
+        btnCopyPrompt.style.color = 'var(--accent-purple)';
+        setTimeout(() => {
+          copyBtnText.textContent = 'Copy Prompt';
+          btnCopyPrompt.style.borderColor = 'var(--card-border)';
+          btnCopyPrompt.style.color = 'var(--text-secondary)';
+        }, 2000);
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>connor-stack — Spoke Registry</title>
+  <meta name="description" content="Browse the full directory of open-source agent repositories, databases, safety protocols, and media tools in Connor Gallic's AI stack.">
+  <link rel="stylesheet" href="index.css">
+  <style>
+    .registry-controls {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .search-input {
+      flex-grow: 1;
+      min-width: 250px;
+      padding: 0.75rem 1rem;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color var(--transition-speed);
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-cyan);
+    }
+
+    .filter-btn-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-secondary);
+      border-radius: 8px;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all var(--transition-speed);
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: rgba(6, 182, 212, 0.05);
+      border-color: var(--accent-cyan);
+      color: var(--text-primary);
+    }
+
+    /* Grid layout */
+    .spoke-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 4rem;
+    }
+
+    .spoke-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: all var(--transition-speed) var(--transition-bounce);
+    }
+
+    .spoke-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--card-border-hover);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .spoke-card-header {
+      margin-bottom: 1rem;
+    }
+
+    .spoke-tag {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 0.5rem;
+      border: 1px solid transparent;
+    }
+
+    .spoke-tag.brain {
+      color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.05);
+      border-color: rgba(6, 182, 212, 0.1);
+    }
+
+    .spoke-tag.production {
+      color: var(--accent-pink);
+      background: rgba(236, 72, 153, 0.05);
+      border-color: rgba(236, 72, 153, 0.1);
+    }
+
+    .spoke-tag.safety {
+      color: var(--accent-blue);
+      background: rgba(59, 130, 246, 0.05);
+      border-color: rgba(59, 130, 246, 0.1);
+    }
+
+    .spoke-tag.community {
+      color: var(--accent-purple);
+      background: rgba(168, 85, 247, 0.05);
+      border-color: rgba(168, 85, 247, 0.1);
+    }
+
+    .spoke-name {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .spoke-description {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .spoke-footer {
+      margin-top: 1.5rem;
+    }
+
+    .github-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 600;
+      font-family: var(--font-display);
+      transition: color var(--transition-speed);
+    }
+
+    .github-link:hover {
+      color: var(--text-primary);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="layout-container">
+    <!-- Navigation bar -->
+    <header class="nav-header" role="banner">
+      <a href="index.html" class="brand" id="nav-brand-link">
+        <span class="brand-accent">connor-stack</span>
+      </a>
+      <nav class="nav-actions" role="navigation" aria-label="Main Navigation">
+        <a href="philosophy.html" class="nav-link" id="nav-philosophy-link">Manifesto</a>
+        <a href="tour.html" class="nav-link" id="nav-tour-link">Tour</a>
+        <a href="spokes.html" class="nav-link active" id="nav-spokes-link">Spokes</a>
+        <button class="theme-toggle-btn" id="theme-toggle-button" aria-label="Toggle color theme" title="Toggle dark/light mode">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2"></path>
+            <path d="M12 20v2"></path>
+            <path d="M5 5l1.5 1.5"></path>
+            <path d="M17.5 17.5L19 19"></path>
+            <path d="M2 12h2"></path>
+            <path d="M20 12h2"></path>
+            <path d="M5 19l1.5-1.5"></path>
+            <path d="M17.5 6.5L19 5"></path>
+          </svg>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main role="main">
+      <section aria-labelledby="spokes-heading">
+        <span class="hero-tag">Registry Catalog</span>
+        <h1 class="hero-title" id="spokes-heading" style="text-align: left; margin-bottom: 0.5rem;">Spoke Directory</h1>
+        <p style="margin-bottom: 2rem; max-width: 800px;">
+          Explore all modular components and adapter scripts that form Connor's personal environment. Every item is open-source and standalone.
+        </p>
+      </section>
+
+      <!-- Search & Filter Area -->
+      <div class="registry-controls">
+        <input type="text" class="search-input" id="search-box" placeholder="Search by spoke name or keywords...">
+        <div class="filter-btn-group">
+          <button class="filter-btn active" data-filter="all">All Layers</button>
+          <button class="filter-btn" data-filter="brain">Brain</button>
+          <button class="filter-btn" data-filter="production">Production</button>
+          <button class="filter-btn" data-filter="safety">Safety</button>
+          <button class="filter-btn" data-filter="community">Community</button>
+        </div>
+      </div>
+
+      <!-- Spoke Cards Grid -->
+      <div class="spoke-grid" id="spoke-grid-container">
+        <!-- Javascript renders spokes here -->
+      </div>
+    </main>
+
+    <!-- Footer Area -->
+    <footer class="footer" role="contentinfo">
+      <p class="footer-text">Built by Connor Gallic. Code licensed MIT. Personal configurations and proofs of concept for remixing.</p>
+      <div class="footer-links">
+        <a href="philosophy.html" class="footer-link">Philosophy</a>
+        <a href="tour.html" class="footer-link">Architecture Tour</a>
+        <a href="spokes.html" class="footer-link">Spoke Registry</a>
+        <a href="https://github.com/cgallic/connor-stack" class="footer-link" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Theme control using light-dark() CSS reactivity and color-scheme properties
+    const themeBtn = document.getElementById('theme-toggle-button');
+    let currentTheme = localStorage.getItem('theme');
+    if (!currentTheme) {
+      currentTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    document.documentElement.style.colorScheme = currentTheme;
+    updateThemeIcon(currentTheme);
+    
+    themeBtn.addEventListener('click', () => {
+      const isDark = document.documentElement.style.colorScheme === 'dark';
+      const nextTheme = isDark ? 'light' : 'dark';
+      document.documentElement.style.colorScheme = nextTheme;
+      localStorage.setItem('theme', nextTheme);
+      updateThemeIcon(nextTheme);
+    });
+
+    function updateThemeIcon(theme) {
+      const isDark = theme === 'dark';
+      themeBtn.querySelector('.theme-icon').innerHTML = isDark 
+        ? `<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M5 5l1.5 1.5"></path><path d="M17.5 17.5L19 19"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M5 19l1.5-1.5"></path><path d="M17.5 6.5L19 5"></path>`
+        : `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+    }
+
+    // Full spoke catalog
+    const spokes = [
+      {
+        name: "open-brane",
+        category: "brain",
+        desc: "Persistent memory database framework using SQLite. Consolidates multi-platform chronological logs to a single events.db table.",
+        url: "https://github.com/cgallic/open-brane"
+      },
+      {
+        name: "paperboy",
+        category: "brain",
+        desc: "Daily researcher agent. Ingests preprints, scores them locally against interests, and outputs structured digests to Discord.",
+        url: "https://github.com/cgallic/paperboy"
+      },
+      {
+        name: "blackbox",
+        category: "brain",
+        desc: "Chronological compiler rules optimization. Audits Claude transcripts to resolve behavioral bottlenecks.",
+        url: "https://github.com/cgallic/blackbox"
+      },
+      {
+        name: "kai-cmo-harness",
+        category: "production",
+        desc: "Orchestration system routing tasks across copywriters, QA auditors, and formatting specialists in Claude Code.",
+        url: "https://github.com/cgallic/kai-cmo-harness"
+      },
+      {
+        name: "shorts-pipeline",
+        category: "production",
+        desc: "Automated video pipeline cutting clips with ffmpeg, inserting subtitles, and preparing YouTube assets.",
+        url: "https://github.com/cgallic/shorts-pipeline"
+      },
+      {
+        name: "cartoonimator",
+        category: "production",
+        desc: "Fast, deterministic pose lipsync mapper using Rhubarb audio outputs. Zero runtime inference needed.",
+        url: "https://github.com/cgallic/cartoonimator"
+      },
+      {
+        name: "zehrava-gate",
+        category: "safety",
+        desc: "Pre-commit security logic gate evaluating code additions and security credentials before pushing edits.",
+        url: "https://github.com/cgallic/zehrava-gate"
+      },
+      {
+        name: "diwan",
+        category: "safety",
+        desc: "Structured proof verification protocol generating decision receipts before executing destructive CLI tasks.",
+        url: "https://github.com/cgallic/diwan"
+      },
+      {
+        name: "mcp-browser",
+        category: "safety",
+        desc: "Terminal-based installer utility designed to configure Model Context Protocol (MCP) server endpoints quickly.",
+        url: "https://github.com/cgallic/mcp-browser"
+      },
+      {
+        name: "avp",
+        category: "safety",
+        desc: "Cryptographic identity verification system signing code files and verification proofs between agent runs.",
+        url: "https://github.com/cgallic/avp"
+      },
+      {
+        name: "mydeadinternet",
+        category: "community",
+        desc: "The core sandbox deployment hub showing decentralized community demonstrations of autonomous agent operations.",
+        url: "https://github.com/cgallic/mydeadinternet"
+      },
+      {
+        name: "dead-internet-core",
+        category: "community",
+        desc: "Utility libraries, client hooks, and protocols sharing operations across independent dead internet sandbox nodes.",
+        url: "https://github.com/cgallic/dead-internet-core"
+      },
+      {
+        name: "mdi-mcp-server",
+        category: "community",
+        desc: "MCP endpoints allowing LLMs to communicate with dead internet nodes directly in the terminal interface.",
+        url: "https://github.com/cgallic/mdi-mcp-server"
+      },
+      {
+        name: "awesome-meetkai",
+        category: "community",
+        desc: "A curated index cataloguing community server deployments, skills, and configuration overrides.",
+        url: "https://github.com/cgallic/awesome-meetkai"
+      },
+      {
+        name: "wake-up-skill",
+        category: "community",
+        desc: "Custom scheduler plugin checking daemon logs and dispatching alerts to offline system threads.",
+        url: "https://github.com/cgallic/wake-up-skill"
+      },
+      {
+        name: "agent-webhook-gateway",
+        category: "safety",
+        desc: "FastAPI server exposing local Python scripts, automation loops, and event pipelines behind safe REST endpoints.",
+        url: "https://github.com/cgallic/agent-webhook-gateway"
+      }
+    ];
+
+    const gridContainer = document.getElementById('spoke-grid-container');
+    const searchBox = document.getElementById('search-box');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+
+    let currentFilter = 'all';
+    let searchQuery = '';
+
+    function renderSpokes() {
+      gridContainer.innerHTML = '';
+      
+      const filtered = spokes.filter(s => {
+        const matchesCategory = currentFilter === 'all' || s.category === currentFilter;
+        const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                              s.desc.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesCategory && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        gridContainer.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-muted);">
+            No spokes match the current search filters.
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(s => {
+        const card = document.createElement('div');
+        card.className = 'spoke-card';
+        card.innerHTML = `
+          <div class="spoke-card-header">
+            <span class="spoke-tag \${s.category}">\${s.category}</span>
+            <h3 class="spoke-name">\${s.name}</h3>
+            <p class="spoke-description">\${s.desc}</p>
+          </div>
+          <div class="spoke-footer">
+            <a href="\${s.url}" class="github-link" target="_blank" rel="noopener">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+              </svg>
+              <span>View Spoke</span>
+            </a>
+          </div>
+        `;
+        gridContainer.appendChild(card);
+      });
+    }
+
+    // Search input handler
+    searchBox.addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderSpokes();
+    });
+
+    // Category filter handler
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.getAttribute('data-filter');
+        renderSpokes();
+      });
+    });
+
+    // Initial render
+    renderSpokes();
+  </script>
+</body>
+</html>

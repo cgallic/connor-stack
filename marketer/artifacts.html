@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>connor-stack — HTML Mockup Artifacts</title>
+  <meta name="description" content="Preview responsive HTML mockups generated automatically by Connor Gallic's AI agents.">
+  <link rel="stylesheet" href="../index.css">
+  <style>
+    .sandbox-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 2rem;
+      margin-top: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    @media (max-width: 1024px) {
+      .sandbox-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Sandbox controls */
+    .sandbox-controls {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      align-self: start;
+    }
+
+    .control-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .btn-toggle {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-secondary);
+      border-radius: 8px;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-align: left;
+      transition: all var(--transition-speed);
+    }
+
+    .btn-toggle:hover, .btn-toggle.active {
+      border-color: var(--accent-pink);
+      color: var(--text-primary);
+      background: rgba(236, 72, 153, 0.05);
+    }
+
+    /* Preview frame */
+    .preview-frame-container {
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #08070b;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      height: 550px;
+    }
+
+    .frame-bar {
+      background: #15141d;
+      padding: 0.75rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .frame-address {
+      flex-grow: 1;
+      max-width: 400px;
+      background: #08070b;
+      border: 1px solid var(--code-border);
+      border-radius: 6px;
+      padding: 0.25rem 0.75rem;
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    .frame-body {
+      flex-grow: 1;
+      background: #ffffff;
+      border: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    .prompt-card {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .prompt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .prompt-title {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-secondary);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all var(--transition-speed);
+    }
+
+    .copy-btn:hover {
+      border-color: var(--accent-pink);
+      color: var(--text-primary);
+    }
+
+    .prompt-text {
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="layout-container">
+    <!-- Navigation bar -->
+    <header class="nav-header" role="banner">
+      <a href="../index.html" class="brand" id="nav-brand-link">
+        <span class="brand-accent">connor-stack</span>
+      </a>
+      <nav class="nav-actions" role="navigation" aria-label="Main Navigation">
+        <a href="../philosophy.html" class="nav-link" id="nav-philosophy-link">Manifesto</a>
+        <a href="../tour.html" class="nav-link" id="nav-tour-link">Tour</a>
+        <a href="../spokes.html" class="nav-link" id="nav-spokes-link">Spokes</a>
+        <button class="theme-toggle-btn" id="theme-toggle-button" aria-label="Toggle color theme" title="Toggle dark/light mode">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2"></path>
+            <path d="M12 20v2"></path>
+            <path d="M5 5l1.5 1.5"></path>
+            <path d="M17.5 17.5L19 19"></path>
+            <path d="M2 12h2"></path>
+            <path d="M20 12h2"></path>
+            <path d="M5 19l1.5-1.5"></path>
+            <path d="M17.5 6.5L19 5"></path>
+          </svg>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main role="main">
+      <section aria-labelledby="sandbox-heading">
+        <span class="hero-tag" style="color: var(--accent-pink); border-color: rgba(236, 72, 153, 0.25); background-color: rgba(236, 72, 153, 0.05);">Marketer / Sandbox</span>
+        <h1 class="hero-title" id="sandbox-heading" style="text-align: left; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--text-primary) 30%, var(--accent-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">HTML Mockup Artifacts</h1>
+        <p style="margin-bottom: 2rem; max-width: 800px; color: var(--text-secondary);">
+          Connor's agents deliver fully styled landing page wireframes as output files so clients can immediately visualize concepts in their browser.
+        </p>
+      </section>
+
+      <div class="sandbox-layout">
+        <!-- Sidebar Controls -->
+        <div class="sandbox-controls">
+          <h2 class="control-title">Select Mockup</h2>
+          
+          <button class="btn-toggle active" data-mock="lipsync">Cartoonimator (Lipsync App)</button>
+          <button class="btn-toggle" data-mock="openbrane">Open-Brane (SQLite Explorer)</button>
+
+          <!-- Prompt Box -->
+          <div class="prompt-card">
+            <div class="prompt-header">
+              <span class="prompt-title">Claude Prompt</span>
+              <button class="copy-btn" id="btn-copy-prompt">Copy</button>
+            </div>
+            <pre class="prompt-text" id="prompt-block">Format this campaign copy draft as a single responsive HTML wireframe file utilizing inline CSS gradients, Outfit/Inter google fonts, and clean flex layouts. Avoid placeholders; write real illustrative feature cards.</pre>
+          </div>
+        </div>
+
+        <!-- Simulated Iframe preview -->
+        <div class="preview-frame-container">
+          <div class="frame-bar">
+            <div style="display:flex; gap:0.35rem;">
+              <div style="width:10px; height:10px; background:#ef4444; border-radius:50%;"></div>
+              <div style="width:10px; height:10px; background:#eab308; border-radius:50%;"></div>
+              <div style="width:10px; height:10px; background:#22c55e; border-radius:50%;"></div>
+            </div>
+            <div class="frame-address" id="frame-url">http://localhost:3000/clients/nike/final/lipsync.html</div>
+            <div style="width: 30px;"></div>
+          </div>
+          
+          <iframe class="frame-body" id="preview-iframe" title="Interactive HTML wireframe mockup container"></iframe>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer Area -->
+    <footer class="footer" role="contentinfo">
+      <p class="footer-text">Built by Connor Gallic. Code licensed MIT. Personal configurations and proofs of concept for remixing.</p>
+      <div class="footer-links">
+        <a href="../philosophy.html" class="footer-link">Philosophy</a>
+        <a href="../tour.html" class="footer-link">Architecture Tour</a>
+        <a href="../spokes.html" class="footer-link">Spoke Registry</a>
+        <a href="https://github.com/cgallic/connor-stack" class="footer-link" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Theme control using light-dark() CSS reactivity and color-scheme properties
+    const themeBtn = document.getElementById('theme-toggle-button');
+    let currentTheme = localStorage.getItem('theme');
+    if (!currentTheme) {
+      currentTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    document.documentElement.style.colorScheme = currentTheme;
+    updateThemeIcon(currentTheme);
+    
+    themeBtn.addEventListener('click', () => {
+      const isDark = document.documentElement.style.colorScheme === 'dark';
+      const nextTheme = isDark ? 'light' : 'dark';
+      document.documentElement.style.colorScheme = nextTheme;
+      localStorage.setItem('theme', nextTheme);
+      updateThemeIcon(nextTheme);
+    });
+
+    function updateThemeIcon(theme) {
+      const isDark = theme === 'dark';
+      themeBtn.querySelector('.theme-icon').innerHTML = isDark 
+        ? `<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M5 5l1.5 1.5"></path><path d="M17.5 17.5L19 19"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M5 19l1.5-1.5"></path><path d="M17.5 6.5L19 5"></path>`
+        : `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+    }
+
+    // Mock HTML structures loaded into iframe via data uri
+    const mockups = {
+      lipsync: {
+        url: "http://localhost:3000/clients/nike/final/lipsync.html",
+        html: `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+            <style>
+              body {
+                background: #08070b;
+                color: #fafafa;
+                font-family: 'Space Grotesk', sans-serif;
+                margin: 0;
+                padding: 2rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                box-sizing: border-box;
+              }
+              .card {
+                max-width: 420px;
+                background: rgba(255,255,255,0.03);
+                border: 1px solid rgba(255,255,255,0.08);
+                border-radius: 12px;
+                padding: 2rem;
+                text-align: center;
+              }
+              h2 {
+                color: #ec4899;
+                margin-top: 0;
+                font-size: 1.5rem;
+              }
+              p {
+                color: #94a3b8;
+                font-size: 0.9rem;
+                line-height: 1.5;
+                margin-bottom: 1.5rem;
+              }
+              .btn {
+                background: linear-gradient(135deg, #ec4899, #3b82f6);
+                border: none;
+                color: white;
+                padding: 0.6rem 1.2rem;
+                border-radius: 6px;
+                font-weight: 600;
+                font-family: inherit;
+                cursor: pointer;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="card">
+              <h2>Deterministic Mascot Lipsync</h2>
+              <p>Cartoonimator renders character mouth poses directly aligned to speech audio. Cut GPU rendering costs and runtime model overhead. Fast, CLI-based pipeline.</p>
+              <button class="btn">Deploy Spoke</button>
+            </div>
+          </body>
+          </html>
+        `
+      },
+      openbrane: {
+        url: "http://localhost:3000/clients/openbrane/final/explorer.html",
+        html: `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+            <style>
+              body {
+                background: #08070b;
+                color: #fafafa;
+                font-family: 'Space Grotesk', sans-serif;
+                margin: 0;
+                padding: 2rem;
+                box-sizing: border-box;
+              }
+              .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid rgba(255,255,255,0.08);
+                padding-bottom: 1rem;
+                margin-bottom: 1.5rem;
+              }
+              h2 {
+                margin: 0;
+                color: #06b6d4;
+                font-size: 1.25rem;
+              }
+              .status {
+                font-size: 0.75rem;
+                background: rgba(6,182,212,0.1);
+                color: #06b6d4;
+                padding: 0.2rem 0.5rem;
+                border-radius: 4px;
+              }
+              table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 0.85rem;
+              }
+              th, td {
+                text-align: left;
+                padding: 0.5rem 0;
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+              }
+              th {
+                color: #94a3b8;
+              }
+              td.mono {
+                font-family: monospace;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h2>open-brane events.db</h2>
+              <span class="status">LIVE FEED</span>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Source</th>
+                  <th>Payload</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="mono">15:08:12</td>
+                  <td>paperboy</td>
+                  <td class="mono">{"arxiv_id":"2605.1012"}</td>
+                </tr>
+                <tr>
+                  <td class="mono">15:08:01</td>
+                  <td>zehrava</td>
+                  <td class="mono">{"commit":"e49b81f"}</td>
+                </tr>
+              </tbody>
+            </table>
+          </body>
+          </html>
+        `
+      }
+    };
+
+    const iframe = document.getElementById('preview-iframe');
+    const urlDisplay = document.getElementById('frame-url');
+    const toggleButtons = document.querySelectorAll('.btn-toggle');
+
+    function loadMockup(key) {
+      const mock = mockups[key];
+      if (mock) {
+        urlDisplay.textContent = mock.url;
+        
+        // Write content directly into iframe
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        doc.open();
+        doc.write(mock.html);
+        doc.close();
+      }
+    }
+
+    toggleButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        toggleButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const key = btn.getAttribute('data-mock');
+        loadMockup(key);
+      });
+    });
+
+    // Copy Prompt Action
+    const btnCopyPrompt = document.getElementById('btn-copy-prompt');
+    btnCopyPrompt.addEventListener('click', () => {
+      const code = document.getElementById('prompt-block').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        btnCopyPrompt.textContent = 'Copied!';
+        btnCopyPrompt.style.borderColor = 'var(--accent-pink)';
+        btnCopyPrompt.style.color = 'var(--accent-pink)';
+        setTimeout(() => {
+          btnCopyPrompt.textContent = 'Copy';
+          btnCopyPrompt.style.borderColor = 'var(--card-border)';
+          btnCopyPrompt.style.color = 'var(--text-secondary)';
+        }, 1500);
+      });
+    });
+
+    // Initial load
+    window.addEventListener('load', () => {
+      loadMockup('lipsync');
+    });
+  </script>
+</body>
+</html>

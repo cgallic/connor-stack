@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>connor-stack — Architecture Tour</title>
+  <meta name="description" content="Take an interactive tour of Connor Gallic's hub-and-spoke AI agent architecture. Discover the Brain, Production, Safety, and Community layers.">
+  <link rel="stylesheet" href="index.css">
+  <style>
+    .tour-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 3rem;
+      margin-top: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    @media (max-width: 1024px) {
+      .tour-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+
+    /* Diagram Panel */
+    .diagram-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .diagram-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 2rem;
+      align-self: flex-start;
+    }
+
+    /* Interactive Graph Styles */
+    .graph-wrapper {
+      position: relative;
+      width: 100%;
+      min-height: 480px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Hub Node */
+    .hub-node {
+      width: 120px;
+      height: 120px;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #ffffff;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 0.95rem;
+      box-shadow: 0 0 30px rgba(6, 182, 212, 0.3);
+      cursor: pointer;
+      z-index: 10;
+      transition: all var(--transition-speed) var(--transition-bounce);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .hub-node:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 40px rgba(6, 182, 212, 0.5);
+    }
+
+    /* Layer / Spoke Nodes */
+    .layer-group {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: center;
+      z-index: 5;
+    }
+
+    /* Positioning groups around the hub */
+    .layer-group.brain {
+      top: 0;
+      left: 10%;
+    }
+    .layer-group.production {
+      top: 0;
+      right: 10%;
+    }
+    .layer-group.safety {
+      bottom: 0;
+      left: 10%;
+    }
+    .layer-group.community {
+      bottom: 0;
+      right: 10%;
+    }
+
+    .layer-header {
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .spoke-node {
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-primary);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-speed);
+      text-align: center;
+      width: 140px;
+    }
+
+    .spoke-node:hover, .spoke-node.selected {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.15);
+      background: rgba(6, 182, 212, 0.05);
+      transform: translateY(-2px);
+    }
+
+    /* Layer specific styles for colors */
+    .layer-group.brain .spoke-node:hover, 
+    .layer-group.brain .spoke-node.selected {
+      border-color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.05);
+    }
+
+    .layer-group.production .spoke-node:hover,
+    .layer-group.production .spoke-node.selected {
+      border-color: var(--accent-pink);
+      background: rgba(236, 72, 153, 0.05);
+    }
+
+    .layer-group.safety .spoke-node:hover,
+    .layer-group.safety .spoke-node.selected {
+      border-color: var(--accent-blue);
+      background: rgba(59, 130, 246, 0.05);
+    }
+
+    .layer-group.community .spoke-node:hover,
+    .layer-group.community .spoke-node.selected {
+      border-color: var(--accent-purple);
+      background: rgba(168, 85, 247, 0.05);
+    }
+
+    /* Details Panel */
+    .details-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .details-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem;
+      min-height: 480px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .details-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .details-meta {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .details-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .details-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .details-code-title {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .details-code {
+      background: #0d0c12;
+      border: 1px solid var(--code-border);
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+      white-space: pre-wrap;
+    }
+
+    .btn-repo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.25rem;
+      border-radius: 8px;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-decoration: none;
+      width: fit-content;
+      transition: all var(--transition-speed);
+      border: 1px solid var(--card-border);
+      background: var(--code-bg);
+      color: var(--text-primary);
+    }
+
+    .btn-repo:hover {
+      border-color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.05);
+    }
+
+    /* Responsive adjustments for diagram nodes positioning */
+    @media (max-width: 768px) {
+      .graph-wrapper {
+        min-height: auto;
+        flex-direction: column;
+        gap: 2rem;
+        padding: 2rem 0;
+      }
+      .layer-group {
+        position: relative;
+        top: auto !important;
+        bottom: auto !important;
+        left: auto !important;
+        right: auto !important;
+        width: 100%;
+      }
+      .hub-node {
+        order: -1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="layout-container">
+    <!-- Navigation bar -->
+    <header class="nav-header" role="banner">
+      <a href="index.html" class="brand" id="nav-brand-link">
+        <span class="brand-accent">connor-stack</span>
+      </a>
+      <nav class="nav-actions" role="navigation" aria-label="Main Navigation">
+        <a href="philosophy.html" class="nav-link" id="nav-philosophy-link">Manifesto</a>
+        <a href="tour.html" class="nav-link active" id="nav-tour-link">Tour</a>
+        <a href="spokes.html" class="nav-link" id="nav-spokes-link">Spokes</a>
+        <button class="theme-toggle-btn" id="theme-toggle-button" aria-label="Toggle color theme" title="Toggle dark/light mode">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2"></path>
+            <path d="M12 20v2"></path>
+            <path d="M5 5l1.5 1.5"></path>
+            <path d="M17.5 17.5L19 19"></path>
+            <path d="M2 12h2"></path>
+            <path d="M20 12h2"></path>
+            <path d="M5 19l1.5-1.5"></path>
+            <path d="M17.5 6.5L19 5"></path>
+          </svg>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main role="main">
+      <section aria-labelledby="tour-heading">
+        <span class="hero-tag">System Map</span>
+        <h1 class="hero-title" id="tour-heading" style="text-align: left; margin-bottom: 0.5rem;">Architecture Tour</h1>
+        <p style="margin-bottom: 2rem; max-width: 800px;">
+          This repository acts as the central hub. Everything that performs actual logic or data capture is a standalone repository (a spoke) linked below. Click any node in the diagram to inspect its role and configuration schema.
+        </p>
+      </section>
+
+      <div class="tour-layout">
+        <!-- Interactive Node Graph -->
+        <div class="diagram-panel">
+          <h2 class="diagram-title">System Layer Map</h2>
+          
+          <div class="graph-wrapper">
+            <!-- Center Hub -->
+            <div class="hub-node" id="node-hub" data-node="hub">
+              <span>connor-stack</span>
+              <span style="font-size: 0.65rem; opacity: 0.8; margin-top: 0.25rem;">(The Hub)</span>
+            </div>
+
+            <!-- Brain Group (Top Left) -->
+            <div class="layer-group brain">
+              <span class="layer-header" style="color: var(--accent-cyan);">Brain Layer</span>
+              <button class="spoke-node" id="node-open-brane" data-node="open-brane">open-brane</button>
+              <button class="spoke-node" id="node-paperboy" data-node="paperboy">paperboy</button>
+              <button class="spoke-node" id="node-blackbox" data-node="blackbox">blackbox</button>
+            </div>
+
+            <!-- Production Group (Top Right) -->
+            <div class="layer-group production">
+              <span class="layer-header" style="color: var(--accent-pink);">Production</span>
+              <button class="spoke-node" id="node-kai-cmo" data-node="kai-cmo">kai-cmo-harness</button>
+              <button class="spoke-node" id="node-shorts" data-node="shorts">shorts-pipeline</button>
+              <button class="spoke-node" id="node-cartoonimator" data-node="cartoonimator">cartoonimator</button>
+            </div>
+
+            <!-- Safety Group (Bottom Left) -->
+            <div class="layer-group safety">
+              <span class="layer-header" style="color: var(--accent-blue);">Safety & Interop</span>
+              <button class="spoke-node" id="node-zehrava" data-node="zehrava">zehrava-gate</button>
+              <button class="spoke-node" id="node-diwan" data-node="diwan">diwan</button>
+              <button class="spoke-node" id="node-avp" data-node="avp">avp</button>
+            </div>
+
+            <!-- Community Group (Bottom Right) -->
+            <div class="layer-group community">
+              <span class="layer-header" style="color: var(--accent-purple);">Community</span>
+              <button class="spoke-node" id="node-mdi" data-node="mdi">mydeadinternet</button>
+              <button class="spoke-node" id="node-awesome" data-node="awesome">awesome-meetkai</button>
+              <button class="spoke-node" id="node-wakeup" data-node="wakeup">wake-up-skill</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Node Details panel -->
+        <div class="details-panel">
+          <div class="details-card" id="details-view">
+            <div class="details-header">
+              <span class="details-meta" id="spoke-meta">Hub Portal</span>
+              <h2 class="details-title" id="spoke-title">connor-stack</h2>
+              <p class="details-desc" id="spoke-desc">
+                The central choose-your-own-adventure documentation portal and setup configuration hub. Houses markdown prompt specifications that visitors can copy and paste into their local environments to clone and configure the remaining spoke repositories automatically.
+              </p>
+              
+              <div id="code-section">
+                <h3 class="details-code-title">Configuration Interface</h3>
+                <pre class="details-code" id="spoke-code">setup-prompts/
+├── 00-orientation.md
+├── marketer-quickstart.md
+└── agent-builder-quickstart.md</pre>
+              </div>
+            </div>
+
+            <a href="https://github.com/cgallic/connor-stack" class="btn-repo" id="spoke-link" target="_blank" rel="noopener">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+              </svg>
+              <span>View Repository</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer Area -->
+    <footer class="footer" role="contentinfo">
+      <p class="footer-text">Built by Connor Gallic. Code licensed MIT. Personal configurations and proofs of concept for remixing.</p>
+      <div class="footer-links">
+        <a href="philosophy.html" class="footer-link">Philosophy</a>
+        <a href="tour.html" class="footer-link">Architecture Tour</a>
+        <a href="spokes.html" class="footer-link">Spoke Registry</a>
+        <a href="https://github.com/cgallic/connor-stack" class="footer-link" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Theme control using light-dark() CSS reactivity and color-scheme properties
+    const themeBtn = document.getElementById('theme-toggle-button');
+    let currentTheme = localStorage.getItem('theme');
+    if (!currentTheme) {
+      currentTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    document.documentElement.style.colorScheme = currentTheme;
+    updateThemeIcon(currentTheme);
+    
+    themeBtn.addEventListener('click', () => {
+      const isDark = document.documentElement.style.colorScheme === 'dark';
+      const nextTheme = isDark ? 'light' : 'dark';
+      document.documentElement.style.colorScheme = nextTheme;
+      localStorage.setItem('theme', nextTheme);
+      updateThemeIcon(nextTheme);
+    });
+
+    function updateThemeIcon(theme) {
+      const isDark = theme === 'dark';
+      themeBtn.querySelector('.theme-icon').innerHTML = isDark 
+        ? `<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M5 5l1.5 1.5"></path><path d="M17.5 17.5L19 19"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M5 19l1.5-1.5"></path><path d="M17.5 6.5L19 5"></path>`
+        : `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+    }
+
+    // Nodes database
+    const nodesDb = {
+      hub: {
+        meta: "Hub Portal",
+        title: "connor-stack",
+        desc: "The central choose-your-own-adventure documentation portal and setup configuration hub. Houses markdown prompt specifications that visitors can copy and paste into their local environments to clone and configure the remaining spoke repositories automatically.",
+        code: `setup-prompts/
+├── 00-orientation.md
+├── marketer-quickstart.md
+└── agent-builder-quickstart.md`,
+        url: "https://github.com/cgallic/connor-stack"
+      },
+      'open-brane': {
+        meta: "Brain Layer",
+        title: "open-brane",
+        desc: "The foundation of the persistent memory loop. Houses one SQLite database file (events.db) with a single append-only schema. Integrates as an MCP server for agents to read and log chronologically.",
+        code: `sqlite3 events.db "
+CREATE TABLE events (
+  id INTEGER PRIMARY KEY,
+  timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
+  source TEXT NOT NULL,
+  payload JSON NOT NULL
+);"`,
+        url: "https://github.com/cgallic/open-brane"
+      },
+      paperboy: {
+        meta: "Brain Layer",
+        title: "paperboy",
+        desc: "An automated ingest agent that scans arXiv and RSS feeds daily. Scores papers against a customized local interest markdown guide using a local LLM, then delivers filtered high-relevance summaries to Discord.",
+        code: `python -m paperboy.ingest \\
+  --feed "http://export.arxiv.org/api/query" \\
+  --interest-guide ~/.config/paperboy/interests.md`,
+        url: "https://github.com/cgallic/paperboy"
+      },
+      blackbox: {
+        meta: "Brain Layer",
+        title: "blackbox",
+        desc: "A self-improving feedback loop for Claude Code. Mines locally stored terminal session transcripts on a weekly cron, looks for common syntax errors or developer rule violations, and auto-updates project rules files.",
+        code: `blackbox audit \\
+  --transcripts ~/.claude/history/ \\
+  --rules ./CLAUDE.md`,
+        url: "https://github.com/cgallic/blackbox"
+      },
+      'kai-cmo': {
+        meta: "Production & Harness Layer",
+        title: "kai-cmo-harness",
+        desc: "The public-facing marketing implementation of the Hermes multi-agent framework. Orchestrates always-on agents (like Beast running on the Hermes system) via a thin OpenClaw/Hermes harness layer, while utilizing Codex Gemini as the primary code generation agent.",
+        code: `# Always-on agents run on Hermes/OpenClaw harness
+python -m hermes.harness --agent beast --status
+# Code development driven by Codex Gemini
+gemini --pair "E:/Dev2/connor-stack" --apply "setup-prompts"`,
+        url: "https://github.com/cgallic/kai-cmo-harness"
+      },
+      shorts: {
+        meta: "Production Layer",
+        title: "shorts-pipeline",
+        desc: "Daily automated YouTube Shorts publisher. Uses ffmpeg to dynamically cut short clips, calls a local LLM to generate subtitles and overlays, and packages raw video with description assets for upload.",
+        code: `shorts-pipeline run \\
+  --video ./raw/input.mp4 \\
+  --interval 6 \\
+  --output ./export/`,
+        url: "https://github.com/cgallic/shorts-pipeline"
+      },
+      cartoonimator: {
+        meta: "Production Layer",
+        title: "cartoonimator",
+        desc: "Deterministic mascot lipsync engine. Uses Rhubarb audio alignment output files to map specific phonemes directly to character pose PNG images at render time, compiling MP4 outputs without heavy model runtime constraints.",
+        code: `cartoonimator render \\
+  --poses ./character/poses/ \\
+  --rhubarb-file ./speech.json \\
+  --audio ./speech.wav`,
+        url: "https://github.com/cgallic/cartoonimator"
+      },
+      zehrava: {
+        meta: "Safety & Interop",
+        title: "zehrava-gate",
+        desc: "A secure Git wrapper acting as a commit gate for agents. Checks diffs, file structures, and credentials before allowing agent-triggered push or commit operations to reach remote origin servers.",
+        code: `git commit-gate \\
+  --allow-add "src/*" \\
+  --deny-add "config/keys.json"`,
+        url: "https://github.com/cgallic/zehrava-gate"
+      },
+      diwan: {
+        meta: "Safety & Interop",
+        title: "diwan",
+        desc: "Preflight verification and receipt engine for AI decisions. Forces execution loops to write verification proofs to files and output detailed reasoning trails before running destructive tasks.",
+        code: `diwan prove \\
+  --action "db-migration" \\
+  --proof ./proofs/migration-1.json`,
+        url: "https://github.com/cgallic/diwan"
+      },
+      avp: {
+        meta: "Safety & Interop",
+        title: "avp",
+        desc: "Agent Verification Protocol. A cryptographic verification system allowing running agent sessions to sign commit logs, payloads, or outputs to prove they originated from authenticated runs.",
+        code: `avp sign \\
+  --payload ./artifacts/report.html \\
+  --key ~/.ssh/agent_id_ed25519`,
+        url: "https://github.com/cgallic/avp"
+      },
+      mdi: {
+        meta: "Community Layer",
+        title: "mydeadinternet",
+        desc: "The public hub and core repository for the My Dead Internet (MDI) ecosystem, showing sandbox demonstrations of AI integrations and autonomous web agent deployments.",
+        code: `npm run dev --prefix ./mydeadinternet`,
+        url: "https://github.com/cgallic/mydeadinternet"
+      },
+      awesome: {
+        meta: "Community Layer",
+        title: "awesome-meetkai",
+        desc: "A curated list of OpenClaw configurations, helper scripts, and plugins. Demonstrates how to configure OpenClaw as a lightweight harness/message transport layer for always-on agents.",
+        code: `# Browse the awesome lists in awesome-meetkai README`,
+        url: "https://github.com/cgallic/awesome-meetkai"
+      },
+      wakeup: {
+        meta: "Community Layer",
+        title: "wake-up-skill",
+        desc: "A ClawdHub platform skill designed to trigger remote wake-up notifications, schedule health checks, and verify daemon status across distributed agent endpoints.",
+        code: `clawdhub install wake-up-skill`,
+        url: "https://github.com/cgallic/wake-up-skill"
+      }
+    };
+
+    // Click handler for nodes
+    document.querySelectorAll('.spoke-node, .hub-node').forEach(node => {
+      node.addEventListener('click', () => {
+        // Remove selection from all
+        document.querySelectorAll('.spoke-node, .hub-node').forEach(n => n.classList.remove('selected'));
+        
+        // Select clicked node
+        node.classList.add('selected');
+
+        const nodeKey = node.getAttribute('data-node');
+        const data = nodesDb[nodeKey];
+
+        if (data) {
+          document.getElementById('spoke-meta').textContent = data.meta;
+          document.getElementById('spoke-title').textContent = data.title;
+          document.getElementById('spoke-desc').textContent = data.desc;
+          
+          if (data.code) {
+            document.getElementById('code-section').style.display = 'block';
+            document.getElementById('spoke-code').textContent = data.code;
+          } else {
+            document.getElementById('code-section').style.display = 'none';
+          }
+          
+          document.getElementById('spoke-link').href = data.url;
+        }
+      });
+    });
+  </script>
+</body>
+</html>

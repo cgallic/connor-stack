@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>connor-stack — Content Briefing Audits</title>
+  <meta name="description" content="Audit marketing campaigns against the Four U's framework. Compare raw fluff copy with punchy, audited results.">
+  <link rel="stylesheet" href="../index.css">
+  <style>
+    .briefing-layout {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 3rem;
+      margin-top: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    @media (max-width: 1024px) {
+      .briefing-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+
+    /* Calculator Panel */
+    .calculator-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .calc-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+    }
+
+    .slider-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .slider-name {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .slider-val {
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--accent-pink);
+    }
+
+    .range-input {
+      width: 100%;
+      height: 6px;
+      background: var(--code-border);
+      border-radius: 9999px;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .range-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent-pink);
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(236, 72, 153, 0.3);
+      transition: transform 0.1s;
+    }
+
+    .range-input::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    /* Score card badge */
+    .score-badge-box {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .score-grade {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--accent-pink);
+      line-height: 1;
+    }
+
+    .score-label {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .score-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* Comparison view */
+    .comparison-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .copy-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .copy-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.5rem;
+    }
+
+    .copy-title {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .copy-text {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .del-highlight {
+      background: rgba(236, 72, 153, 0.15);
+      color: var(--accent-pink);
+      text-decoration: line-through;
+      padding: 0.1rem 0.25rem;
+      border-radius: 3px;
+    }
+
+    .ins-highlight {
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--accent-cyan);
+      padding: 0.1rem 0.25rem;
+      border-radius: 3px;
+      font-weight: 500;
+    }
+
+    .rule-note {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="layout-container">
+    <!-- Navigation bar -->
+    <header class="nav-header" role="banner">
+      <a href="../index.html" class="brand" id="nav-brand-link">
+        <span class="brand-accent">connor-stack</span>
+      </a>
+      <nav class="nav-actions" role="navigation" aria-label="Main Navigation">
+        <a href="../philosophy.html" class="nav-link" id="nav-philosophy-link">Manifesto</a>
+        <a href="../tour.html" class="nav-link" id="nav-tour-link">Tour</a>
+        <a href="../spokes.html" class="nav-link" id="nav-spokes-link">Spokes</a>
+        <button class="theme-toggle-btn" id="theme-toggle-button" aria-label="Toggle color theme" title="Toggle dark/light mode">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2"></path>
+            <path d="M12 20v2"></path>
+            <path d="M5 5l1.5 1.5"></path>
+            <path d="M17.5 17.5L19 19"></path>
+            <path d="M2 12h2"></path>
+            <path d="M20 12h2"></path>
+            <path d="M5 19l1.5-1.5"></path>
+            <path d="M17.5 6.5L19 5"></path>
+          </svg>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main role="main">
+      <section aria-labelledby="brief-heading">
+        <span class="hero-tag" style="color: var(--accent-pink); border-color: rgba(236, 72, 153, 0.25); background-color: rgba(236, 72, 153, 0.05);">Marketer / Briefing</span>
+        <h1 class="hero-title" id="brief-heading" style="text-align: left; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--text-primary) 30%, var(--accent-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Content Briefing Audits</h1>
+        <p style="margin-bottom: 2rem; max-width: 800px; color: var(--text-secondary);">
+          Connor audits draft campaign assets against the Four U's parameters to weed out generic AI fluff. Adjust the parameters below to witness how scorecard logic flags and optimizations alter content grades.
+        </p>
+      </section>
+
+      <div class="briefing-layout">
+        <!-- Sliders Calculator Panel -->
+        <div class="calculator-panel">
+          <h2 class="calc-title">The Four U's Metric Audit</h2>
+          
+          <div class="slider-group">
+            <div class="slider-header">
+              <span class="slider-name">Useful</span>
+              <span class="slider-val" id="val-useful">5.0</span>
+            </div>
+            <input type="range" class="range-input" id="slide-useful" min="1" max="10" step="0.5" value="5">
+            <span class="rule-note">Does this address a specific problem or is it just fluff text?</span>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <span class="slider-name">Urgent</span>
+              <span class="slider-val" id="val-urgent">5.0</span>
+            </div>
+            <input type="range" class="range-input" id="slide-urgent" min="1" max="10" step="0.5" value="5">
+            <span class="rule-note">Why does the reader need to know this today? Add temporal parameters.</span>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <span class="slider-name">Unique</span>
+              <span class="slider-val" id="val-unique">5.0</span>
+            </div>
+            <input type="range" class="range-input" id="slide-unique" min="1" max="10" step="0.5" value="5">
+            <span class="rule-note">Does this offer a fresh mechanism or is it generic chat copy?</span>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <span class="slider-name">Ultra-specific</span>
+              <span class="slider-val" id="val-specific">5.0</span>
+            </div>
+            <input type="range" class="range-input" id="slide-specific" min="1" max="10" step="0.5" value="5">
+            <span class="rule-note">Name exact tools, command configurations, or databases (e.g. SQLite, ffmpeg).</span>
+          </div>
+
+          <!-- Scorecard display -->
+          <div class="score-badge-box">
+            <div class="score-grade" id="badge-grade">C</div>
+            <div>
+              <div class="score-label" id="badge-label">AI Fluff Detected</div>
+              <div class="score-desc" id="badge-desc">Scores under 7.0 produce generic assets full of industry buzzwords. Increase parameters to refine the text.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Before / After copy panels -->
+        <div class="comparison-panel">
+          <!-- Before Card -->
+          <div class="copy-box">
+            <div class="copy-header">
+              <span class="copy-title" style="color: var(--accent-pink);">Raw Draft Copy</span>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Standard AI Output</span>
+            </div>
+            <div class="copy-text" id="copy-before">
+              Our <span class="del-highlight">robust</span> and <span class="del-highlight">seamless</span> mascot lipsync framework <span class="del-highlight">leverages</span> cutting edge AI to deliver <span class="del-highlight">streamlined</span> rendering capabilities. <span class="del-highlight">In conclusion</span>, it is <span class="del-highlight">worth noting</span> that you can scale operations efficiently.
+            </div>
+          </div>
+
+          <!-- After Card -->
+          <div class="copy-box">
+            <div class="copy-header">
+              <span class="copy-title" style="color: var(--accent-cyan);">Audited Output Copy</span>
+              <span style="font-size: 0.75rem; color: var(--accent-cyan); font-weight: 600;">Harness Optimized</span>
+            </div>
+            <div class="copy-text" id="copy-after">
+              Lipsync without the GPU overhead. Cartoonimator maps character pose <span class="ins-highlight">PNG files</span> using <span class="ins-highlight">Rhubarb alignments</span> and compiles final video files through <span class="ins-highlight">ffmpeg</span>. No runtime model inference required.
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer Area -->
+    <footer class="footer" role="contentinfo">
+      <p class="footer-text">Built by Connor Gallic. Code licensed MIT. Personal configurations and proofs of concept for remixing.</p>
+      <div class="footer-links">
+        <a href="../philosophy.html" class="footer-link">Philosophy</a>
+        <a href="../tour.html" class="footer-link">Architecture Tour</a>
+        <a href="../spokes.html" class="footer-link">Spoke Registry</a>
+        <a href="https://github.com/cgallic/connor-stack" class="footer-link" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Theme control using light-dark() CSS reactivity and color-scheme properties
+    const themeBtn = document.getElementById('theme-toggle-button');
+    let currentTheme = localStorage.getItem('theme');
+    if (!currentTheme) {
+      currentTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    document.documentElement.style.colorScheme = currentTheme;
+    updateThemeIcon(currentTheme);
+    
+    themeBtn.addEventListener('click', () => {
+      const isDark = document.documentElement.style.colorScheme === 'dark';
+      const nextTheme = isDark ? 'light' : 'dark';
+      document.documentElement.style.colorScheme = nextTheme;
+      localStorage.setItem('theme', nextTheme);
+      updateThemeIcon(nextTheme);
+    });
+
+    function updateThemeIcon(theme) {
+      const isDark = theme === 'dark';
+      themeBtn.querySelector('.theme-icon').innerHTML = isDark 
+        ? `<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M5 5l1.5 1.5"></path><path d="M17.5 17.5L19 19"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M5 19l1.5-1.5"></path><path d="M17.5 6.5L19 5"></path>`
+        : `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+    }
+
+    // Calculator engine
+    const sUseful = document.getElementById('slide-useful');
+    const sUrgent = document.getElementById('slide-urgent');
+    const sUnique = document.getElementById('slide-unique');
+    const sSpecific = document.getElementById('slide-specific');
+
+    const vUseful = document.getElementById('val-useful');
+    const vUrgent = document.getElementById('val-urgent');
+    const vUnique = document.getElementById('val-unique');
+    const vSpecific = document.getElementById('val-specific');
+
+    const badgeGrade = document.getElementById('badge-grade');
+    const badgeLabel = document.getElementById('badge-label');
+    const badgeDesc = document.getElementById('badge-desc');
+
+    const copyBefore = document.getElementById('copy-before');
+    const copyAfter = document.getElementById('copy-after');
+
+    function calculateScore() {
+      const val1 = parseFloat(sUseful.value);
+      const val2 = parseFloat(sUrgent.value);
+      const val3 = parseFloat(sUnique.value);
+      const val4 = parseFloat(sSpecific.value);
+
+      vUseful.textContent = val1.toFixed(1);
+      vUrgent.textContent = val2.toFixed(1);
+      vUnique.textContent = val3.toFixed(1);
+      vSpecific.textContent = val4.toFixed(1);
+
+      const average = (val1 + val2 + val3 + val4) / 4;
+      updateScorecard(average);
+    }
+
+    function updateScorecard(score) {
+      if (score >= 8.5) {
+        badgeGrade.textContent = 'A';
+        badgeGrade.style.color = 'var(--accent-cyan)';
+        badgeLabel.textContent = 'Production Ready';
+        badgeDesc.textContent = 'Opinionated, specific, and clear. Free of buzzwords and emojis. Ready to commit to main and deliver.';
+        
+        copyBefore.innerHTML = `Our lipsync tool runs on CPU without GPU overhead.`;
+        copyAfter.innerHTML = `Stop wasting compute. Cartoonimator pose-to-audio engine renders lipsync from pose <span class="ins-highlight">PNG files</span> using <span class="ins-highlight">Rhubarb alignments</span> in <span class="ins-highlight">ffmpeg</span>.`;
+      } 
+      else if (score >= 7.0) {
+        badgeGrade.textContent = 'B';
+        badgeGrade.style.color = 'var(--accent-purple)';
+        badgeLabel.textContent = 'Approved with Edits';
+        badgeDesc.textContent = 'Good structure. Add exact filenames or parameters to raise the specificity score to the A level.';
+        
+        copyBefore.innerHTML = `Our mascot lipsync tool rendering capabilities are streamlined.`;
+        copyAfter.innerHTML = `Lipsync without the GPU overhead. Cartoonimator maps character pose <span class="ins-highlight">PNG files</span> using <span class="ins-highlight">Rhubarb alignments</span>.`;
+      } 
+      else if (score >= 5.0) {
+        badgeGrade.textContent = 'C';
+        badgeGrade.style.color = 'var(--accent-pink)';
+        badgeLabel.textContent = 'AI Fluff Detected';
+        badgeDesc.textContent = 'Too wordy. Contains corporate buzzwords ("robust", "seamless"). Slide metrics higher to watch the rewrite optimizer in action.';
+        
+        copyBefore.innerHTML = `Our <span class="del-highlight">robust</span> and <span class="del-highlight">seamless</span> mascot lipsync framework <span class="del-highlight">leverages</span> AI to deliver <span class="del-highlight">streamlined</span> rendering.`;
+        copyAfter.innerHTML = `Lipsync without the GPU. Cartoonimator maps pose <span class="ins-highlight">PNGs</span> with Rhubarb alignments.`;
+      } 
+      else {
+        badgeGrade.textContent = 'F';
+        badgeGrade.style.color = '#ef4444';
+        badgeLabel.textContent = 'Corporate Sludge';
+        badgeDesc.textContent = 'Fails all quality thresholds. The copywriter agent must rewrite this draft from scratch to address the problem.';
+        
+        copyBefore.innerHTML = `<span class="del-highlight">In conclusion</span>, it is <span class="del-highlight">worth noting</span> that our <span class="del-highlight">robust</span> and <span class="del-highlight">seamless</span> ecosystem is designed for <span class="del-highlight">leverage</span>.`;
+        copyAfter.innerHTML = `No values selected. Increase the audit scores to activate copywriter drafting.`;
+      }
+    }
+
+    [sUseful, sUrgent, sUnique, sSpecific].forEach(slider => {
+      slider.addEventListener('input', calculateScore);
+    });
+
+    // Run once initially
+    calculateScore();
+  </script>
+</body>
+</html>

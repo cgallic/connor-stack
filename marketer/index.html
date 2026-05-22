@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>connor-stack — Marketer Hub</title>
+  <meta name="description" content="Copy Connor Gallic's AI workflows for client folder structures, perception brief audits, and responsive layout mocks.">
+  <link rel="stylesheet" href="../index.css">
+  <style>
+    .marketer-hero {
+      margin-bottom: 4rem;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .concept-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2.5rem 2rem;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      transition: all var(--transition-speed) var(--transition-bounce);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .concept-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent-pink), transparent);
+      opacity: 0;
+      transition: opacity var(--transition-speed);
+    }
+
+    .concept-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--accent-pink);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .concept-card:hover::before {
+      opacity: 1;
+    }
+
+    .concept-num {
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent-pink);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .concept-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+    }
+
+    .concept-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      flex-grow: 1;
+      line-height: 1.6;
+    }
+
+    .concept-action {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-primary);
+      margin-top: auto;
+    }
+
+    .arrow-icon {
+      transition: transform var(--transition-speed) var(--transition-bounce);
+      color: var(--accent-pink);
+    }
+
+    .concept-card:hover .arrow-icon {
+      transform: translateX(4px);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="layout-container">
+    <!-- Navigation bar -->
+    <header class="nav-header" role="banner">
+      <a href="../index.html" class="brand" id="nav-brand-link">
+        <span class="brand-accent">connor-stack</span>
+      </a>
+      <nav class="nav-actions" role="navigation" aria-label="Main Navigation">
+        <a href="../philosophy.html" class="nav-link" id="nav-philosophy-link">Manifesto</a>
+        <a href="../tour.html" class="nav-link" id="nav-tour-link">Tour</a>
+        <a href="../spokes.html" class="nav-link" id="nav-spokes-link">Spokes</a>
+        <button class="theme-toggle-btn" id="theme-toggle-button" aria-label="Toggle color theme" title="Toggle dark/light mode">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2"></path>
+            <path d="M12 20v2"></path>
+            <path d="M5 5l1.5 1.5"></path>
+            <path d="M17.5 17.5L19 19"></path>
+            <path d="M2 12h2"></path>
+            <path d="M20 12h2"></path>
+            <path d="M5 19l1.5-1.5"></path>
+            <path d="M17.5 6.5L19 5"></path>
+          </svg>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main role="main">
+      <section class="marketer-hero" aria-labelledby="marketer-heading">
+        <span class="hero-tag" style="color: var(--accent-pink); border-color: rgba(236, 72, 153, 0.25); background-color: rgba(236, 72, 153, 0.05);">Marketer Door</span>
+        <h1 class="hero-title" id="marketer-heading" style="text-align: left; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--text-primary) 30%, var(--accent-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Copy the workflow</h1>
+        <p style="margin-bottom: 2rem; max-width: 800px; color: var(--text-secondary);">
+          You want to ship better campaign assets, coordinate file hierarchies cleanly, and audit content before clients see it. Explore these three modular pieces of the marketing harness.
+        </p>
+      </section>
+
+      <!-- Grid of Concept Pages -->
+      <section class="concept-grid" aria-label="Marketer Concepts">
+        
+        <!-- Concept 1: Folders -->
+        <a href="folders.html" class="concept-card" id="card-folders-link">
+          <span class="concept-num">Concept 01</span>
+          <h2 class="concept-title">Client Folders Structure</h2>
+          <p class="concept-desc">Explore the standardized <code>clients/{client_name}/</code> file hierarchy. Keep drafts, assets, configurations, and logs isolated from project session drift.</p>
+          <span class="concept-action">
+            <span>Inspect Folders</span>
+            <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </span>
+        </a>
+
+        <!-- Concept 2: Briefing -->
+        <a href="briefing.html" class="concept-card" id="card-briefing-link">
+          <span class="concept-num">Concept 02</span>
+          <h2 class="concept-title">Content Briefing Audits</h2>
+          <p class="concept-desc">Compare raw briefs with optimized marketing copy. Score draft assets against the Four U's framework (Useful, Urgent, Unique, Ultra-specific) using live slider calculators.</p>
+          <span class="concept-action">
+            <span>Score a Brief</span>
+            <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </span>
+        </a>
+
+        <!-- Concept 3: Artifacts -->
+        <a href="artifacts.html" class="concept-card" id="card-artifacts-link">
+          <span class="concept-num">Concept 03</span>
+          <h2 class="concept-title">HTML Mockup Artifacts</h2>
+          <p class="concept-desc">See how Claude outputs clean, styled HTML wireframes inside sandboxed iframe containers. Give clients visual concepts they can interact with instantly.</p>
+          <span class="concept-action">
+            <span>Preview Wireframes</span>
+            <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </span>
+        </a>
+
+      </section>
+    </main>
+
+    <!-- Footer Area -->
+    <footer class="footer" role="contentinfo">
+      <p class="footer-text">Built by Connor Gallic. Code licensed MIT. Personal configurations and proofs of concept for remixing.</p>
+      <div class="footer-links">
+        <a href="../philosophy.html" class="footer-link">Philosophy</a>
+        <a href="../tour.html" class="footer-link">Architecture Tour</a>
+        <a href="../spokes.html" class="footer-link">Spoke Registry</a>
+        <a href="https://github.com/cgallic/connor-stack" class="footer-link" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Theme control using light-dark() CSS reactivity and color-scheme properties
+    const themeBtn = document.getElementById('theme-toggle-button');
+    let currentTheme = localStorage.getItem('theme');
+    if (!currentTheme) {
+      currentTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    document.documentElement.style.colorScheme = currentTheme;
+    updateThemeIcon(currentTheme);
+    
+    themeBtn.addEventListener('click', () => {
+      const isDark = document.documentElement.style.colorScheme === 'dark';
+      const nextTheme = isDark ? 'light' : 'dark';
+      document.documentElement.style.colorScheme = nextTheme;
+      localStorage.setItem('theme', nextTheme);
+      updateThemeIcon(nextTheme);
+    });
+
+    function updateThemeIcon(theme) {
+      const isDark = theme === 'dark';
+      themeBtn.querySelector('.theme-icon').innerHTML = isDark 
+        ? `<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M5 5l1.5 1.5"></path><path d="M17.5 17.5L19 19"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M5 19l1.5-1.5"></path><path d="M17.5 6.5L19 5"></path>`
+        : `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+    }
+  </script>
+</body>
+</html>
