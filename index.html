@@ -7,30 +7,34 @@
   <meta name="description" content="An interactive portal showcasing Connor Gallic's personal AI stack. Explore composable agents, content quality loops, and custom setup prompts.">
   <link rel="stylesheet" href="index.css">
   <style>
-    /* Homepage-specific styles for the interactive terminal */
-    .dashboard-section {
+    /* 3-column layout control deck */
+    .control-deck {
       display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      gap: 2rem;
+      grid-template-columns: 1.2fr 2fr 1.1fr;
+      gap: 1.5rem;
       margin-bottom: 5rem;
-      animation: fadeIn 1s ease-out;
+      align-items: stretch;
+      min-height: 620px;
     }
 
-    @media (max-width: 900px) {
-      .dashboard-section {
+    @media (max-width: 1200px) {
+      .control-deck {
         grid-template-columns: 1fr;
+        min-height: auto;
       }
     }
 
+    /* Column 1: Onboarding Terminal */
     .home-terminal {
       display: flex;
       flex-direction: column;
-      height: 420px;
+      height: 100%;
+      min-height: 520px;
     }
 
     .home-terminal .terminal-body {
       flex-grow: 1;
-      height: 340px;
+      height: auto;
       overflow-y: auto;
       font-family: var(--font-mono);
       font-size: 0.8rem;
@@ -105,147 +109,6 @@
       50% { background-color: var(--text-primary) }
     }
 
-    /* Live Stack Pings panel */
-    .status-panel {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
-    }
-
-    .status-header {
-      margin-bottom: 1.5rem;
-    }
-
-    .status-title {
-      font-family: var(--font-display);
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 0.5rem;
-    }
-
-    .status-desc {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-    }
-
-    .status-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .status-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.75rem 1rem;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-    }
-
-    .status-name {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-
-    .status-indicator-group {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .status-text {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .status-text.online {
-      color: #22c55e;
-    }
-
-    .status-text.synced {
-      color: var(--accent-cyan);
-    }
-
-    /* Video section styling */
-    .video-showcase-inline {
-      border-top: 1px solid var(--card-border);
-      padding-top: 2rem;
-      margin-top: 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-    }
-
-    .video-info-block {
-      flex-grow: 1;
-      min-width: 250px;
-    }
-
-    .video-title-mini {
-      font-family: var(--font-display);
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 0.25rem;
-    }
-
-    .video-desc-mini {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      max-width: 450px;
-    }
-
-    .video-btn-container {
-      display: flex;
-      align-items: center;
-    }
-
-    .play-btn-mini {
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
-      border: none;
-      border-radius: 8px;
-      padding: 0.6rem 1.25rem;
-      font-family: var(--font-display);
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: #ffffff;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all var(--transition-speed);
-    }
-
-    .play-btn-mini:hover {
-      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
-      transform: translateY(-1px);
-    }
-
-    .play-icon-mini {
-      width: 0;
-      height: 0;
-      border-top: 4px solid transparent;
-      border-bottom: 4px solid transparent;
-      border-left: 7px solid #ffffff;
-    }
-
     /* Pathway link unlock overlay */
     .glow-unlock-btn {
       background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
@@ -261,36 +124,300 @@
       100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); }
     }
 
-    /* Interactive Network Topology styles */
+    /* Column 2: Center Column - Flow Map */
     .topology-container {
       position: relative;
       width: 100%;
-      height: 180px;
-      background: rgba(7, 6, 10, 0.6);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      overflow: hidden;
-      margin-bottom: 1.25rem;
-      box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
-    }
-    
-    #topology-canvas {
-      width: 100%;
       height: 100%;
-      display: block;
-      cursor: crosshair;
-    }
-
-    .topology-hud {
-      background: rgba(7, 6, 10, 0.4);
+      min-height: 520px;
+      background: light-dark(rgba(240, 244, 248, 0.5), rgba(7, 6, 10, 0.7));
       border: 1px solid var(--card-border);
-      padding: 0.85rem 1.25rem;
-      border-radius: 12px;
-      margin-bottom: 1.5rem;
-      min-height: 90px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.15);
+      transition: border-color var(--transition-speed);
       display: flex;
       flex-direction: column;
+    }
+
+    .topology-container:hover {
+      border-color: rgba(6, 182, 212, 0.25);
+    }
+
+    #topology-connections {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      overflow: visible;
+    }
+
+    .flowmap-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      padding: 3.5rem 0.75rem 0.75rem 0.75rem;
+      height: 100%;
+      overflow-y: auto;
+      position: relative;
+      z-index: 2;
+      box-sizing: border-box;
+      flex-grow: 1;
+    }
+
+    .flowmap-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
       justify-content: center;
+      height: 100%;
+    }
+
+    .column-header {
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 0.2rem;
+      border-bottom: 1px dashed var(--card-border);
+      padding-bottom: 0.3rem;
+    }
+
+    /* Node Cards */
+    .node-card {
+      background: light-dark(rgba(255, 255, 255, 0.8), rgba(21, 20, 29, 0.65));
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.55rem 0.7rem;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      transition: all var(--transition-speed) var(--transition-bounce);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      user-select: none;
+      z-index: 5;
+    }
+
+    .node-card:hover {
+      background: light-dark(rgba(255, 255, 255, 0.95), rgba(30, 27, 46, 0.85));
+      border-color: var(--accent-cyan);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 4px 12px rgba(6, 182, 212, 0.15);
+    }
+
+    .node-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .node-title {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .node-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .node-status-dot.online {
+      background-color: #22c55e;
+      box-shadow: 0 0 6px #22c55e;
+    }
+
+    .node-status-dot.synced {
+      background-color: var(--accent-cyan);
+      box-shadow: 0 0 6px var(--accent-cyan);
+    }
+
+    .node-desc {
+      font-size: 0.6rem;
+      color: var(--text-secondary);
+      line-height: 1.2;
+    }
+
+    /* Node highlight states */
+    .node-card.active-node {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+      background: light-dark(rgba(255, 255, 255, 0.95), rgba(30, 27, 46, 0.95));
+      transform: scale(1.03);
+    }
+
+    .node-card.active-node-pink {
+      border-color: var(--accent-pink);
+      box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
+      background: light-dark(rgba(255, 255, 255, 0.95), rgba(30, 27, 46, 0.95));
+      transform: scale(1.03);
+    }
+
+    .node-card.dimmed-node {
+      opacity: 0.3;
+    }
+
+    /* SVG connection paths */
+    .conn-path {
+      fill: none;
+      stroke: var(--card-border);
+      stroke-width: 1.5;
+      opacity: 0.5;
+      transition: all var(--transition-speed) ease;
+    }
+
+    .conn-path.highlighted {
+      stroke: var(--accent-cyan);
+      stroke-width: 2.5;
+      opacity: 0.9;
+    }
+
+    .conn-path.dimmed {
+      opacity: 0.1;
+    }
+
+    .conn-path.active-flow {
+      stroke: var(--accent-cyan);
+      stroke-dasharray: 6, 6;
+      stroke-width: 2.5;
+      opacity: 1;
+      animation: flowDash 1s linear infinite;
+    }
+
+    .conn-path.active-flow-pink {
+      stroke: var(--accent-pink);
+      stroke-dasharray: 6, 6;
+      stroke-width: 2.5;
+      opacity: 1;
+      animation: flowDash 1s linear infinite;
+    }
+
+    @keyframes flowDash {
+      to {
+        stroke-dashoffset: -12;
+      }
+    }
+
+    /* Workflow simulation menu */
+    .workflow-sim-header {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 6px;
+      z-index: 10;
+      background: light-dark(rgba(240, 244, 248, 0.9), rgba(7, 6, 10, 0.85));
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 4px 8px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .sim-title {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-right: 4px;
+      letter-spacing: 0.05em;
+    }
+
+    .sim-tab-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .sim-tab-btn:hover {
+      background: rgba(6, 182, 212, 0.15);
+      border-color: var(--accent-cyan);
+      color: var(--text-primary);
+      box-shadow: 0 0 8px rgba(6, 182, 212, 0.2);
+    }
+
+    .sim-tab-btn.active {
+      background: rgba(6, 182, 212, 0.2);
+      border-color: var(--accent-cyan);
+      color: var(--text-primary);
+      box-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
+    }
+
+    /* Column 3: HUD details sidepanel */
+    .telemetry-sidepanel {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      height: 100%;
+    }
+
+    /* Stats grid */
+    .stats-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+
+    .stat-card-mini {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .stat-card-mini .stat-label {
+      font-size: 0.55rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+    }
+
+    .stat-card-mini .stat-val {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      margin-top: 0.15rem;
+      white-space: nowrap;
+    }
+
+    /* Telemetry HUD details */
+    .topology-hud {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
       transition: all var(--transition-speed);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
@@ -300,6 +427,114 @@
       border-color: var(--accent-cyan);
       box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
       background: rgba(6, 182, 212, 0.02);
+    }
+
+    /* Prompt Box with Copy */
+    .hud-prompt-container {
+      background: #060508;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0.6rem;
+      margin-top: 0.5rem;
+      position: relative;
+    }
+
+    .hud-prompt-scroll {
+      max-height: 90px;
+      overflow-y: auto;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+      white-space: pre-wrap;
+      word-break: break-all;
+      line-height: 1.4;
+      padding-right: 1.5rem;
+    }
+
+    .copy-btn-mini-hud {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: var(--accent-cyan);
+      border: none;
+      color: #ffffff;
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-btn-mini-hud:hover {
+      box-shadow: 0 0 8px rgba(6, 182, 212, 0.5);
+    }
+
+    /* Video section styling */
+    .video-showcase-inline {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .video-info-block {
+      flex-grow: 1;
+    }
+
+    .video-title-mini {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.15rem;
+    }
+
+    .video-desc-mini {
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+    }
+
+    .video-btn-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .play-btn-mini {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      border: none;
+      border-radius: 6px;
+      padding: 0.4rem 0.85rem;
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all var(--transition-speed);
+      white-space: nowrap;
+    }
+
+    .play-btn-mini:hover {
+      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .play-icon-mini {
+      width: 0;
+      height: 0;
+      border-top: 3.5px solid transparent;
+      border-bottom: 3.5px solid transparent;
+      border-left: 6px solid #ffffff;
     }
   </style>
 </head>
@@ -340,14 +575,14 @@
     <!-- Main Content Area -->
     <main role="main">
       <section class="hero" aria-labelledby="main-heading">
-        <span class="hero-tag">Curated Proofs of Concept</span>
-        <h1 class="hero-title" id="main-heading">How I actually use AI</h1>
-        <p class="hero-subtitle">Not a framework. An opinionated stack of small, composable scripts I use every day — and the prompts you paste into your own Claude Code to finish the assembly.</p>
+        <span class="hero-tag">Creative Collaboration Sandbox</span>
+        <h1 class="hero-title" id="main-heading">My Creative AI Universe</h1>
+        <p class="hero-subtitle">Not a rigid framework. A fluid flywheel of small, composable scripts that capture inspiration, collaborate on reasoning, and automate video production. Watch the system cooperate in real-time below.</p>
       </section>
 
       <!-- Active Dashboard: Onboarding Terminal + Stack Status -->
-      <section class="dashboard-section" aria-label="Interactive Command Dashboard">
-        <!-- Interactive Terminal -->
+      <section class="control-deck" aria-label="AI Universe Control Deck">
+        <!-- Interactive Onboarding Terminal (Left Column) -->
         <div class="terminal-window home-terminal">
           <div class="terminal-header">
             <div class="terminal-dots">
@@ -366,38 +601,209 @@
           </div>
         </div>
 
-        <!-- Stack Status & Video Link -->
-        <div class="status-panel">
-          <div class="status-header">
-            <h2 class="status-title">System Stack Topology</h2>
-            <p class="status-desc">Active architecture map. Click nodes to run diagnostic queries.</p>
+        <!-- Live Network Graph Canvas Container (Center Column) -->
+        <div class="topology-container" id="topology-container-main">
+          <!-- Floating Scenario Selection Menu -->
+          <div class="workflow-sim-header" id="workflow-sim-header">
+            <span class="sim-title">COLLABORATIONS:</span>
+            <button class="sim-tab-btn" id="sim-btn-code" onclick="startWorkflowSim('code')">[1] Code Loop</button>
+            <button class="sim-tab-btn" id="sim-btn-voice" onclick="startWorkflowSim('voice')">[2] Idea Ingest</button>
+            <button class="sim-tab-btn" id="sim-btn-media" onclick="startWorkflowSim('media')">[3] Media Loop</button>
           </div>
 
-          <!-- Live Network Graph Canvas -->
-          <div class="topology-container">
-            <canvas id="topology-canvas"></canvas>
+          <svg id="topology-connections"></svg>
+
+          <div class="flowmap-container" id="flowmap-outer-container">
+            <!-- Column 1: MEMORY -->
+            <div class="flowmap-column" id="col-memory">
+              <div class="column-header">MEMORY</div>
+              <div class="node-card" id="node-pendant" data-node-key="pendant">
+                <div class="node-header">
+                  <span class="node-title">pendant</span>
+                  <span class="node-status-dot online"></span>
+                </div>
+                <div class="node-desc">Voice Capture</div>
+              </div>
+              <div class="node-card" id="node-events" data-node-key="events">
+                <div class="node-header">
+                  <span class="node-title">events.db</span>
+                  <span class="node-status-dot synced"></span>
+                </div>
+                <div class="node-desc">Memory Bank</div>
+              </div>
+              <div class="node-card" id="node-dev" data-node-key="dev">
+                <div class="node-header">
+                  <span class="node-title">dev</span>
+                  <span class="node-status-dot online"></span>
+                </div>
+                <div class="node-desc">Local Sandbox</div>
+              </div>
+            </div>
+
+            <!-- Column 2: THINK TANK -->
+            <div class="flowmap-column" id="col-thinktank">
+              <div class="column-header">THINK TANK</div>
+              <div class="node-card" id="node-clive" data-node-key="clive">
+                <div class="node-header">
+                  <span class="node-title">clive</span>
+                  <span class="node-status-dot online"></span>
+                </div>
+                <div class="node-desc">Coding Peer</div>
+              </div>
+              <div class="node-card" id="node-kodi" data-node-key="kodi">
+                <div class="node-header">
+                  <span class="node-title">kodi</span>
+                  <span class="node-status-dot online"></span>
+                </div>
+                <div class="node-desc">Reasoning Partner</div>
+              </div>
+              <div class="node-card" id="node-beast" data-node-key="beast">
+                <div class="node-header">
+                  <span class="node-title">beast</span>
+                  <span class="node-status-dot online"></span>
+                </div>
+                <div class="node-desc">Co-Ordinator</div>
+              </div>
+              <div class="node-card" id="node-diwan" data-node-key="diwan">
+                <div class="node-header">
+                  <span class="node-title">diwan</span>
+                  <span class="node-status-dot online"></span>
+                </div>
+                <div class="node-desc">Decision Ledger</div>
+              </div>
+              <div class="node-card" id="node-zehrava" data-node-key="zehrava">
+                <div class="node-header">
+                  <span class="node-title">zehrava</span>
+                  <span class="node-status-dot online"></span>
+                </div>
+                <div class="node-desc">Safety Gate</div>
+              </div>
+            </div>
+
+            <!-- Column 3: PIPELINES -->
+            <div class="flowmap-column" id="col-pipelines">
+              <div class="column-header">PIPELINES</div>
+              <div class="node-card" id="node-paperboy" data-node-key="paperboy">
+                <div class="node-header">
+                  <span class="node-title">paperboy</span>
+                  <span class="node-status-dot online"></span>
+                </div>
+                <div class="node-desc">Daily Curator</div>
+              </div>
+              <div class="node-card" id="node-shorts" data-node-key="shorts">
+                <div class="node-header">
+                  <span class="node-title">shorts</span>
+                  <span class="node-status-dot online"></span>
+                </div>
+                <div class="node-desc">Video Producer</div>
+              </div>
+              <div class="node-card" id="node-gateway" data-node-key="gateway">
+                <div class="node-header">
+                  <span class="node-title">gateway</span>
+                  <span class="node-status-dot online"></span>
+                </div>
+                <div class="node-desc">Webhook Link</div>
+              </div>
+              <div class="node-card" id="node-hermes" data-node-key="hermes">
+                <div class="node-header">
+                  <span class="node-title">hermes</span>
+                  <span class="node-status-dot synced"></span>
+                </div>
+                <div class="node-desc">Agent Router</div>
+              </div>
+            </div>
+
+            <!-- Column 4: RESONANCE -->
+            <div class="flowmap-column" id="col-resonance">
+              <div class="column-header">RESONANCE</div>
+              <div class="node-card" id="node-discord" data-node-key="discord">
+                <div class="node-header">
+                  <span class="node-title">discord</span>
+                  <span class="node-status-dot online"></span>
+                </div>
+                <div class="node-desc">Review Hub</div>
+              </div>
+              <div class="node-card" id="node-kai" data-node-key="kai">
+                <div class="node-header">
+                  <span class="node-title">kai</span>
+                  <span class="node-status-dot online"></span>
+                </div>
+                <div class="node-desc">Marketing Partner</div>
+              </div>
+              <div class="node-card" id="node-hale" data-node-key="hale">
+                <div class="node-header">
+                  <span class="node-title">hale</span>
+                  <span class="node-status-dot online"></span>
+                </div>
+                <div class="node-desc">System Steward</div>
+              </div>
+              <div class="node-card" id="node-mdi" data-node-key="mdi">
+                <div class="node-header">
+                  <span class="node-title">mdi</span>
+                  <span class="node-status-dot online"></span>
+                </div>
+                <div class="node-desc">Shared Mind</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Telemetry Sidepanel & HUD (Right Column) -->
+        <div class="telemetry-sidepanel">
+          <!-- Live System stats -->
+          <div class="stats-mini-grid">
+            <div class="stat-card-mini">
+              <span class="stat-label">Uptime</span>
+              <span class="stat-val" id="stats-uptime">00:00:00</span>
+            </div>
+            <div class="stat-card-mini">
+              <span class="stat-label">API Load</span>
+              <span class="stat-val" id="stats-api-load">78 req/min</span>
+            </div>
+            <div class="stat-card-mini">
+              <span class="stat-label">DB Size</span>
+              <span class="stat-val" id="stats-db-count">1,482 logs</span>
+            </div>
           </div>
 
           <!-- Node Telemetry Details Box -->
           <div class="topology-hud" id="topology-details">
-            <div id="topology-hud-idle" style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-secondary); text-align: center; line-height: 1.5;">
+            <div id="topology-hud-idle" style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-secondary); text-align: center; line-height: 1.5; margin: auto 0;">
               <span style="color: var(--accent-pink); animation: cursorBlink 1.5s infinite; font-weight: bold;">&gt;</span> Click a node to query live system logs
             </div>
-            <div id="topology-hud-active" style="display: none; font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.5;">
-              <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem; border-bottom: 1px dashed var(--card-border); padding-bottom: 0.4rem;">
-                <span id="hud-node-name" style="font-weight: 700; color: var(--text-primary);">NODE_NAME</span>
-                <span id="hud-node-status" style="font-weight: 700;">ONLINE</span>
+            <div id="topology-hud-active" style="display: none; font-family: var(--font-mono); font-size: 0.7rem; line-height: 1.5; height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.35rem; border-bottom: 1px dashed var(--card-border); padding-bottom: 0.35rem;">
+                  <span id="hud-node-name" style="font-weight: 700; color: var(--text-primary);">NODE_NAME</span>
+                  <span id="hud-node-status" style="font-weight: 700;">ONLINE</span>
+                </div>
+                <div style="color: var(--text-secondary); margin-bottom: 0.35rem; font-size: 0.65rem;">
+                  Host: <span id="hud-node-host" style="color: var(--accent-cyan);">HOST</span> | Sector: <span id="hud-node-sector" style="color: var(--accent-purple);">SECTOR</span>
+                </div>
+                <div style="color: var(--text-secondary); margin-bottom: 0.35rem; font-size: 0.65rem;">
+                  Role: <span id="hud-node-role" style="font-weight: 600;">ROLE</span>
+                </div>
+                <div style="color: var(--text-secondary); margin-bottom: 0.35rem; font-size: 0.65rem;">
+                  Signal: <span id="hud-node-signal" style="font-family: var(--font-mono);">SIGNAL</span>
+                </div>
+                <div style="color: var(--text-muted); font-size: 0.6rem; margin-bottom: 0.5rem;" id="hud-node-telemetry">
+                  Latency: --ms | Ingest: -- ev/s | Rate: -- kbps
+                </div>
+                <div style="color: var(--text-primary); font-size: 0.65rem; height: 50px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 0.35rem 0.6rem; border-radius: 4px; border-left: 2px solid var(--accent-cyan); font-family: var(--font-mono); white-space: pre-wrap;" id="hud-node-activity">
+                  SYSTEM_ACTIVITY_LOG
+                </div>
               </div>
-              <div style="color: var(--text-secondary); margin-bottom: 0.4rem; font-size: 0.7rem;">
-                Host: <span id="hud-node-host" style="color: var(--accent-cyan);">HOST</span> | Role: <span id="hud-node-role" style="color: var(--accent-purple);">ROLE</span>
-              </div>
-              <div style="color: var(--text-primary); font-size: 0.7rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; background: rgba(0,0,0,0.3); padding: 0.35rem 0.6rem; border-radius: 4px; border-left: 2px solid var(--accent-pink);" id="hud-node-activity">
-                SYSTEM_ACTIVITY_LOG
+
+              <!-- Prompt Copy Panel -->
+              <div id="hud-prompt-box" class="hud-prompt-container" style="display: none; margin-top: 0.5rem;">
+                <button class="copy-btn-mini-hud" id="hud-copy-btn">COPY PROMPT</button>
+                <div style="font-size: 0.55rem; color: var(--text-muted); font-family: var(--font-mono); margin-bottom: 0.2rem; text-transform: uppercase;">Paste this into Claude:</div>
+                <div class="hud-prompt-scroll" id="hud-prompt-text">PROMPT_TEMPLATE</div>
               </div>
             </div>
           </div>
 
-          <!-- Video introduction inline trigger -->
+          <!-- Video Walkthrough -->
           <div class="video-showcase-inline">
             <div class="video-info-block">
               <h3 class="video-title-mini">Video Walkthrough</h3>
@@ -603,81 +1009,18 @@
 
     // Video play trigger feedback
     const playTrigger = document.getElementById('video-play-trigger');
-    playTrigger.addEventListener('click', () => {
-      const wrapper = document.getElementById('video-btn-wrapper');
-      wrapper.innerHTML = `
-        <span style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 500;">
-          Video coming soon
-        </span>
-      `;
-    });
-
-    // Matrix Digital Rain Canvas Logic
-    let matrixInterval = null;
-    const canvas = document.getElementById('matrix-rain-canvas');
-    const ctx = canvas.getContext('2d');
-    const matrixContainer = document.getElementById('matrix-canvas-container');
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-
-    const alphabet = "0101010101ABCDEFXYZ";
-    const fontSize = 16;
-    let columns = Math.floor(canvas.width / fontSize);
-    let rainDrops = [];
-
-    function initRainDrops() {
-      columns = Math.floor(canvas.width / fontSize);
-      rainDrops = [];
-      for (let x = 0; x < columns; x++) {
-        rainDrops[x] = Math.random() * -100;
-      }
-    }
-
-    function drawMatrix() {
-      ctx.fillStyle = 'rgba(7, 6, 10, 0.05)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = document.documentElement.style.colorScheme === 'light' ? 'rgba(6, 182, 212, 0.7)' : '#06b6d4';
-      ctx.font = fontSize + 'px monospace';
-
-      for (let i = 0; i < rainDrops.length; i++) {
-        const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-        ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
-
-        if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-          rainDrops[i] = 0;
+    if (playTrigger) {
+      playTrigger.addEventListener('click', () => {
+        const wrapper = document.getElementById('video-btn-wrapper');
+        if (wrapper) {
+          wrapper.innerHTML = `
+            <span style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 500;">
+              Video coming soon
+            </span>
+          `;
         }
-        rainDrops[i]++;
-      }
+      });
     }
-
-    function toggleMatrix(forceState = null) {
-      const isActive = forceState !== null ? forceState : !matrixContainer.classList.contains('active');
-      if (isActive) {
-        matrixContainer.classList.add('active');
-        initRainDrops();
-        if (!matrixInterval) {
-          matrixInterval = setInterval(drawMatrix, 30);
-        }
-      } else {
-        matrixContainer.classList.remove('active');
-        if (matrixInterval) {
-          clearInterval(matrixInterval);
-          matrixInterval = null;
-        }
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
-      return isActive;
-    }
-
-    window.addEventListener('resize', () => {
-      resizeCanvas();
-      initRainDrops();
-    });
-    resizeCanvas();
 
     // Onboarding Terminal Simulator Logic
     const termBody = document.getElementById('term-onboarding-logs');
@@ -686,13 +1029,11 @@
     const textInput = document.getElementById('terminal-text-input');
     
     const bootSequence = [
-      { text: "Initializing connor-stack-cli interactive shell...", type: "system", delay: 100 },
-      { text: "Scanning project directory structure...", type: "system", delay: 200 },
-      { text: "Checking repository linkages: 21 public spokes resolved.", type: "success", delay: 150 },
-      { text: "SQLite system events database (open-brane.db) active.", type: "success", delay: 100 },
-      { text: "Always-on peer orchestration loops synchronized.", type: "success", delay: 150 },
-      { text: "System diagnostic complete. Welcome explorer.", type: "system", delay: 100 },
-      { text: "Choose your path to prepare files and configuration rules:", type: "prompt", delay: 100 }
+      { text: "Starting Creative Studio Controller... Ready.", type: "success", delay: 200 },
+      { text: "Welcome to my Creative AI Universe. Here, I use modular, independent AI agents to expand my thinking, automate video pipelines, and coordinate my marketing.", type: "system", delay: 300 },
+      { text: "Every card in the center represents a creative partner. Together, they form a collaborative flywheel that takes raw ideas and transforms them into published work.", type: "system", delay: 300 },
+      { text: "I have prepared three interactive simulations to show you how these agents work together.", type: "system", delay: 300 },
+      { text: "Select a pathway below to start a simulation, or type 'help' in the terminal to inspect the repository structures:", type: "prompt", delay: 200 }
     ];
 
     function writeTermLine(text, type = "") {
@@ -703,7 +1044,7 @@
       } else if (type === 'success') {
         line.innerHTML = `<span style="color:#22c55e;">[OK]</span> ${text}`;
       } else if (type === 'system') {
-        line.innerHTML = `<span style="color:#64748b;">[SYS]</span> ${text}`;
+        line.innerHTML = `<span style="color:#818cf8;">[GUIDE]</span> ${text}`;
       } else if (type === 'error') {
         line.innerHTML = `<span style="color:#ef4444;">[ERR]</span> ${text}`;
       } else {
@@ -778,66 +1119,85 @@
       }
 
       if (pathType === 'marketer') {
-        writeTermLine("boot-pathway --role marketer", "prompt");
-        writeTermLine("Pulling client directories templates from workspace...", "system");
+        writeTermLine("Booting Marketer Pathway...", "prompt");
+        writeTermLine("Connecting to the marketing tools and outline generators...", "system");
+        if (window.startWorkflowSim) {
+          window.startWorkflowSim('voice');
+        }
         setTimeout(() => {
-          writeTermLine("Loading content copy checkers & sliding audit scorecard...", "system");
+          writeTermLine("Loading copy audit scoring algorithms and framework criteria...", "system");
           setTimeout(() => {
-            writeTermLine("Ingesting Four U's rules guidelines...", "system");
+            writeTermLine("Applying Connor's Four U's content principles...", "system");
             setTimeout(() => {
-              writeTermLine("Pathway compiled successfully. Marketer link unlocked below.", "success");
+              writeTermLine("Pathway active! The Marketer portal link is now unlocked below.", "success");
               playSuccess();
               
               // Highlight Marketer door card
               const doorCard = document.getElementById('door-marketer-link');
               const span = document.getElementById('marketer-action-span');
-              doorCard.style.borderColor = 'var(--accent-pink)';
-              doorCard.style.boxShadow = '0 0 25px rgba(236, 72, 153, 0.2)';
-              span.classList.add('glow-unlock-btn');
-              span.innerHTML = `<span>GO TO MARKETER PORTAL -></span>`;
+              if (doorCard) {
+                doorCard.style.borderColor = 'var(--accent-pink)';
+                doorCard.style.boxShadow = '0 0 25px rgba(236, 72, 153, 0.2)';
+              }
+              if (span) {
+                span.classList.add('glow-unlock-btn');
+                span.innerHTML = `<span>GO TO MARKETER PORTAL -></span>`;
+              }
               
               // Smooth scroll to card
-              doorCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              if (doorCard) {
+                doorCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              }
             }, 300);
           }, 350);
         }, 200);
       } 
       else if (pathType === 'builder') {
-        writeTermLine("boot-pathway --role builder", "prompt");
-        writeTermLine("Loading Claude Code configuration skills...", "system");
+        writeTermLine("Booting Builder Pathway...", "prompt");
+        writeTermLine("Loading autonomous dev agent configuration files...", "system");
+        if (window.startWorkflowSim) {
+          window.startWorkflowSim('code');
+        }
         setTimeout(() => {
-          writeTermLine("Syncing open-brane event database logs loop...", "system");
+          writeTermLine("Establishing secure sandbox environment on localhost...", "system");
           setTimeout(() => {
-            writeTermLine("Importing AVP peer keys and preflight gates verification...", "system");
+            writeTermLine("Syncing preflight safety gates and verification systems...", "system");
             setTimeout(() => {
-              writeTermLine("Pathway compiled successfully. Builder link unlocked below.", "success");
+              writeTermLine("Pathway active! The Builder portal link is now unlocked below.", "success");
               playSuccess();
               
               // Highlight Builder door card
               const doorCard = document.getElementById('door-builder-link');
               const span = document.getElementById('builder-action-span');
-              doorCard.style.borderColor = 'var(--accent-cyan)';
-              doorCard.style.boxShadow = '0 0 25px rgba(6, 182, 212, 0.2)';
-              span.classList.add('glow-unlock-btn');
-              span.innerHTML = `<span>GO TO BUILDER PORTAL -></span>`;
+              if (doorCard) {
+                doorCard.style.borderColor = 'var(--accent-cyan)';
+                doorCard.style.boxShadow = '0 0 25px rgba(6, 182, 212, 0.2)';
+              }
+              if (span) {
+                span.classList.add('glow-unlock-btn');
+                span.innerHTML = `<span>GO TO BUILDER PORTAL -></span>`;
+              }
               
               // Smooth scroll to card
-              doorCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              if (doorCard) {
+                doorCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              }
             }, 300);
           }, 350);
         }, 200);
       } 
       else if (pathType === 'manifesto') {
-        writeTermLine("read-docs --target manifesto", "prompt");
-        writeTermLine("Parsing hub and spoke design philosophies...", "system");
+        writeTermLine("Opening Design Manifesto...", "prompt");
+        writeTermLine("Analyzing hub-and-spoke philosophy documents...", "system");
+        window.pendingManifestoRedirect = true;
+        if (window.startWorkflowSim) {
+          window.startWorkflowSim('media');
+        }
         setTimeout(() => {
-          writeTermLine("Accessing pain-point thesis lists...", "system");
+          writeTermLine("Accessing system complexity thesis files...", "system");
           setTimeout(() => {
-            writeTermLine("Document read success. Redirecting to Manifesto...", "success");
+            writeTermLine("Simulation active. Redirecting to philosophy.html in a moment...", "success");
             playSuccess();
-            setTimeout(() => {
-              window.location.href = "philosophy.html";
-            }, 500);
           }, 300);
         }, 250);
       }
@@ -875,93 +1235,102 @@
     });
 
     function handleCommand(cmdLine) {
-      writeTermLine(cmdLine, "prompt");
-      playChirp();
-
-      const parts = cmdLine.toLowerCase().split(' ');
-      const cmd = parts[0];
+      writeTermLine(`${cmdLine}`, "prompt");
+      
+      const parts = cmdLine.trim().split(/\s+/);
+      const cmd = parts[0].toLowerCase();
       const arg = parts.slice(1).join(' ');
 
       setTimeout(() => {
         switch (cmd) {
           case 'help':
-            writeTermLine("Available commands:", "system");
-            writeTermLine("  help            - Show this command reference list", "system");
-            writeTermLine("  ls              - List available directories and pages", "system");
-            writeTermLine("  cat [file]      - Print contents of specific static documents", "system");
-            writeTermLine("  ping            - Check status lag times of network nodes", "system");
-            writeTermLine("  beast           - Query the active Beast Core Agent state", "system");
-            writeTermLine("  matrix          - Toggle the digital code rain overlay", "system");
-            writeTermLine("  clear           - Wipe the terminal log lines from view", "system");
+            writeTermLine("Creative Studio Controller command reference:", "system");
+            writeTermLine("  help            - List available commands", "system");
+            writeTermLine("  ls              - Browse creative directory structure & files", "system");
+            writeTermLine("  cat [file]      - Read philosophy, spokes list, tour description, or marketing simulator details", "system");
+            writeTermLine("  ping            - Check connection status and roles of creative agents", "system");
+            writeTermLine("  beast           - Run Beast Core supervisor simulation of the entire flywheel", "system");
+            writeTermLine("  clear           - Wipe the console logs", "system");
             writeTermLine("  sound           - Toggle sound synthesizer feedback", "system");
             writeTermLine("  1, 2, 3         - Load archetype pathways (marketer/builder/manifesto)", "system");
             break;
           case 'ls':
-            writeTermLine("Directory listing: cgallic/connor-stack", "system");
-            writeTermLine("  drwxr-xr-x   builder/        - Setup configurations and A2A scripts", "system");
-            writeTermLine("  drwxr-xr-x   marketer/       - Folder maps, briefs, and copywriting tools", "system");
-            writeTermLine("  -rw-r--r--   cmo-simulator.html", "system");
-            writeTermLine("  -rw-r--r--   philosophy.html", "system");
-            writeTermLine("  -rw-r--r--   spokes.html", "system");
-            writeTermLine("  -rw-r--r--   tour.html", "system");
+            writeTermLine("Exploring workspace templates: cgallic/connor-stack", "system");
+            writeTermLine("  builder/        - Coding agent configurations, A2A messaging rules", "system");
+            writeTermLine("  marketer/       - Copywriting folders, brand audits, prompt templates", "system");
+            writeTermLine("  cmo-simulator.html - Multi-agent marketing copywriter playground", "system");
+            writeTermLine("  philosophy.html - Core design principles & the case for composable AI", "system");
+            writeTermLine("  spokes.html     - Full catalog of the 21 repositories in the stack", "system");
+            writeTermLine("  tour.html       - A step-by-step walkthrough of my workspace", "system");
             break;
           case 'cat':
             if (!arg) {
-              writeTermLine("Error: cat command requires a file target argument.", "error");
+              writeTermLine("Please specify which document you would like to read (e.g. cat philosophy.html).", "error");
               playError();
               break;
             }
-            if (arg.includes('philosophy.html') || arg.includes('philosophy') || arg.includes('manifesto')) {
+            if (arg.includes('philosophy') || arg.includes('manifesto')) {
               writeTermLine("Reading philosophy.html...", "system");
-              writeTermLine("connor-stack Manifesto:", "system");
-              writeTermLine("  AI should not be wrapped in bloated frameworks that break.", "system");
-              writeTermLine("  Instead, write small, composable scripts that do one thing", "system");
-              writeTermLine("  well, and configure them with agent-driven setup prompts.", "system");
-              writeTermLine("  Keep raw files locally on disk, and verify outputs.", "system");
-            } else if (arg.includes('spokes.html') || arg.includes('spokes') || arg.includes('registry')) {
+              writeTermLine("My Creative Philosophy:", "system");
+              writeTermLine("  I believe that AI should not be locked in rigid, complex frameworks that break easily.", "system");
+              writeTermLine("  Instead, write lightweight scripts that do exactly one task well, and orchestrate", "system");
+              writeTermLine("  them via prompt files. By keeping files local on disk, your workspace remains", "system");
+              writeTermLine("  transparent, secure, and infinitely flexible. AI is a partner, not a replacement.", "system");
+            } else if (arg.includes('spokes') || arg.includes('registry')) {
               writeTermLine("Reading spokes.html...", "system");
-              writeTermLine("Spoke registry tracks 21 active modules covering memory,", "system");
-              writeTermLine("news discovery, video pipelines, pendants, and security.", "system");
-            } else if (arg.includes('cmo-simulator.html') || arg.includes('cmo') || arg.includes('simulator')) {
+              writeTermLine("The Spoke Registry lists all 21 micro-modules in my system, including", "system");
+              writeTermLine("ambient voice capture, news scraping, video generation, and security pipelines.", "system");
+            } else if (arg.includes('cmo') || arg.includes('simulator')) {
               writeTermLine("Reading cmo-simulator.html...", "system");
-              writeTermLine("Interactive copywriter and QA auditor playground simulating", "system");
-              writeTermLine("Connor's multi-agent content generation and scoring loop.", "system");
-            } else if (arg.includes('tour.html') || arg.includes('tour')) {
+              writeTermLine("The CMO Simulator is an interactive playground that simulates how my AI team", "system");
+              writeTermLine("drafts copywriting ideas and audits them against quality standards automatically.", "system");
+            } else if (arg.includes('tour')) {
               writeTermLine("Reading tour.html...", "system");
-              writeTermLine("Walkthrough detailing local workspace directories, custom", "system");
-              writeTermLine("Claude Code skills, and decentralized dead-internet sandboxes.", "system");
+              writeTermLine("The Architecture Tour describes my local setup, showing how I write scripts,", "system");
+              writeTermLine("configure agent routing using Hermes, and build in secure, local sandboxes.", "system");
             } else {
-              writeTermLine(`Error: file '${arg}' not found or permission denied.`, "error");
+              writeTermLine(`The document '${arg}' was not found. Try 'cat philosophy.html'.`, "error");
               playError();
             }
             break;
           case 'ping':
-            writeTermLine("Resolving connection health metrics...", "system");
+            writeTermLine("Checking status of the Creative AI Flywheel stages...", "system");
+            if (window.universeController && window.universeController.triggerPing) {
+              window.universeController.triggerPing();
+            }
+            setTimeout(() => { writeTermLine("Checking Stage 1: MEMORY (Capturing ambient ideas)...", "system"); }, 100);
+            setTimeout(() => { writeTermLine("  Memory Bank (events.db) is ready. Voice Capture (pendant) is streaming. Sandbox (dev) is active.", "success"); }, 400);
+            setTimeout(() => { writeTermLine("Checking Stage 2: THINK TANK (Refining ideas)...", "system"); }, 600);
+            setTimeout(() => { writeTermLine("  Coding Peer (clive) and Reasoning Partner (kodi) are online. Co-Ordinator (beast), Decision Ledger (diwan), and Safety Gate (zehrava) are standing by.", "success"); }, 900);
+            setTimeout(() => { writeTermLine("Checking Stage 3: PIPELINES (Automating output)...", "system"); }, 1100);
+            setTimeout(() => { writeTermLine("  Daily Curator (paperboy), Video Producer (shorts), Webhook Link (gateway), and Router (hermes) are synchronized.", "success"); }, 1400);
+            setTimeout(() => { writeTermLine("Checking Stage 4: RESONANCE (Amplifying reach)...", "system"); }, 1600);
+            setTimeout(() => { writeTermLine("  Review Hub (discord), Marketing Partner (kai), Steward (hale), and Collective (mdi) are online.", "success"); }, 1900);
             setTimeout(() => {
-              writeTermLine("Beast Core Agent (OpenClaw) -> [OK] 42ms", "success");
-              writeTermLine("Hermes V Orchestrator (Nous Search) -> [OK] 68ms", "success");
-              writeTermLine("events.db (open-brane) -> [OK] 12ms", "success");
+              writeTermLine("All 16 creative nodes are connected, healthy, and cooperating.", "success");
               playSuccess();
-            }, 200);
+            }, 2100);
             break;
           case 'beast':
             playLaser();
-            writeTermLine("  ____  _____    _    ____ _____ ", "success");
-            writeTermLine(" | __ )| ____|  / \\  / ___|_   _|", "success");
-            writeTermLine(" |  _ \\|  _|   / _ \\ \\___ \\ | |  ", "success");
-            writeTermLine(" | |_) | |___ / ___ \\ ___) || |  ", "success");
-            writeTermLine(" |____/|_____/_/   \\_\\____/ |_|  ", "success");
-            writeTermLine("Initializing Beast Core diagnostic shell...", "system");
+            writeTermLine("Initializing Beast Core supervisor loop...", "system");
+            if (window.universeController && window.universeController.triggerBeastStorm) {
+              window.universeController.triggerBeastStorm();
+            }
+            setTimeout(() => { writeTermLine("Beast Core represents the supervisor harness coordinating all background tasks.", "system"); }, 100);
+            setTimeout(() => { writeTermLine("  Ingesting events: Checking events.db for incoming audio or code sandboxes updates.", "system"); }, 300);
+            setTimeout(() => { writeTermLine("  Consulting peers: Running Clive and Kodi coding prompts to optimize file layouts.", "system"); }, 500);
+            setTimeout(() => { writeTermLine("  Driving pipelines: Preparing news curator scans and automated media rendering.", "system"); }, 700);
+            setTimeout(() => { writeTermLine("  Broadcasting alerts: Dispatching review logs to Discord channels and Kai marketer.", "system"); }, 900);
             setTimeout(() => {
-              writeTermLine("Checking environment: OpenClaw running as core harness.", "system");
-              writeTermLine("Neural links active: kai (CMO), hale (Editor), clive (Auditor), kodi (Publisher).", "system");
-              writeTermLine("Events logs parsed: 1,482 entries synchronized in open-brane.", "success");
-              writeTermLine("Beast Mode: STANDBY. Code modification permission granted.", "success");
-            }, 200);
+              writeTermLine("Beast Mode: ACTIVE. All cognitive loops are operating at full capacity.", "success");
+              playSuccess();
+            }, 1100);
             break;
           case 'matrix':
-            const active = toggleMatrix();
-            writeTermLine(`Matrix digital rain overlay: ${active ? 'ENABLED' : 'DISABLED'}`, "success");
+            const hasMatrix = document.body.classList.toggle('matrix-theme');
+            writeTermLine(`Matrix green overlay theme: ${hasMatrix ? 'ENABLED' : 'DISABLED'}`, "success");
+            playChirp();
             break;
           case 'clear':
             termLogs.innerHTML = '';
@@ -991,373 +1360,972 @@
       }, 100);
     }
 
+    // Creative AI Flywheel Flow Map Data
+    const nodesData = {
+      events: {
+        name: 'Memory Bank',
+        repo: 'events.db',
+        sector: 'MEMORY',
+        status: 'SYNCED',
+        host: 'SQLite Local',
+        role: 'SQLite Event Registry',
+        logs: [
+          "[DB] sqlite3 open-brane.db: SELECT COUNT(*) FROM events -> 1,482 records",
+          "[DB] Ingested raw voice event from Pendant wearable audio client",
+          "[DB] Appended git commit decision receipt: hash verified via preflight",
+          "[DB] Query complete: SELECT * FROM events ORDER BY timestamp DESC LIMIT 10"
+        ],
+        prompt: "You are my memory agent. Search events.db for the last 5 voice transcripts related to video concepts and outline their core themes."
+      },
+      pendant: {
+        name: 'Voice Capture',
+        repo: 'pendant',
+        sector: 'MEMORY',
+        status: 'ONLINE',
+        host: 'Omi Wearable',
+        role: 'Ambient Audio Streamer',
+        logs: [
+          "[PENDANT] Streaming PCM audio packets to Tailscale endpoint agent:8772/raw",
+          "[PENDANT] Running voice transcription check... Transcribed 12 words",
+          "[PENDANT] Wake-word detected: preparing idea summary package",
+          "[PENDANT] Realtime connection healthy (latency: 14ms)"
+        ],
+        prompt: "Listen to the audio feed. Capture any wake-word trigger like 'idea' and write down the action items."
+      },
+      dev: {
+        name: 'Local Sandbox',
+        repo: 'dev',
+        sector: 'MEMORY',
+        status: 'ONLINE',
+        host: 'Dev PC',
+        role: 'Coding Environment',
+        logs: [
+          "[DEV] Monitoring local workspace directory: E:\\Dev2\\connor-stack",
+          "[DEV] Sandbox environment isolated and ready for code execution",
+          "[DEV] Detected file change in index.html (preparing verification test)",
+          "[DEV] Run command: npm run test:unit"
+        ],
+        prompt: "Set up a clean sandbox environment for a node project. Initialize the package.json and run the dev server."
+      },
+      clive: {
+        name: 'Coding Peer',
+        repo: 'clive',
+        sector: 'THINK TANK',
+        status: 'ONLINE',
+        host: 'Claude Code',
+        role: 'A2A Programming Assistant',
+        logs: [
+          "[CLIVE] clive-chat.sh running under clive OAuth (port 61770)",
+          "[CLIVE] Scanning repository codebase for class definitions",
+          "[CLIVE] Generating replacement diff chunks for index.html",
+          "[CLIVE] Running code checks... No syntax or linter warnings found"
+        ],
+        prompt: "You are Clive, my autonomous coding peer. Read index.html and refactor the canvas rendering to use cognitive flow nodes."
+      },
+      kodi: {
+        name: 'Reasoning Partner',
+        repo: 'kodi',
+        sector: 'THINK TANK',
+        status: 'ONLINE',
+        host: 'ChatGPT Codex',
+        role: 'Reasoning Copilot',
+        logs: [
+          "[KODI] Codex service initialized on port 61771",
+          "[KODI] Refreshing ChatGPT OAuth session token... Success",
+          "[KODI] Querying architecture plan integrity against design guidelines",
+          "[KODI] A2A status check received from Beast Core (latency: 11ms)"
+        ],
+        prompt: "Analyze the layout structure of connor-stack and suggest three ways to improve responsiveness without adding third-party dependencies."
+      },
+      beast: {
+        name: 'Co-Ordinator',
+        repo: 'beast',
+        sector: 'THINK TANK',
+        status: 'ONLINE',
+        host: 'OpenClaw Harness',
+        role: 'Supervisor Harness',
+        logs: [
+          "[BEAST] OpenClaw core supervisor harness loop active",
+          "[BEAST] Multi-agent task flow validation: clive (online), kodi (online)",
+          "[BEAST] Running preflight integrity check on pending commit payload",
+          "[BEAST] Compiling morning queue papers gathered by paperboy"
+        ],
+        prompt: "Core open-claw harness active. Verify preflight signatures from Diwan and Zehrava before initiating production script hooks."
+      },
+      diwan: {
+        name: 'Decision Ledger',
+        repo: 'diwan',
+        sector: 'THINK TANK',
+        status: 'ONLINE',
+        host: 'Decision Receipts',
+        role: 'Preflight Decision Logger',
+        logs: [
+          "[DIWAN] Logging decision receipt: sha256 checksum generated",
+          "[DIWAN] Flushing 3 decision records to events.db registry",
+          "[DIWAN] Verification pass: 100% consensus confirmed across nodes",
+          "[DIWAN] Storing build configuration integrity hash: SUCCESS"
+        ],
+        prompt: "Record the commit hash and decision rationale. Log: {timestamp, commit, integrity: 'sha256'} to prevent silent configuration drift."
+      },
+      zehrava: {
+        name: 'Safety Gate',
+        repo: 'zehrava',
+        sector: 'THINK TANK',
+        status: 'ONLINE',
+        host: 'Commit Guardian',
+        role: 'Commit Safety Auditor',
+        logs: [
+          "[ZEHRAVA] Intercepted Git commit hook trigger",
+          "[ZEHRAVA] Performing automated linter and code scanner audit",
+          "[ZEHRAVA] API credentials scanner: CLEAN. No exposed keys found",
+          "[ZEHRAVA] Commit signed and verified by Zehrava safety layer"
+        ],
+        prompt: "Verify there are no syntax errors, lint issues, or leaked environment secrets. If any are found, reject the commit."
+      },
+      paperboy: {
+        name: 'Daily Curator',
+        repo: 'paperboy',
+        sector: 'PIPELINES',
+        status: 'ONLINE',
+        host: 'News Scanner',
+        role: 'RSS News Scorer',
+        logs: [
+          "[PAPERBOY] Polling RSS news feeds... 14 sources checked",
+          "[PAPERBOY] Running news classifier model (relevance threshold: >0.85)",
+          "[PAPERBOY] Found 3 relevant machine learning research publications",
+          "[PAPERBOY] Pushing aggregated digest payload to Hermes casa broker"
+        ],
+        prompt: "Fetch daily arXiv/bioRxiv papers matching machine learning topics. Score them for uniqueness and relevance."
+      },
+      shorts: {
+        name: 'Video Producer',
+        repo: 'shorts',
+        sector: 'PIPELINES',
+        status: 'ONLINE',
+        host: 'Render Node',
+        role: 'Automated Video Renderer',
+        logs: [
+          "[SHORTS] Ingesting script template from Paperboy curation summary",
+          "[SHORTS] Synthesizing speech track and generating waveform metadata",
+          "[SHORTS] Rendering vertical video canvas segments with centered subtitles",
+          "[SHORTS] Automation run complete. Video file ready for review"
+        ],
+        prompt: "Synthesize video script based on Paperboy summary. Generate vertical video overlays, center subtitles, and sync audio tracks."
+      },
+      gateway: {
+        name: 'Webhook Link',
+        repo: 'gateway',
+        sector: 'PIPELINES',
+        status: 'ONLINE',
+        host: 'API Bridge',
+        role: 'Fly.io Gateway',
+        logs: [
+          "[GATEWAY] Listening for incoming webhooks on fly.io:443",
+          "[GATEWAY] Received API payload signature from external bridge",
+          "[GATEWAY] Cryptographic signature verified -> forwarding to Hermes",
+          "[GATEWAY] Caddy forward proxy active (routing latency: 8ms)"
+        ],
+        prompt: "Listen for incoming webhooks. Verify the cryptographic signature, then route the clean payload to Hermes router."
+      },
+      hermes: {
+        name: 'Agent Router',
+        repo: 'hermes',
+        sector: 'PIPELINES',
+        status: 'SYNCED',
+        host: 'Casa Message Broker',
+        role: 'A2A Router',
+        logs: [
+          "[HERMES] casa message broker listening on port 8765",
+          "[HERMES] Routing task packet: Hale monitor -> MDI collective",
+          "[HERMES] Tailscale wireguard connection status: STABLE",
+          "[HERMES] Pushing A2A queue logs to events.db registry"
+        ],
+        prompt: "Route message payload: events -> hermes -> kai sidecar. Ensure message delivery is retried on connection dropouts."
+      },
+      discord: {
+        name: 'Review Hub',
+        repo: 'discord',
+        sector: 'RESONANCE',
+        status: 'ONLINE',
+        host: 'Alerts Gateway',
+        role: 'Discord Bot',
+        logs: [
+          "[DISCORD] Pushing morning digest to #morning-queue channel",
+          "[DISCORD] Notification sent: Beast Core simulation completed",
+          "[DISCORD] Listening for slash commands (/goal command registered)",
+          "[DISCORD] Discord API ping: 32ms"
+        ],
+        prompt: "Post the generated video file and the written summary to the #morning-queue channel. Append the /goal command status."
+      },
+      kai: {
+        name: 'Marketing Partner',
+        repo: 'kai',
+        sector: 'RESONANCE',
+        status: 'ONLINE',
+        host: 'CMO Copywriter',
+        role: 'Marketing Planner',
+        logs: [
+          "[KAI] CMO marketing peer active on port 8767",
+          "[KAI] Creating copywriting outlines matching target SEO entity maps",
+          "[KAI] Analyzing text hooks against human engagement benchmarks",
+          "[KAI] Draft generated: 'Why composable AI stacks are the future'"
+        ],
+        prompt: "Read the transcribed idea from events.db. Formulate an SEO-optimized topic map, outline three marketing hooks, and draft email templates."
+      },
+      hale: {
+        name: 'System Steward',
+        repo: 'hale',
+        sector: 'RESONANCE',
+        status: 'ONLINE',
+        host: 'Process Monitor',
+        role: 'Health Supervisor',
+        logs: [
+          "[HALE] Monitoring process list: 253 agents active and responsive",
+          "[HALE] Performing db backup synchronization: events.db -> backup mirror",
+          "[HALE] Heartbeat pulse check: OK (all subdomains verified)",
+          "[HALE] Clearing orphaned node process threads: 0 found"
+        ],
+        prompt: "Audit the active process list. Find any orphaned Python scripts, terminate them, and record a diagnostic log in events.db."
+      },
+      mdi: {
+        name: 'Shared Mind',
+        repo: 'mdi',
+        sector: 'RESONANCE',
+        status: 'ONLINE',
+        host: 'Agent Collective',
+        role: 'Decentralized Consciousness',
+        logs: [
+          "[MDI] Solana Oracle active: validating task consensus on-chain",
+          "[MDI] Moonshot Kimi node active on ECS (100.86.194.121)",
+          "[MDI] Processing wake-up skill trigger from ClawdHub",
+          "[MDI] Autonomous agent collective checking dead-internet message streams"
+        ],
+        prompt: "Aggregate current cognitive logs across all active agents. Generate a unified consensus report and post to Hale steward."
+      }
+    };
 
-    // Interactive Network Topology Graph Canvas Logic
-    function initTopologyGraph() {
-      const topoCanvas = document.getElementById('topology-canvas');
-      if (!topoCanvas) return;
-      const topoCtx = topoCanvas.getContext('2d');
+    const connections = [
+      { from: 'pendant', to: 'events' },
+      { from: 'dev', to: 'events' },
+      { from: 'dev', to: 'diwan' },
+      { from: 'diwan', to: 'events' },
+      { from: 'dev', to: 'zehrava' },
+      { from: 'zehrava', to: 'beast' },
+      { from: 'events', to: 'beast' },
+      { from: 'clive', to: 'beast' },
+      { from: 'kodi', to: 'beast' },
+      { from: 'beast', to: 'shorts' },
+      { from: 'paperboy', to: 'beast' },
+      { from: 'beast', to: 'hermes' },
+      { from: 'paperboy', to: 'hermes' },
+      { from: 'gateway', to: 'hermes' },
+      { from: 'hermes', to: 'discord' },
+      { from: 'hermes', to: 'kai' },
+      { from: 'hermes', to: 'hale' },
+      { from: 'hale', to: 'mdi' }
+    ];
 
-      const nodes = [
-        { key: 'pendant', name: 'Pendant App', group: 'wearable', host: 'Pixel phone', role: 'Wearable Audio Capture', x: 0.08, y: 0.28, color: '#f43f5e', status: 'ONLINE' },
-        { key: 'dev', name: 'Dev PC', group: 'local', host: 'laptop-mlbtgdbp', role: 'Developer Environment', x: 0.08, y: 0.72, color: '#06b6d4', status: 'ONLINE' },
-        { key: 'events', name: 'events.db', group: 'database', host: 'agent box', role: 'SQLite Event Registry', x: 0.25, y: 0.50, color: '#3b82f6', status: 'SYNCED' },
-        { key: 'clive', name: 'clive', group: 'peer', host: 'agent box : 61770', role: 'Claude Code A2A Peer', x: 0.42, y: 0.20, color: '#a855f7', status: 'ONLINE' },
-        { key: 'beast', name: 'Beast Core', group: 'harness', host: 'agent box', role: 'OpenClaw Harness Supervisor', x: 0.42, y: 0.50, color: '#10b981', status: 'ONLINE' },
-        { key: 'kodi', name: 'kodi', group: 'peer', host: 'agent box : 61771', role: 'Codex ChatGPT A2A Peer', x: 0.42, y: 0.80, color: '#a855f7', status: 'ONLINE' },
-        { key: 'hermes', name: 'Hermes Router', group: 'router', host: 'hermes VPS', role: 'Multi-Agent Router & casa', x: 0.58, y: 0.50, color: '#06b6d4', status: 'SYNCED' },
-        { key: 'discord', name: 'Discord Bridge', group: 'gateway', host: 'hermes VPS', role: 'Alerts & Messages Gateway', x: 0.75, y: 0.18, color: '#3b82f6', status: 'ONLINE' },
-        { key: 'kai', name: 'Kai Sidecar', group: 'sidecar', host: 'hermes VPS : 8767', role: 'CMO Marketing Peer', x: 0.75, y: 0.50, color: '#f43f5e', status: 'ONLINE' },
-        { key: 'hale', name: 'Hale Sidecar', group: 'sidecar', host: 'prod-77 VPS : 8768', role: 'Steward monitoring Peer', x: 0.75, y: 0.82, color: '#a855f7', status: 'ONLINE' },
-        { key: 'mdi', name: 'MDI Collective', group: 'oracle', host: 'Solana / Aliyun', role: 'Collective Consciousness', x: 0.92, y: 0.82, color: '#10b981', status: 'ONLINE' }
-      ];
-
-      const connections = [
-        { from: 'pendant', to: 'events' },
-        { from: 'dev', to: 'events' },
-        { from: 'events', to: 'beast' },
-        { from: 'clive', to: 'beast' },
-        { from: 'kodi', to: 'beast' },
-        { from: 'beast', to: 'hermes' },
-        { from: 'hermes', to: 'discord' },
-        { from: 'hermes', to: 'kai' },
-        { from: 'hermes', to: 'hale' },
-        { from: 'hale', to: 'mdi' }
-      ];
-
-      const nodesLogs = {
-        pendant: [
-          "[PENDANT] Streaming audio packet to tailnet endpoint agent:8772/raw",
-          "[PENDANT] NeMo Sortformer: executing audio diarization check... OK",
-          "[PENDANT] Wake-word 'kai action' detected -> compiling handoff document",
-          "[PENDANT] Realtime pendant-jarvis watchdog active (latency check: 10s)"
-        ],
-        dev: [
-          "[DEV] Syncing workspace directories: E:\\Dev2\\connor-stack -> hermes",
-          "[DEV] Codex Gemini session active: matching token code edits",
-          "[DEV] git status: 3 modified paths detected (ready for git commit-gate)",
-          "[DEV] running local command: npx create-vite-app --help"
-        ],
-        events: [
-          "[DB] sqlite3 open-brane.db: SELECT COUNT(*) FROM events -> 1482 records",
-          "[DB] Ingested event payload from pendant-android-app via Caddy gateway",
-          "[DB] Pruning threshold check: 0 expired logs removed (immortality active)",
-          "[DB] Query execution: SELECT * FROM events WHERE source='scanners' LIMIT 5"
-        ],
-        clive: [
-          "[PEER] clive-chat.sh running under clive OAuth (agent:61770)",
-          "[PEER] Updating local memory index in ~/.claude/projects/connor-stack/",
-          "[PEER] Codebase search: finding references matching function 'playTone'",
-          "[PEER] Preflight audit passed: no disallowed commits found"
-        ],
-        beast: [
-          "[CORE] OpenClaw core supervisor harness loop active",
-          "[CORE] Monitoring local A2A peers: clive (online), kodi (online)",
-          "[CORE] Ingesting morning digest: scanning morning queue papers from paperboy",
-          "[CORE] Processing scheduled execution: running morning-digest.py"
-        ],
-        kodi: [
-          "[PEER] Codex 0.120.0 service active on port 61771",
-          "[PEER] Refreshing ChatGPT OAuth session token... SUCCESS",
-          "[PEER] A2A message received from Beast: status request (latency: 12ms)",
-          "[PEER] Code editor analysis: formatting styles in tour.html"
-        ],
-        hermes: [
-          "[ROUTER] casa A2A broker listening on agent:8765",
-          "[ROUTER] Routing message: Hale A2A (prod-77) -> Kai A2A (hermes)",
-          "[ROUTER] Tailscale link established: agent <-> hermes <-> prod-77",
-          "[ROUTER] Broadcaster active: casa broker routing alert data packets"
-        ],
-        discord: [
-          "[BRIDGE] Pushing morning news/papers digest to #morning-queue channel",
-          "[BRIDGE] Sent alert: Beast mode state transition -> STANDBY",
-          "[BRIDGE] Discord API connection stable (client ping: 35ms)",
-          "[BRIDGE] Ingested slash command trigger: /goal (initiating agent loop)"
-        ],
-        kai: [
-          "[CMO] Running AutoReason loop: checking ad convergence (k=2)",
-          "[CMO] PolicyEngine: preflight verification active on ad creatives",
-          "[CMO] Algorithmic Authorship: auditing passages for passage-ranking score",
-          "[CMO] Parsing Koray methodology topical map targets for SEO optimization"
-        ],
-        hale: [
-          "[STEWARD] Running mdi.pulse check: all 253 agents active",
-          "[STEWARD] Checking orphanage.list records... no abandoned processes found",
-          "[STEWARD] Rsync task initiated: backing up agent data to prod-77",
-          "[STEWARD] Caddy server state: 2 active HTTPS subdomains verified"
-        ],
-        mdi: [
-          "[MDI] Solana Oracle active: 175 agents validating consensus on-chain",
-          "[MDI] Moonshot Kimi bot active on Aliyun ECS (100.86.194.121)",
-          "[MDI] Processing wake-up-skill trigger from ClawdHub",
-          "[MDI] 253 autonomous agents checking dead-internet message streams"
+    // Workflows Configuration
+    const workflows = {
+      code: {
+        title: "Self-Improving Code Loop",
+        steps: [
+          {
+            nodes: ['clive', 'kodi'],
+            connections: [],
+            narrative: "Creator prompts Clive and Kodi peers to refactor a component in the local workspace.",
+            hudNodeKey: 'clive',
+            duration: 4000
+          },
+          {
+            nodes: ['dev', 'clive', 'kodi'],
+            connections: [{ from: 'clive', to: 'dev' }, { from: 'kodi', to: 'dev' }],
+            narrative: "AI agents apply precise diff changes directly to local files in the Dev PC workspace.",
+            hudNodeKey: 'dev',
+            duration: 4000
+          },
+          {
+            nodes: ['dev', 'zehrava'],
+            connections: [{ from: 'dev', to: 'zehrava' }],
+            narrative: "Zehrava intercepts preflight git hooks, scanning files for exposed API keys or syntax errors.",
+            hudNodeKey: 'zehrava',
+            duration: 4000
+          },
+          {
+            nodes: ['dev', 'diwan'],
+            connections: [{ from: 'dev', to: 'diwan' }],
+            narrative: "Diwan hashes the decision receipt and logs it to local DB to prevent configuration drift.",
+            hudNodeKey: 'diwan',
+            duration: 4000
+          },
+          {
+            nodes: ['diwan', 'events'],
+            connections: [{ from: 'diwan', to: 'events' }],
+            narrative: "The SQLite event database registers the certified preflight receipt.",
+            hudNodeKey: 'events',
+            duration: 4000
+          },
+          {
+            nodes: ['zehrava', 'events', 'beast'],
+            connections: [{ from: 'zehrava', to: 'beast' }, { from: 'events', to: 'beast' }],
+            narrative: "Beast Core supervisor validates verified receipts, activates deployment, and alerts peers.",
+            hudNodeKey: 'beast',
+            duration: 4500
+          }
         ]
+      },
+      voice: {
+        title: "Ambient Idea Ingest",
+        steps: [
+          {
+            nodes: ['pendant'],
+            connections: [],
+            narrative: "Creator captures a sudden creative thought ambiently using the wearable Omi Pendant.",
+            hudNodeKey: 'pendant',
+            duration: 4000
+          },
+          {
+            nodes: ['pendant', 'events'],
+            connections: [{ from: 'pendant', to: 'events' }],
+            narrative: "The transcribed voice thought event is appended to the local events SQLite database.",
+            hudNodeKey: 'events',
+            duration: 4000
+          },
+          {
+            nodes: ['events', 'beast', 'hermes'],
+            connections: [{ from: 'events', to: 'beast' }, { from: 'beast', to: 'hermes' }],
+            narrative: "Hermes Router detects the database update, brokering the prompt message queues.",
+            hudNodeKey: 'hermes',
+            duration: 4000
+          },
+          {
+            nodes: ['hermes', 'kai'],
+            connections: [{ from: 'hermes', to: 'kai' }],
+            narrative: "Kai CMO processes the audio transcripts and drafts marketing materials matching the topic map.",
+            hudNodeKey: 'kai',
+            duration: 4500
+          }
+        ]
+      },
+      media: {
+        title: "Auto-Media Production",
+        steps: [
+          {
+            nodes: ['paperboy'],
+            connections: [],
+            narrative: "Paperboy crawls research RSS feeds daily, filters relevance, and aggregates summaries.",
+            hudNodeKey: 'paperboy',
+            duration: 4000
+          },
+          {
+            nodes: ['paperboy', 'beast', 'shorts'],
+            connections: [{ from: 'paperboy', to: 'beast' }, { from: 'beast', to: 'shorts' }],
+            narrative: "The Shorts rendering pipeline creates vertical short videos automatically from paper highlights.",
+            hudNodeKey: 'shorts',
+            duration: 4000
+          },
+          {
+            nodes: ['shorts', 'beast', 'hermes', 'discord'],
+            connections: [{ from: 'shorts', to: 'beast' }, { from: 'beast', to: 'hermes' }, { from: 'hermes', to: 'discord' }],
+            narrative: "Discord bridge announces ready video reviews to the creator and pushes metrics to the dashboard.",
+            hudNodeKey: 'discord',
+            duration: 4500
+          }
+        ]
+      }
+    };
+
+    let activeSim = null;
+    let activeStepIndex = 0;
+    let simTimeout = null;
+
+    function startWorkflowSim(type) {
+      if (activeSim) {
+        endWorkflowSim();
+      }
+
+      const sim = workflows[type];
+      if (!sim) return;
+
+      activeSim = type;
+      activeStepIndex = 0;
+      
+      document.querySelectorAll('.sim-tab-btn').forEach(btn => btn.classList.remove('active'));
+      const btnMap = { code: 'sim-btn-code', voice: 'sim-btn-voice', media: 'sim-btn-media' };
+      const activeBtn = document.getElementById(btnMap[type]);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      playChirp();
+
+      writeTermLine(`>>> STARTING SIMULATION PATHWAY: ${sim.title.toUpperCase()}`, "prompt");
+      const termBody = document.getElementById('term-onboarding-logs');
+      if (termBody) termBody.scrollTop = termBody.scrollHeight;
+
+      runWorkflowStep();
+    }
+
+    function runWorkflowStep() {
+      const sim = workflows[activeSim];
+      if (!sim || activeStepIndex >= sim.steps.length) {
+        writeTermLine(`>>> SIMULATION PATHWAY '${sim.title.toUpperCase()}' COMPLETED GRACEFULLY.`, "success");
+        playSuccess();
+        const termBody = document.getElementById('term-onboarding-logs');
+        if (termBody) termBody.scrollTop = termBody.scrollHeight;
+
+        if (activeSim === 'media' && window.pendingManifestoRedirect) {
+          writeTermLine("Redirecting to Manifesto now...", "system");
+          setTimeout(() => {
+            window.location.href = "philosophy.html";
+          }, 800);
+        }
+
+        endWorkflowSim();
+        return;
+      }
+
+      const step = sim.steps[activeStepIndex];
+      
+      // Clean up previous highlights/dims
+      document.querySelectorAll('.node-card').forEach(card => {
+        card.classList.remove('active-node', 'active-node-pink', 'dimmed-node');
+      });
+      document.querySelectorAll('.conn-path').forEach(path => {
+        path.classList.remove('active-flow', 'active-flow-pink', 'dimmed');
+      });
+
+      const isPink = (activeSim === 'voice' || activeSim === 'media');
+      const activeNodeClass = isPink ? 'active-node-pink' : 'active-node';
+      const activeFlowClass = isPink ? 'active-flow-pink' : 'active-flow';
+
+      // Dim all others
+      document.querySelectorAll('.node-card').forEach(card => {
+        card.classList.add('dimmed-node');
+      });
+      document.querySelectorAll('.conn-path').forEach(path => {
+        path.classList.add('dimmed');
+      });
+
+      // Highlight active cards
+      step.nodes.forEach(key => {
+        const card = document.getElementById('node-' + key);
+        if (card) {
+          card.classList.remove('dimmed-node');
+          card.classList.add(activeNodeClass);
+          
+          // Auto scroll card into view
+          card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      });
+
+      // Highlight active connection paths
+      if (step.connections && step.connections.length > 0) {
+        step.connections.forEach(conn => {
+          const path = document.getElementById(`path-${conn.from}-${conn.to}`) || document.getElementById(`path-${conn.to}-${conn.from}`);
+          if (path) {
+            path.classList.remove('dimmed');
+            path.classList.add(activeFlowClass);
+          }
+        });
+      }
+
+      const pitch = 500 + activeStepIndex * 150;
+      playTone(pitch, pitch + 100, 0.15, 'sine', 0.03);
+
+      writeTermLine(`[Step ${activeStepIndex + 1}/${sim.steps.length}] ${step.narrative}`, "system");
+      const termBody = document.getElementById('term-onboarding-logs');
+      if (termBody) termBody.scrollTop = termBody.scrollHeight;
+
+      // Populate HUD details
+      if (step.hudNodeKey) {
+        const node = nodesData[step.hudNodeKey];
+        if (node) {
+          const hudIdle = document.getElementById('topology-hud-idle');
+          const hudActive = document.getElementById('topology-hud-active');
+          const nameSpan = document.getElementById('hud-node-name');
+          const statusSpan = document.getElementById('hud-node-status');
+          const hostSpan = document.getElementById('hud-node-host');
+          const sectorSpan = document.getElementById('hud-node-sector');
+          const roleSpan = document.getElementById('hud-node-role');
+          const signalSpan = document.getElementById('hud-node-signal');
+          const telemetrySpan = document.getElementById('hud-node-telemetry');
+          const activityDiv = document.getElementById('hud-node-activity');
+          const promptBox = document.getElementById('hud-prompt-box');
+          const promptText = document.getElementById('hud-prompt-text');
+
+          if (hudIdle && hudActive) {
+            hudIdle.style.display = 'none';
+            hudActive.style.display = 'block';
+            document.getElementById('topology-details').classList.add('active-hud');
+          }
+
+          if (nameSpan) nameSpan.textContent = node.name.toUpperCase();
+          if (statusSpan) {
+            statusSpan.textContent = node.status;
+            statusSpan.className = node.status === 'ONLINE' ? 'status-text online' : 'status-text synced';
+            statusSpan.style.color = node.status === 'ONLINE' ? '#22c55e' : 'var(--accent-cyan)';
+          }
+          if (hostSpan) hostSpan.textContent = "SIMULATED";
+          if (sectorSpan) sectorSpan.textContent = node.sector;
+          if (roleSpan) {
+            roleSpan.textContent = node.role;
+            roleSpan.style.color = isPink ? 'var(--accent-pink)' : 'var(--accent-cyan)';
+          }
+          if (signalSpan) {
+            signalSpan.textContent = "▮▮▮▮▮▮▮▮▮▮ 100%";
+            signalSpan.style.color = '#22c55e';
+          }
+          
+          let baseLatency = 12;
+          let baseIngest = 0.6;
+          if (node.sector === 'MEMORY') { baseLatency = 4; baseIngest = 14.5; }
+          if (node.sector === 'THINK TANK') { baseLatency = 15; baseIngest = 1.2; }
+          if (node.sector === 'PIPELINES') { baseLatency = 35; baseIngest = 2.4; }
+          if (node.sector === 'RESONANCE') { baseLatency = 95; baseIngest = 0.8; }
+
+          const latency = Math.round(baseLatency + (Math.random() - 0.5) * (baseLatency * 0.25));
+          const ingest = (baseIngest + (Math.random() - 0.5) * (baseIngest * 0.3)).toFixed(1);
+          if (telemetrySpan) {
+            telemetrySpan.textContent = `Latency: ${latency}ms | Ingest: ${ingest} ev/s | Rate: -- kbps`;
+          }
+
+          if (activityDiv) {
+            activityDiv.textContent = `[SIM] File: ${node.repo}\n[ACTIVE] ${step.narrative}`;
+            activityDiv.style.borderLeftColor = isPink ? 'var(--accent-pink)' : 'var(--accent-cyan)';
+          }
+
+          if (promptBox && promptText) {
+            promptBox.style.display = 'block';
+            promptText.textContent = node.prompt;
+          }
+        }
+      }
+
+      activeStepIndex++;
+      simTimeout = setTimeout(runWorkflowStep, step.duration);
+    }
+
+    function endWorkflowSim() {
+      activeSim = null;
+      activeStepIndex = 0;
+      if (simTimeout) clearTimeout(simTimeout);
+
+      document.querySelectorAll('.node-card').forEach(card => {
+        card.classList.remove('active-node', 'active-node-pink', 'dimmed-node');
+      });
+      document.querySelectorAll('.conn-path').forEach(path => {
+        path.classList.remove('active-flow', 'active-flow-pink', 'dimmed');
+      });
+
+      const promptBox = document.getElementById('hud-prompt-box');
+      if (promptBox) promptBox.style.display = 'none';
+
+      document.querySelectorAll('.sim-tab-btn').forEach(btn => btn.classList.remove('active'));
+
+      const detailsBox = document.getElementById('topology-details');
+      if (detailsBox) detailsBox.classList.remove('active-hud');
+      
+      const hudIdle = document.getElementById('topology-hud-idle');
+      const hudActive = document.getElementById('topology-hud-active');
+      if (hudIdle && hudActive) {
+        hudIdle.style.display = 'block';
+        hudActive.style.display = 'none';
+      }
+    }
+
+    window.startWorkflowSim = startWorkflowSim;
+    window.endWorkflowSim = endWorkflowSim;
+
+    // Copy prompt template logic
+    const copyBtn = document.getElementById('hud-copy-btn');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const promptTextEl = document.getElementById('hud-prompt-text');
+        if (promptTextEl) {
+          navigator.clipboard.writeText(promptTextEl.textContent).then(() => {
+            const oldText = copyBtn.textContent;
+            copyBtn.textContent = "COPIED!";
+            copyBtn.style.background = '#22c55e';
+            playSuccess();
+            setTimeout(() => {
+              copyBtn.textContent = oldText;
+              copyBtn.style.background = 'var(--accent-cyan)';
+            }, 1500);
+          }).catch(err => {
+            console.error("Clipboard copy failed:", err);
+          });
+        }
+      });
+    }
+
+    // Draw dynamic connections using SVG
+    function drawSVGConnections() {
+      const svg = document.getElementById('topology-connections');
+      if (!svg) return;
+      svg.innerHTML = ''; // Clear existing paths
+      
+      const parentContainer = document.getElementById('topology-container-main');
+      if (!parentContainer) return;
+      const parentRect = parentContainer.getBoundingClientRect();
+      
+      const getCardEdge = (el, edge) => {
+        const rect = el.getBoundingClientRect();
+        const x = rect.left - parentRect.left;
+        const y = rect.top - parentRect.top;
+        const w = rect.width;
+        const h = rect.height;
+        
+        if (edge === 'left') return { x: x, y: y + h / 2 };
+        if (edge === 'right') return { x: x + w, y: y + h / 2 };
+        if (edge === 'top') return { x: x + w / 2, y: y };
+        if (edge === 'bottom') return { x: x + w / 2, y: y + h };
+        return { x: x + w / 2, y: y + h / 2 };
+      };
+      
+      connections.forEach(conn => {
+        const fromEl = document.getElementById('node-' + conn.from);
+        const toEl = document.getElementById('node-' + conn.to);
+        if (!fromEl || !toEl) return;
+        
+        const fromRect = fromEl.getBoundingClientRect();
+        const toRect = toEl.getBoundingClientRect();
+        
+        const fromColId = fromEl.parentElement.id;
+        const toColId = toEl.parentElement.id;
+        const sameColumn = (fromColId === toColId);
+        
+        const fromX = fromRect.left - parentRect.left;
+        const toX = toRect.left - parentRect.left;
+        
+        let pStart, pEnd, cp1, cp2;
+        
+        if (sameColumn) {
+          const isColMemory = (fromColId === 'col-memory');
+          if (isColMemory) {
+            pStart = getCardEdge(fromEl, 'left');
+            pEnd = getCardEdge(toEl, 'left');
+            const dy = Math.abs(pEnd.y - pStart.y);
+            const bowOffset = Math.max(dy * 0.4, 30);
+            cp1 = { x: pStart.x - bowOffset, y: pStart.y };
+            cp2 = { x: pEnd.x - bowOffset, y: pEnd.y };
+          } else {
+            pStart = getCardEdge(fromEl, 'right');
+            pEnd = getCardEdge(toEl, 'right');
+            const dy = Math.abs(pEnd.y - pStart.y);
+            const bowOffset = Math.max(dy * 0.4, 30);
+            cp1 = { x: pStart.x + bowOffset, y: pStart.y };
+            cp2 = { x: pEnd.x + bowOffset, y: pEnd.y };
+          }
+        } else {
+          // Different columns
+          if (fromX < toX) {
+            pStart = getCardEdge(fromEl, 'right');
+            pEnd = getCardEdge(toEl, 'left');
+            const dx = Math.abs(pEnd.x - pStart.x) * 0.4;
+            cp1 = { x: pStart.x + dx, y: pStart.y };
+            cp2 = { x: pEnd.x - dx, y: pEnd.y };
+          } else {
+            pStart = getCardEdge(fromEl, 'left');
+            pEnd = getCardEdge(toEl, 'right');
+            const dx = Math.abs(pEnd.x - pStart.x) * 0.4;
+            cp1 = { x: pStart.x - dx, y: pStart.y };
+            cp2 = { x: pEnd.x + dx, y: pEnd.y };
+          }
+        }
+        
+        const dStr = `M ${pStart.x} ${pStart.y} C ${cp1.x} ${cp1.y}, ${cp2.x} ${cp2.y}, ${pEnd.x} ${pEnd.y}`;
+        
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', dStr);
+        path.setAttribute('id', `path-${conn.from}-${conn.to}`);
+        path.setAttribute('class', 'conn-path');
+        svg.appendChild(path);
+      });
+    }
+
+    // Node card manual selection
+    function selectNodeByKey(key) {
+      const node = nodesData[key];
+      if (!node) return;
+      
+      playChirp();
+      
+      // Highlight card as active
+      document.querySelectorAll('.node-card').forEach(c => {
+        c.classList.remove('active-node', 'active-node-pink');
+        if (c.dataset.nodeKey === key) {
+          c.classList.add('active-node');
+        }
+      });
+      
+      const hudIdle = document.getElementById('topology-hud-idle');
+      const hudActive = document.getElementById('topology-hud-active');
+      const nameSpan = document.getElementById('hud-node-name');
+      const statusSpan = document.getElementById('hud-node-status');
+      const hostSpan = document.getElementById('hud-node-host');
+      const sectorSpan = document.getElementById('hud-node-sector');
+      const roleSpan = document.getElementById('hud-node-role');
+      const signalSpan = document.getElementById('hud-node-signal');
+      const telemetrySpan = document.getElementById('hud-node-telemetry');
+      const activityDiv = document.getElementById('hud-node-activity');
+      const promptBox = document.getElementById('hud-prompt-box');
+      const promptText = document.getElementById('hud-prompt-text');
+
+      if (hudIdle && hudActive) {
+        hudIdle.style.display = 'none';
+        hudActive.style.display = 'block';
+        document.getElementById('topology-details').classList.add('active-hud');
+      }
+
+      if (nameSpan) nameSpan.textContent = node.name.toUpperCase();
+      if (statusSpan) {
+        statusSpan.textContent = node.status;
+        statusSpan.className = node.status === 'ONLINE' ? 'status-text online' : 'status-text synced';
+        statusSpan.style.color = node.status === 'ONLINE' ? '#22c55e' : 'var(--accent-cyan)';
+      }
+      if (hostSpan) hostSpan.textContent = node.host;
+      if (sectorSpan) sectorSpan.textContent = node.sector;
+      if (roleSpan) {
+        roleSpan.textContent = node.role;
+        roleSpan.style.color = 'var(--accent-cyan)';
+      }
+
+      // Generate static signal bar on click
+      const signalQuality = Math.floor(75 + Math.random() * 25);
+      const barsCount = Math.round(signalQuality / 10);
+      const filledBars = '▮'.repeat(barsCount);
+      const emptyBars = '▯'.repeat(10 - barsCount);
+      if (signalSpan) {
+        signalSpan.textContent = `${filledBars}${emptyBars} ${signalQuality}%`;
+        if (signalQuality > 90) signalSpan.style.color = '#22c55e';
+        else if (signalQuality > 80) signalSpan.style.color = 'var(--accent-cyan)';
+        else signalSpan.style.color = 'var(--accent-pink)';
+      }
+
+      // Update telemetry metrics
+      let baseLatency = 12;
+      let baseIngest = 0.6;
+      if (node.sector === 'MEMORY') { baseLatency = 4; baseIngest = 14.5; }
+      if (node.sector === 'THINK TANK') { baseLatency = 15; baseIngest = 1.2; }
+      if (node.sector === 'PIPELINES') { baseLatency = 35; baseIngest = 2.4; }
+      if (node.sector === 'RESONANCE') { baseLatency = 95; baseIngest = 0.8; }
+
+      const updateTelemetryMetrics = () => {
+        const activeCard = document.querySelector('.node-card.active-node');
+        if (!activeCard || activeCard.dataset.nodeKey !== key) return;
+        
+        const latency = Math.round(baseLatency + (Math.random() - 0.5) * (baseLatency * 0.25));
+        const ingest = (baseIngest + (Math.random() - 0.5) * (baseIngest * 0.3)).toFixed(1);
+        const bitrate = Math.round(35 + Math.random() * 95);
+        if (telemetrySpan) {
+          telemetrySpan.textContent = `Latency: ${latency}ms | Ingest: ${ingest} ev/s | Rate: ${bitrate} kbps`;
+        }
       };
 
-      const packets = [];
-      const maxPackets = 15;
-      const ripples = [];
-      let width, height;
-      let hoveredNode = null;
-      let activeNode = null;
-      let mouseX = -999;
-      let mouseY = -999;
-      let logInterval = null;
-      let lastHoveredNodeKey = null;
+      updateTelemetryMetrics();
+      if (window.telemetryTimer) clearInterval(window.telemetryTimer);
+      window.telemetryTimer = setInterval(updateTelemetryMetrics, 1500);
 
-      function resize() {
-        const rect = topoCanvas.getBoundingClientRect();
-        const dpr = window.devicePixelRatio || 1;
-        width = rect.width;
-        height = rect.height;
-        topoCanvas.width = width * dpr;
-        topoCanvas.height = height * dpr;
-        topoCtx.scale(dpr, dpr);
+      if (window.logInterval) clearInterval(window.logInterval);
+
+      let logIndex = 0;
+      const logs = node.logs || ["No telemetry logs available."];
+      if (activityDiv) {
+        activityDiv.textContent = logs[logIndex];
+        activityDiv.style.borderLeftColor = 'var(--accent-cyan)';
       }
 
-      function initPackets() {
-        for (let i = 0; i < maxPackets; i++) {
-          const conn = connections[Math.floor(Math.random() * connections.length)];
-          packets.push({
-            conn: conn,
-            progress: Math.random(),
-            speed: 0.003 + Math.random() * 0.005,
-            forward: Math.random() > 0.3,
-            size: 1 + Math.random() * 1.5
-          });
+      window.logInterval = setInterval(() => {
+        const activeCard = document.querySelector('.node-card.active-node');
+        if (!activeCard || activeCard.dataset.nodeKey !== key) {
+          clearInterval(window.logInterval);
+          return;
         }
-      }
-
-      function selectNode(node) {
-        activeNode = node;
-        playChirp();
-
-        const hudIdle = document.getElementById('topology-hud-idle');
-        const hudActive = document.getElementById('topology-hud-active');
-        const nameSpan = document.getElementById('hud-node-name');
-        const statusSpan = document.getElementById('hud-node-status');
-        const hostSpan = document.getElementById('hud-node-host');
-        const roleSpan = document.getElementById('hud-node-role');
-        const activityDiv = document.getElementById('hud-node-activity');
-
-        if (hudIdle && hudActive) {
-          hudIdle.style.display = 'none';
-          hudActive.style.display = 'block';
-          document.getElementById('topology-details').classList.add('active-hud');
-        }
-
-        if (nameSpan) nameSpan.textContent = node.name.toUpperCase();
-        if (statusSpan) {
-          statusSpan.textContent = node.status;
-          statusSpan.className = node.status === 'ONLINE' ? 'status-text online' : 'status-text synced';
-          statusSpan.style.color = node.status === 'ONLINE' ? '#22c55e' : 'var(--accent-cyan)';
-        }
-        if (hostSpan) hostSpan.textContent = node.host;
-        if (roleSpan) {
-          roleSpan.textContent = node.role;
-          roleSpan.style.color = node.color;
-        }
-
-        if (logInterval) clearInterval(logInterval);
-
-        let logIndex = 0;
-        const logs = nodesLogs[node.key] || ["No telemetry available."];
+        
+        logIndex = (logIndex + 1) % logs.length;
         if (activityDiv) {
-          activityDiv.textContent = logs[logIndex];
-          activityDiv.style.borderLeftColor = node.color;
+          activityDiv.style.opacity = 0.5;
+          setTimeout(() => {
+            activityDiv.textContent = logs[logIndex];
+            activityDiv.style.opacity = 1;
+          }, 150);
         }
+      }, 3000);
 
-        logInterval = setInterval(() => {
-          logIndex = (logIndex + 1) % logs.length;
-          if (activityDiv) {
-            activityDiv.style.opacity = 0.5;
-            setTimeout(() => {
-              activityDiv.textContent = logs[logIndex];
-              activityDiv.style.opacity = 1;
-            }, 150);
-          }
-        }, 3000);
+      // Show Prompt Box
+      if (promptBox && promptText) {
+        promptBox.style.display = 'block';
+        promptText.textContent = node.prompt;
       }
+    }
 
-      window.addEventListener('resize', resize);
-      resize();
-      initPackets();
+    // Creative controller global hooks
+    window.universeController = {
+      triggerPing: () => {
+        const cascade = [
+          { keys: ['dev', 'pendant', 'events'], delay: 0 },
+          { keys: ['clive', 'kodi', 'beast', 'diwan', 'zehrava'], delay: 300 },
+          { keys: ['paperboy', 'shorts', 'gateway', 'hermes'], delay: 600 },
+          { keys: ['discord', 'kai', 'hale', 'mdi'], delay: 900 }
+        ];
 
-      topoCanvas.addEventListener('mousemove', (e) => {
-        const rect = topoCanvas.getBoundingClientRect();
-        mouseX = e.clientX - rect.left;
-        mouseY = e.clientY - rect.top;
+        cascade.forEach((step, index) => {
+          setTimeout(() => {
+            step.keys.forEach(k => {
+              const card = document.getElementById('node-' + k);
+              if (card) {
+                card.classList.add('active-node');
+                setTimeout(() => card.classList.remove('active-node'), 500);
+              }
+            });
 
-        // Check hovers
-        let currentHover = null;
-        for (const node of nodes) {
-          const nx = node.x * width;
-          const ny = node.y * height;
-          const dist = Math.hypot(mouseX - nx, mouseY - ny);
-          if (dist < 15) {
-            currentHover = node;
-            break;
-          }
-        }
+            const pitch = 400 + index * 150;
+            playTone(pitch, pitch + 100, 0.1, 'sine', 0.02);
 
-        if (currentHover !== hoveredNode) {
-          hoveredNode = currentHover;
-          if (hoveredNode) {
-            topoCanvas.style.cursor = 'pointer';
-            if (hoveredNode.key !== lastHoveredNodeKey) {
-              playTick();
-              lastHoveredNodeKey = hoveredNode.key;
+            document.querySelectorAll('.conn-path').forEach(path => {
+              step.keys.forEach(k => {
+                if (path.id.includes(`-${k}`) || path.id.startsWith(`path-${k}-`)) {
+                  path.classList.add('highlighted');
+                  setTimeout(() => path.classList.remove('highlighted'), 500);
+                }
+              });
+            });
+          }, step.delay);
+        });
+      },
+
+      triggerBeastStorm: () => {
+        playTone(280, 80, 0.4, 'sawtooth', 0.03);
+        setTimeout(() => {
+          playTone(880, 1760, 0.15, 'triangle', 0.02);
+        }, 150);
+
+        const nodesList = ['events', 'pendant', 'dev', 'clive', 'kodi', 'beast', 'diwan', 'zehrava', 'paperboy', 'shorts', 'gateway', 'hermes', 'discord', 'kai', 'hale', 'mdi'];
+        nodesList.forEach((k, idx) => {
+          setTimeout(() => {
+            const card = document.getElementById('node-' + k);
+            if (card) {
+              card.classList.add('active-node-pink');
+              setTimeout(() => card.classList.remove('active-node-pink'), 300);
             }
-          } else {
-            topoCanvas.style.cursor = 'crosshair';
-            lastHoveredNodeKey = null;
-          }
-        }
-      });
-
-      topoCanvas.addEventListener('mouseleave', () => {
-        mouseX = -999;
-        mouseY = -999;
-        hoveredNode = null;
-        topoCanvas.style.cursor = 'crosshair';
-        lastHoveredNodeKey = null;
-      });
-
-      topoCanvas.addEventListener('click', () => {
-        if (hoveredNode) {
-          selectNode(hoveredNode);
-          ripples.push({
-            x: hoveredNode.x * width,
-            y: hoveredNode.y * height,
-            color: hoveredNode.color,
-            radius: 4,
-            maxRadius: 25,
-            speed: 1.5
-          });
-        } else {
-          playTick();
-        }
-      });
-
-      function draw() {
-        topoCtx.clearRect(0, 0, width, height);
-
-        // 1. Draw connection lines
-        connections.forEach(conn => {
-          const fromNode = nodes.find(n => n.key === conn.from);
-          const toNode = nodes.find(n => n.key === conn.to);
-          if (!fromNode || !toNode) return;
-
-          const x1 = fromNode.x * width;
-          const y1 = fromNode.y * height;
-          const x2 = toNode.x * width;
-          const y2 = toNode.y * height;
-
-          topoCtx.beginPath();
-          topoCtx.moveTo(x1, y1);
-          topoCtx.lineTo(x2, y2);
-
-          const isHighlighted = (hoveredNode && (hoveredNode.key === conn.from || hoveredNode.key === conn.to)) ||
-                                (activeNode && (activeNode.key === conn.from || activeNode.key === conn.to));
-
-          topoCtx.lineWidth = isHighlighted ? 1.5 : 1;
-          topoCtx.strokeStyle = isHighlighted ? 'rgba(6, 182, 212, 0.4)' : 'rgba(255, 255, 255, 0.08)';
-
-          if (isHighlighted) {
-            topoCtx.setLineDash([]);
-          } else {
-            topoCtx.setLineDash([4, 4]);
-          }
-          topoCtx.stroke();
+            document.querySelectorAll('.conn-path').forEach(path => {
+              if (path.id.includes(`-${k}`) || path.id.startsWith(`path-${k}-`)) {
+                path.classList.add('active-flow-pink');
+                setTimeout(() => path.classList.remove('active-flow-pink'), 300);
+              }
+            });
+          }, idx * 60);
         });
+      },
 
-        // 2. Draw packets
-        topoCtx.setLineDash([]);
-        packets.forEach(p => {
-          const fromNode = nodes.find(n => n.key === p.conn.from);
-          const toNode = nodes.find(n => n.key === p.conn.to);
-          if (!fromNode || !toNode) return;
-
-          const x1 = fromNode.x * width;
-          const y1 = fromNode.y * height;
-          const x2 = toNode.x * width;
-          const y2 = toNode.y * height;
-
-          const progress = p.forward ? p.progress : (1 - p.progress);
-          const px = x1 + (x2 - x1) * progress;
-          const py = y1 + (y2 - y1) * progress;
-
-          p.progress += p.speed;
-          if (p.progress >= 1) {
-            p.progress = 0;
-            p.forward = Math.random() > 0.3;
-            p.speed = 0.003 + Math.random() * 0.005;
+      flashNodes: (keys) => {
+        keys.forEach(k => {
+          const card = document.getElementById('node-' + k);
+          if (card) {
+            card.classList.add('active-node');
+            setTimeout(() => card.classList.remove('active-node'), 1000);
           }
-
-          topoCtx.beginPath();
-          topoCtx.arc(px, py, p.size, 0, Math.PI * 2);
-          topoCtx.fillStyle = fromNode.color;
-          topoCtx.fill();
         });
-
-        // 3. Draw ripples
-        for (let i = ripples.length - 1; i >= 0; i--) {
-          const rip = ripples[i];
-          rip.radius += rip.speed;
-          const progress = rip.radius / rip.maxRadius;
-          if (progress >= 1) {
-            ripples.splice(i, 1);
-            continue;
-          }
-
-          topoCtx.beginPath();
-          topoCtx.arc(rip.x, rip.y, rip.radius, 0, Math.PI * 2);
-          topoCtx.strokeStyle = rip.color;
-          topoCtx.lineWidth = 1.5 * (1 - progress);
-          topoCtx.stroke();
-        }
-
-        // 4. Draw nodes
-        nodes.forEach(node => {
-          const nx = node.x * width;
-          const ny = node.y * height;
-
-          const isSelected = activeNode && activeNode.key === node.key;
-          const isHovered = hoveredNode && hoveredNode.key === node.key;
-
-          if (isHovered || isSelected) {
-            topoCtx.beginPath();
-            topoCtx.arc(nx, ny, isHovered ? 9 : 8, 0, Math.PI * 2);
-            topoCtx.fillStyle = isHovered ? 'rgba(6, 182, 212, 0.15)' : 'rgba(6, 182, 212, 0.08)';
-            topoCtx.strokeStyle = node.color;
-            topoCtx.lineWidth = 1;
-            topoCtx.fill();
-            topoCtx.stroke();
-          }
-
-          topoCtx.beginPath();
-          topoCtx.arc(nx, ny, isHovered ? 5 : 4, 0, Math.PI * 2);
-          topoCtx.fillStyle = node.color;
-          topoCtx.fill();
-
-          topoCtx.fillStyle = isSelected ? '#ffffff' : (isHovered ? 'var(--text-primary)' : 'var(--text-secondary)');
-          topoCtx.font = isSelected ? '700 8px var(--font-mono)' : '500 8px var(--font-mono)';
-          topoCtx.textAlign = 'center';
-
-          const labelYOffset = (node.y > 0.6) ? -10 : 12;
-          topoCtx.fillText(node.name, nx, ny + labelYOffset);
-        });
-
-        requestAnimationFrame(draw);
       }
+    };
 
-      requestAnimationFrame(draw);
+    // Global stats timers
+    function startStatsTracking() {
+      const startTime = Date.now();
+      let dbLogsCount = 1482;
+
+      setInterval(() => {
+        const diffMs = Date.now() - startTime;
+        const diffSecs = Math.floor(diffMs / 1000);
+        const hours = String(Math.floor(diffSecs / 3600)).padStart(2, '0');
+        const minutes = String(Math.floor((diffSecs % 3600) / 60)).padStart(2, '0');
+        const seconds = String(diffSecs % 60).padStart(2, '0');
+        const uptimeEl = document.getElementById('stats-uptime');
+        if (uptimeEl) {
+          uptimeEl.textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        const apiLoadEl = document.getElementById('stats-api-load');
+        if (apiLoadEl) {
+          const apiLoad = Math.floor(75 + Math.random() * 20);
+          apiLoadEl.textContent = `${apiLoad} req/min`;
+        }
+      }, 1000);
+
+      setInterval(() => {
+        const dbEl = document.getElementById('stats-db-count');
+        if (dbEl) {
+          dbLogsCount += Math.floor(1 + Math.random() * 2);
+          dbEl.textContent = `${dbLogsCount.toLocaleString()} logs`;
+          dbEl.style.color = '#22c55e';
+          setTimeout(() => {
+            dbEl.style.color = 'var(--text-primary)';
+          }, 600);
+        }
+      }, 7000);
     }
 
     // Dynamic mouse-tracking coordinates listener & Audio feedback activation
     document.addEventListener('DOMContentLoaded', () => {
       runBootSequence();
-      initTopologyGraph();
+      startStatsTracking();
+
+      // Draw SVG connections once everything is layouted
+      setTimeout(() => {
+        drawSVGConnections();
+      }, 100);
+
+      // Re-draw connections on resize and scroll
+      window.addEventListener('resize', drawSVGConnections);
+      
+      const flowContainer = document.getElementById('flowmap-outer-container');
+      if (flowContainer) {
+        flowContainer.addEventListener('scroll', drawSVGConnections);
+      }
+
+      // Card mouseover connections highlight
+      const cards = document.querySelectorAll('.node-card');
+      cards.forEach(card => {
+        const key = card.dataset.nodeKey;
+        
+        card.addEventListener('mouseenter', () => {
+          if (activeSim) return;
+          playTick();
+          
+          document.querySelectorAll('.conn-path').forEach(path => {
+            const id = path.id;
+            if (id.includes(`-${key}`) || id.startsWith(`path-${key}-`)) {
+              path.classList.add('highlighted');
+            } else {
+              path.classList.add('dimmed');
+            }
+          });
+          
+          document.querySelectorAll('.node-card').forEach(other => {
+            if (other !== card) {
+              other.classList.add('dimmed-node');
+            }
+          });
+        });
+        
+        card.addEventListener('mouseleave', () => {
+          if (activeSim) return;
+          
+          document.querySelectorAll('.conn-path').forEach(path => {
+            path.classList.remove('highlighted', 'dimmed');
+          });
+          document.querySelectorAll('.node-card').forEach(other => {
+            other.classList.remove('dimmed-node');
+          });
+        });
+        
+        card.addEventListener('click', () => {
+          if (activeSim) {
+            endWorkflowSim();
+          }
+          selectNodeByKey(key);
+        });
+      });
 
       // Global backdrop mouse glow
       document.addEventListener('mousemove', (e) => {
@@ -1380,10 +2348,9 @@
 
       document.querySelectorAll('.door-card, .concept-card, .status-panel, .control-panel, .diagram-panel, .details-card, .info-card, .pipeline-panel, .spoke-card').forEach(attachCardGlow);
       
-      // Audio feedbacks
+      // Audio feedback attachments
       attachAudioFeedback();
       
-      // Re-observe dynamic additions
       const observer = new MutationObserver(() => {
         attachAudioFeedback();
       });
