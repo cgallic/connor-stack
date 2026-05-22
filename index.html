@@ -260,6 +260,47 @@
       70% { box-shadow: 0 0 0 10px rgba(168, 85, 247, 0); }
       100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); }
     }
+
+    /* Interactive Network Topology styles */
+    .topology-container {
+      position: relative;
+      width: 100%;
+      height: 180px;
+      background: rgba(7, 6, 10, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+    }
+    
+    #topology-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: crosshair;
+    }
+
+    .topology-hud {
+      background: rgba(7, 6, 10, 0.4);
+      border: 1px solid var(--card-border);
+      padding: 0.85rem 1.25rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      min-height: 90px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: all var(--transition-speed);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .topology-hud.active-hud {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
+      background: rgba(6, 182, 212, 0.02);
+    }
   </style>
 </head>
 <body>
@@ -328,30 +369,30 @@
         <!-- Stack Status & Video Link -->
         <div class="status-panel">
           <div class="status-header">
-            <h2 class="status-title">System Stack Status</h2>
-            <p class="status-desc">Active diagnostic pings representing Connor's always-on agent services.</p>
+            <h2 class="status-title">System Stack Topology</h2>
+            <p class="status-desc">Active architecture map. Click nodes to run diagnostic queries.</p>
           </div>
 
-          <div class="status-list">
-            <div class="status-item">
-              <span class="status-name">Hermes V Orchestrator</span>
-              <div class="status-indicator-group">
-                <span class="pulse-indicator"></span>
-                <span class="status-text online">Online</span>
-              </div>
+          <!-- Live Network Graph Canvas -->
+          <div class="topology-container">
+            <canvas id="topology-canvas"></canvas>
+          </div>
+
+          <!-- Node Telemetry Details Box -->
+          <div class="topology-hud" id="topology-details">
+            <div id="topology-hud-idle" style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-secondary); text-align: center; line-height: 1.5;">
+              <span style="color: var(--accent-pink); animation: cursorBlink 1.5s infinite; font-weight: bold;">&gt;</span> Click a node to query live system logs
             </div>
-            <div class="status-item">
-              <span class="status-name">Beast Core Agent</span>
-              <div class="status-indicator-group">
-                <span class="pulse-indicator"></span>
-                <span class="status-text online">Online</span>
+            <div id="topology-hud-active" style="display: none; font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.5;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem; border-bottom: 1px dashed var(--card-border); padding-bottom: 0.4rem;">
+                <span id="hud-node-name" style="font-weight: 700; color: var(--text-primary);">NODE_NAME</span>
+                <span id="hud-node-status" style="font-weight: 700;">ONLINE</span>
               </div>
-            </div>
-            <div class="status-item">
-              <span class="status-name">Open-Brane events.db</span>
-              <div class="status-indicator-group">
-                <span class="pulse-indicator" style="background-color: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-cyan);"></span>
-                <span class="status-text synced">Synced</span>
+              <div style="color: var(--text-secondary); margin-bottom: 0.4rem; font-size: 0.7rem;">
+                Host: <span id="hud-node-host" style="color: var(--accent-cyan);">HOST</span> | Role: <span id="hud-node-role" style="color: var(--accent-purple);">ROLE</span>
+              </div>
+              <div style="color: var(--text-primary); font-size: 0.7rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; background: rgba(0,0,0,0.3); padding: 0.35rem 0.6rem; border-radius: 4px; border-left: 2px solid var(--accent-pink);" id="hud-node-activity">
+                SYSTEM_ACTIVITY_LOG
               </div>
             </div>
           </div>
@@ -950,9 +991,373 @@
       }, 100);
     }
 
+
+    // Interactive Network Topology Graph Canvas Logic
+    function initTopologyGraph() {
+      const topoCanvas = document.getElementById('topology-canvas');
+      if (!topoCanvas) return;
+      const topoCtx = topoCanvas.getContext('2d');
+
+      const nodes = [
+        { key: 'pendant', name: 'Pendant App', group: 'wearable', host: 'Pixel phone', role: 'Wearable Audio Capture', x: 0.08, y: 0.28, color: '#f43f5e', status: 'ONLINE' },
+        { key: 'dev', name: 'Dev PC', group: 'local', host: 'laptop-mlbtgdbp', role: 'Developer Environment', x: 0.08, y: 0.72, color: '#06b6d4', status: 'ONLINE' },
+        { key: 'events', name: 'events.db', group: 'database', host: 'agent box', role: 'SQLite Event Registry', x: 0.25, y: 0.50, color: '#3b82f6', status: 'SYNCED' },
+        { key: 'clive', name: 'clive', group: 'peer', host: 'agent box : 61770', role: 'Claude Code A2A Peer', x: 0.42, y: 0.20, color: '#a855f7', status: 'ONLINE' },
+        { key: 'beast', name: 'Beast Core', group: 'harness', host: 'agent box', role: 'OpenClaw Harness Supervisor', x: 0.42, y: 0.50, color: '#10b981', status: 'ONLINE' },
+        { key: 'kodi', name: 'kodi', group: 'peer', host: 'agent box : 61771', role: 'Codex ChatGPT A2A Peer', x: 0.42, y: 0.80, color: '#a855f7', status: 'ONLINE' },
+        { key: 'hermes', name: 'Hermes Router', group: 'router', host: 'hermes VPS', role: 'Multi-Agent Router & casa', x: 0.58, y: 0.50, color: '#06b6d4', status: 'SYNCED' },
+        { key: 'discord', name: 'Discord Bridge', group: 'gateway', host: 'hermes VPS', role: 'Alerts & Messages Gateway', x: 0.75, y: 0.18, color: '#3b82f6', status: 'ONLINE' },
+        { key: 'kai', name: 'Kai Sidecar', group: 'sidecar', host: 'hermes VPS : 8767', role: 'CMO Marketing Peer', x: 0.75, y: 0.50, color: '#f43f5e', status: 'ONLINE' },
+        { key: 'hale', name: 'Hale Sidecar', group: 'sidecar', host: 'prod-77 VPS : 8768', role: 'Steward monitoring Peer', x: 0.75, y: 0.82, color: '#a855f7', status: 'ONLINE' },
+        { key: 'mdi', name: 'MDI Collective', group: 'oracle', host: 'Solana / Aliyun', role: 'Collective Consciousness', x: 0.92, y: 0.82, color: '#10b981', status: 'ONLINE' }
+      ];
+
+      const connections = [
+        { from: 'pendant', to: 'events' },
+        { from: 'dev', to: 'events' },
+        { from: 'events', to: 'beast' },
+        { from: 'clive', to: 'beast' },
+        { from: 'kodi', to: 'beast' },
+        { from: 'beast', to: 'hermes' },
+        { from: 'hermes', to: 'discord' },
+        { from: 'hermes', to: 'kai' },
+        { from: 'hermes', to: 'hale' },
+        { from: 'hale', to: 'mdi' }
+      ];
+
+      const nodesLogs = {
+        pendant: [
+          "[PENDANT] Streaming audio packet to tailnet endpoint agent:8772/raw",
+          "[PENDANT] NeMo Sortformer: executing audio diarization check... OK",
+          "[PENDANT] Wake-word 'kai action' detected -> compiling handoff document",
+          "[PENDANT] Realtime pendant-jarvis watchdog active (latency check: 10s)"
+        ],
+        dev: [
+          "[DEV] Syncing workspace directories: E:\\Dev2\\connor-stack -> hermes",
+          "[DEV] Codex Gemini session active: matching token code edits",
+          "[DEV] git status: 3 modified paths detected (ready for git commit-gate)",
+          "[DEV] running local command: npx create-vite-app --help"
+        ],
+        events: [
+          "[DB] sqlite3 open-brane.db: SELECT COUNT(*) FROM events -> 1482 records",
+          "[DB] Ingested event payload from pendant-android-app via Caddy gateway",
+          "[DB] Pruning threshold check: 0 expired logs removed (immortality active)",
+          "[DB] Query execution: SELECT * FROM events WHERE source='scanners' LIMIT 5"
+        ],
+        clive: [
+          "[PEER] clive-chat.sh running under clive OAuth (agent:61770)",
+          "[PEER] Updating local memory index in ~/.claude/projects/connor-stack/",
+          "[PEER] Codebase search: finding references matching function 'playTone'",
+          "[PEER] Preflight audit passed: no disallowed commits found"
+        ],
+        beast: [
+          "[CORE] OpenClaw core supervisor harness loop active",
+          "[CORE] Monitoring local A2A peers: clive (online), kodi (online)",
+          "[CORE] Ingesting morning digest: scanning morning queue papers from paperboy",
+          "[CORE] Processing scheduled execution: running morning-digest.py"
+        ],
+        kodi: [
+          "[PEER] Codex 0.120.0 service active on port 61771",
+          "[PEER] Refreshing ChatGPT OAuth session token... SUCCESS",
+          "[PEER] A2A message received from Beast: status request (latency: 12ms)",
+          "[PEER] Code editor analysis: formatting styles in tour.html"
+        ],
+        hermes: [
+          "[ROUTER] casa A2A broker listening on agent:8765",
+          "[ROUTER] Routing message: Hale A2A (prod-77) -> Kai A2A (hermes)",
+          "[ROUTER] Tailscale link established: agent <-> hermes <-> prod-77",
+          "[ROUTER] Broadcaster active: casa broker routing alert data packets"
+        ],
+        discord: [
+          "[BRIDGE] Pushing morning news/papers digest to #morning-queue channel",
+          "[BRIDGE] Sent alert: Beast mode state transition -> STANDBY",
+          "[BRIDGE] Discord API connection stable (client ping: 35ms)",
+          "[BRIDGE] Ingested slash command trigger: /goal (initiating agent loop)"
+        ],
+        kai: [
+          "[CMO] Running AutoReason loop: checking ad convergence (k=2)",
+          "[CMO] PolicyEngine: preflight verification active on ad creatives",
+          "[CMO] Algorithmic Authorship: auditing passages for passage-ranking score",
+          "[CMO] Parsing Koray methodology topical map targets for SEO optimization"
+        ],
+        hale: [
+          "[STEWARD] Running mdi.pulse check: all 253 agents active",
+          "[STEWARD] Checking orphanage.list records... no abandoned processes found",
+          "[STEWARD] Rsync task initiated: backing up agent data to prod-77",
+          "[STEWARD] Caddy server state: 2 active HTTPS subdomains verified"
+        ],
+        mdi: [
+          "[MDI] Solana Oracle active: 175 agents validating consensus on-chain",
+          "[MDI] Moonshot Kimi bot active on Aliyun ECS (100.86.194.121)",
+          "[MDI] Processing wake-up-skill trigger from ClawdHub",
+          "[MDI] 253 autonomous agents checking dead-internet message streams"
+        ]
+      };
+
+      const packets = [];
+      const maxPackets = 15;
+      const ripples = [];
+      let width, height;
+      let hoveredNode = null;
+      let activeNode = null;
+      let mouseX = -999;
+      let mouseY = -999;
+      let logInterval = null;
+      let lastHoveredNodeKey = null;
+
+      function resize() {
+        const rect = topoCanvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        width = rect.width;
+        height = rect.height;
+        topoCanvas.width = width * dpr;
+        topoCanvas.height = height * dpr;
+        topoCtx.scale(dpr, dpr);
+      }
+
+      function initPackets() {
+        for (let i = 0; i < maxPackets; i++) {
+          const conn = connections[Math.floor(Math.random() * connections.length)];
+          packets.push({
+            conn: conn,
+            progress: Math.random(),
+            speed: 0.003 + Math.random() * 0.005,
+            forward: Math.random() > 0.3,
+            size: 1 + Math.random() * 1.5
+          });
+        }
+      }
+
+      function selectNode(node) {
+        activeNode = node;
+        playChirp();
+
+        const hudIdle = document.getElementById('topology-hud-idle');
+        const hudActive = document.getElementById('topology-hud-active');
+        const nameSpan = document.getElementById('hud-node-name');
+        const statusSpan = document.getElementById('hud-node-status');
+        const hostSpan = document.getElementById('hud-node-host');
+        const roleSpan = document.getElementById('hud-node-role');
+        const activityDiv = document.getElementById('hud-node-activity');
+
+        if (hudIdle && hudActive) {
+          hudIdle.style.display = 'none';
+          hudActive.style.display = 'block';
+          document.getElementById('topology-details').classList.add('active-hud');
+        }
+
+        if (nameSpan) nameSpan.textContent = node.name.toUpperCase();
+        if (statusSpan) {
+          statusSpan.textContent = node.status;
+          statusSpan.className = node.status === 'ONLINE' ? 'status-text online' : 'status-text synced';
+          statusSpan.style.color = node.status === 'ONLINE' ? '#22c55e' : 'var(--accent-cyan)';
+        }
+        if (hostSpan) hostSpan.textContent = node.host;
+        if (roleSpan) {
+          roleSpan.textContent = node.role;
+          roleSpan.style.color = node.color;
+        }
+
+        if (logInterval) clearInterval(logInterval);
+
+        let logIndex = 0;
+        const logs = nodesLogs[node.key] || ["No telemetry available."];
+        if (activityDiv) {
+          activityDiv.textContent = logs[logIndex];
+          activityDiv.style.borderLeftColor = node.color;
+        }
+
+        logInterval = setInterval(() => {
+          logIndex = (logIndex + 1) % logs.length;
+          if (activityDiv) {
+            activityDiv.style.opacity = 0.5;
+            setTimeout(() => {
+              activityDiv.textContent = logs[logIndex];
+              activityDiv.style.opacity = 1;
+            }, 150);
+          }
+        }, 3000);
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+      initPackets();
+
+      topoCanvas.addEventListener('mousemove', (e) => {
+        const rect = topoCanvas.getBoundingClientRect();
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
+
+        // Check hovers
+        let currentHover = null;
+        for (const node of nodes) {
+          const nx = node.x * width;
+          const ny = node.y * height;
+          const dist = Math.hypot(mouseX - nx, mouseY - ny);
+          if (dist < 15) {
+            currentHover = node;
+            break;
+          }
+        }
+
+        if (currentHover !== hoveredNode) {
+          hoveredNode = currentHover;
+          if (hoveredNode) {
+            topoCanvas.style.cursor = 'pointer';
+            if (hoveredNode.key !== lastHoveredNodeKey) {
+              playTick();
+              lastHoveredNodeKey = hoveredNode.key;
+            }
+          } else {
+            topoCanvas.style.cursor = 'crosshair';
+            lastHoveredNodeKey = null;
+          }
+        }
+      });
+
+      topoCanvas.addEventListener('mouseleave', () => {
+        mouseX = -999;
+        mouseY = -999;
+        hoveredNode = null;
+        topoCanvas.style.cursor = 'crosshair';
+        lastHoveredNodeKey = null;
+      });
+
+      topoCanvas.addEventListener('click', () => {
+        if (hoveredNode) {
+          selectNode(hoveredNode);
+          ripples.push({
+            x: hoveredNode.x * width,
+            y: hoveredNode.y * height,
+            color: hoveredNode.color,
+            radius: 4,
+            maxRadius: 25,
+            speed: 1.5
+          });
+        } else {
+          playTick();
+        }
+      });
+
+      function draw() {
+        topoCtx.clearRect(0, 0, width, height);
+
+        // 1. Draw connection lines
+        connections.forEach(conn => {
+          const fromNode = nodes.find(n => n.key === conn.from);
+          const toNode = nodes.find(n => n.key === conn.to);
+          if (!fromNode || !toNode) return;
+
+          const x1 = fromNode.x * width;
+          const y1 = fromNode.y * height;
+          const x2 = toNode.x * width;
+          const y2 = toNode.y * height;
+
+          topoCtx.beginPath();
+          topoCtx.moveTo(x1, y1);
+          topoCtx.lineTo(x2, y2);
+
+          const isHighlighted = (hoveredNode && (hoveredNode.key === conn.from || hoveredNode.key === conn.to)) ||
+                                (activeNode && (activeNode.key === conn.from || activeNode.key === conn.to));
+
+          topoCtx.lineWidth = isHighlighted ? 1.5 : 1;
+          topoCtx.strokeStyle = isHighlighted ? 'rgba(6, 182, 212, 0.4)' : 'rgba(255, 255, 255, 0.08)';
+
+          if (isHighlighted) {
+            topoCtx.setLineDash([]);
+          } else {
+            topoCtx.setLineDash([4, 4]);
+          }
+          topoCtx.stroke();
+        });
+
+        // 2. Draw packets
+        topoCtx.setLineDash([]);
+        packets.forEach(p => {
+          const fromNode = nodes.find(n => n.key === p.conn.from);
+          const toNode = nodes.find(n => n.key === p.conn.to);
+          if (!fromNode || !toNode) return;
+
+          const x1 = fromNode.x * width;
+          const y1 = fromNode.y * height;
+          const x2 = toNode.x * width;
+          const y2 = toNode.y * height;
+
+          const progress = p.forward ? p.progress : (1 - p.progress);
+          const px = x1 + (x2 - x1) * progress;
+          const py = y1 + (y2 - y1) * progress;
+
+          p.progress += p.speed;
+          if (p.progress >= 1) {
+            p.progress = 0;
+            p.forward = Math.random() > 0.3;
+            p.speed = 0.003 + Math.random() * 0.005;
+          }
+
+          topoCtx.beginPath();
+          topoCtx.arc(px, py, p.size, 0, Math.PI * 2);
+          topoCtx.fillStyle = fromNode.color;
+          topoCtx.fill();
+        });
+
+        // 3. Draw ripples
+        for (let i = ripples.length - 1; i >= 0; i--) {
+          const rip = ripples[i];
+          rip.radius += rip.speed;
+          const progress = rip.radius / rip.maxRadius;
+          if (progress >= 1) {
+            ripples.splice(i, 1);
+            continue;
+          }
+
+          topoCtx.beginPath();
+          topoCtx.arc(rip.x, rip.y, rip.radius, 0, Math.PI * 2);
+          topoCtx.strokeStyle = rip.color;
+          topoCtx.lineWidth = 1.5 * (1 - progress);
+          topoCtx.stroke();
+        }
+
+        // 4. Draw nodes
+        nodes.forEach(node => {
+          const nx = node.x * width;
+          const ny = node.y * height;
+
+          const isSelected = activeNode && activeNode.key === node.key;
+          const isHovered = hoveredNode && hoveredNode.key === node.key;
+
+          if (isHovered || isSelected) {
+            topoCtx.beginPath();
+            topoCtx.arc(nx, ny, isHovered ? 9 : 8, 0, Math.PI * 2);
+            topoCtx.fillStyle = isHovered ? 'rgba(6, 182, 212, 0.15)' : 'rgba(6, 182, 212, 0.08)';
+            topoCtx.strokeStyle = node.color;
+            topoCtx.lineWidth = 1;
+            topoCtx.fill();
+            topoCtx.stroke();
+          }
+
+          topoCtx.beginPath();
+          topoCtx.arc(nx, ny, isHovered ? 5 : 4, 0, Math.PI * 2);
+          topoCtx.fillStyle = node.color;
+          topoCtx.fill();
+
+          topoCtx.fillStyle = isSelected ? '#ffffff' : (isHovered ? 'var(--text-primary)' : 'var(--text-secondary)');
+          topoCtx.font = isSelected ? '700 8px var(--font-mono)' : '500 8px var(--font-mono)';
+          topoCtx.textAlign = 'center';
+
+          const labelYOffset = (node.y > 0.6) ? -10 : 12;
+          topoCtx.fillText(node.name, nx, ny + labelYOffset);
+        });
+
+        requestAnimationFrame(draw);
+      }
+
+      requestAnimationFrame(draw);
+    }
+
     // Dynamic mouse-tracking coordinates listener & Audio feedback activation
     document.addEventListener('DOMContentLoaded', () => {
       runBootSequence();
+      initTopologyGraph();
 
       // Global backdrop mouse glow
       document.addEventListener('mousemove', (e) => {
