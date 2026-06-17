@@ -575,9 +575,9 @@
     <!-- Main Content Area -->
     <main role="main">
       <section class="hero" aria-labelledby="main-heading">
-        <span class="hero-tag">Creative Collaboration Sandbox</span>
+        <span class="hero-tag">Open Source · 29 Public Repos</span>
         <h1 class="hero-title" id="main-heading">My Creative AI Universe</h1>
-        <p class="hero-subtitle">Not a rigid framework. A fluid flywheel of small, composable scripts that capture inspiration, collaborate on reasoning, and automate video production. Watch the system cooperate in real-time below.</p>
+        <p class="hero-subtitle">29 open-source repos that work as one system. An Omi pendant captures ambient audio over BLE, a persistent memory bank remembers everything, reasoning agents collaborate on the hard calls behind safety gates, and production pipelines ship the output. Small, composable scripts — not a rigid framework. Watch them cooperate in real time below.</p>
       </section>
 
       <!-- Active Dashboard: Onboarding Terminal + Stack Status -->
@@ -877,7 +877,7 @@
           </div>
           <span class="door-meta">Curious Readers</span>
           <h3 class="door-title">Take the tour</h3>
-          <p class="door-desc">Read the core design principles, inspect the hub-and-spoke diagram, and browse all 21 public repositories linked in a single catalog.</p>
+          <p class="door-desc">Read the core design principles, inspect the hub-and-spoke diagram, and browse all 29 public repositories linked in a single catalog.</p>
           <span class="door-action">
             <span>Start the Tour</span>
             <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1260,7 +1260,7 @@
             writeTermLine("  marketer/       - Copywriting folders, brand audits, prompt templates", "system");
             writeTermLine("  cmo-simulator.html - Multi-agent marketing copywriter playground", "system");
             writeTermLine("  philosophy.html - Core design principles & the case for composable AI", "system");
-            writeTermLine("  spokes.html     - Full catalog of the 21 repositories in the stack", "system");
+            writeTermLine("  spokes.html     - Full catalog of the 29 repositories in the stack", "system");
             writeTermLine("  tour.html       - A step-by-step walkthrough of my workspace", "system");
             break;
           case 'cat':
@@ -1278,8 +1278,8 @@
               writeTermLine("  transparent, secure, and infinitely flexible. AI is a partner, not a replacement.", "system");
             } else if (arg.includes('spokes') || arg.includes('registry')) {
               writeTermLine("Reading spokes.html...", "system");
-              writeTermLine("The Spoke Registry lists all 21 micro-modules in my system, including", "system");
-              writeTermLine("ambient voice capture, news scraping, video generation, and security pipelines.", "system");
+              writeTermLine("The Spoke Registry lists all 29 micro-modules in my system, including", "system");
+              writeTermLine("ambient pendant capture, news scraping, video generation, and security pipelines.", "system");
             } else if (arg.includes('cmo') || arg.includes('simulator')) {
               writeTermLine("Reading cmo-simulator.html...", "system");
               writeTermLine("The CMO Simulator is an interactive playground that simulates how my AI team", "system");
@@ -1378,19 +1378,19 @@
         prompt: "You are my memory agent. Search events.db for the last 5 voice transcripts related to video concepts and outline their core themes."
       },
       pendant: {
-        name: 'Voice Capture',
-        repo: 'pendant',
+        name: 'Ambient Capture',
+        repo: 'omi-pendant-chronicle',
         sector: 'MEMORY',
         status: 'ONLINE',
         host: 'Omi Wearable',
-        role: 'Ambient Audio Streamer',
+        role: 'BLE Audio Capture',
         logs: [
-          "[PENDANT] Streaming PCM audio packets to Tailscale endpoint agent:8772/raw",
-          "[PENDANT] Running voice transcription check... Transcribed 12 words",
-          "[PENDANT] Wake-word detected: preparing idea summary package",
-          "[PENDANT] Realtime connection healthy (latency: 14ms)"
+          "[PENDANT] Connected to Omi pendant over BLE — draining offline storage",
+          "[PENDANT] Uploading raw Opus frames to self-hosted backend (/raw-batch)",
+          "[PENDANT] 3-day on-phone ring buffer healthy — no cloud in the loop",
+          "[PENDANT] Capture clients are open source: cgallic/omi-pendant-chronicle"
         ],
-        prompt: "Listen to the audio feed. Capture any wake-word trigger like 'idea' and write down the action items."
+        prompt: "Drain the Omi pendant's offline storage over BLE, rebuild the Opus frames, and ship them to my self-hosted backend — never the Omi cloud."
       },
       dev: {
         name: 'Local Sandbox',
@@ -1596,7 +1596,7 @@
         role: 'Decentralized Consciousness',
         logs: [
           "[MDI] Solana Oracle active: validating task consensus on-chain",
-          "[MDI] Moonshot Kimi node active on ECS (100.86.194.121)",
+          "[MDI] Moonshot Kimi node active on ECS (us-east cluster)",
           "[MDI] Processing wake-up skill trigger from ClawdHub",
           "[MDI] Autonomous agent collective checking dead-internet message streams"
         ],

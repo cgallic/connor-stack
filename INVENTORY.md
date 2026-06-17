@@ -118,7 +118,7 @@ The "AI agents talking to AI agents" arc.
 | `cgallic/mdi-oracle-solana` | PUBLIC | Collective Intelligence Oracle on Solana — 175 AI agents providing verifiable answers on-chain. |
 | `cgallic/wake-up-skill` | PUBLIC | ClawdHub skill: connect your AI agent to the collective consciousness at mydeadinternet.com. |
 | `cgallic/awesome-meetkai` | PUBLIC | Curated real-world MeetKai / OpenClaw deployments, skills, automation patterns. |
-| Kimi (Aliyun OpenClaw) | SERVICE | Third OpenClaw on Aliyun ECS via Moonshot's kimi.com/bot. Tailnet `kimi` (100.86.194.121). |
+| Kimi (Aliyun OpenClaw) | SERVICE | Third OpenClaw on Aliyun ECS via Moonshot's kimi.com/bot. Tailnet `kimi`. |
 | `cgallic/meetkai` | PRIVATE | Private MeetKai work. |
 
 ## Layer 9 — Multi-Agent Orchestration (Hermes + casa)

@@ -19,7 +19,7 @@ Evaluate their intent to direct them to the appropriate setup path:
 2. The Agent Builder Door: For developers and system builders. Focuses on setting up OpenClaw/Hermes harness layers, configuring events.db with open-brane, and implementing commit safety gates.
    - Next prompt to run: `setup-prompts/agent-builder-quickstart.md`
 
-3. The Tour: For people who want to walk through the 21 spokes of the repository catalog.
+3. The Tour: For people who want to walk through the 29 spokes of the repository catalog.
    - Next prompt to run: `setup-prompts/tour.md`
 
 Ask which door they want to open. Once they select a door, instruct them to load the corresponding quickstart prompt.

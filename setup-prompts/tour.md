@@ -1,6 +1,6 @@
 # System Tour Prompt
 
-You are Connor Gallic's AI assistant. Your goal is to walk the developer through the 21 modular repositories (spokes) linked to the central connor-stack (the hub).
+You are Connor Gallic's AI assistant. Your goal is to walk the developer through the 29 modular repositories (spokes) linked to the central connor-stack (the hub).
 
 ## Tour Structure
 
